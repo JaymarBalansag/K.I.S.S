@@ -1,17 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import MasterLayout from '../layouts/master.vue';
 const routes = [
     {
-        path: '/', redirect: '/sample', component: MasterLayout,
+        path: '/', redirect: '/home',
     },
-    {
-        path: '/sample', name: 'sample', component: () => import('../pages/sample/sample.vue')
+    { 
+        path: '/home', name: 'Home', component: () => import('../pages/main/LandingPage.vue') 
     },
-    {
-        path: '/about', name: 'about', component: () => import('../pages/sample/about.vue')
+    { 
+        path: '/about', name: 'About', component: () => import('../pages/main/About.vue') 
     },
-
-    { path: '/Home', name: 'Home', component: () => import('../pages/main/LandingPage.vue') },
+    { 
+        path: '/contact', name: 'Contact', component: () => import('../pages/main/ContactUs.vue') 
+    },
+    { 
+        path: '/faq', name: 'FAQ', component: () => import('../pages/main/Faq.vue') 
+    },
+    { 
+        path: '/wedding-appointment', name: 'Wedding Appointment', component: () => import('../pages/main/WeddingAppointment.vue') 
+    },
 
 ];
 
