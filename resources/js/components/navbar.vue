@@ -3,9 +3,7 @@
     <div class="container">
       
       <a class="navbar-brand d-flex align-items-center" href="#">
-        <div class="bg-primary rounded-2 me-2 d-flex align-items-center justify-content-center shadow-sm" style="width: 38px; height: 38px;">
-            <img src="../../../../public/favicon.ico" alt="logo" style="width: 24px;">
-        </div>
+        <img src="../../../../public/favicon.ico" class="me-2" alt="logo" style="width: 3rem;">
         <div class="brand-text text-start">
           <span class="fw-bold d-block lh-1 text-white fs-5">{{ config.siteName }}</span>
           <small class="text-white-50 d-none d-sm-block" style="font-size: 0.75rem; letter-spacing: 0.5px;">Marriage Services</small>
