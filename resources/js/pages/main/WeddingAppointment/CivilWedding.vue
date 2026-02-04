@@ -200,7 +200,7 @@ export default {
         },
         proceedToStep2() {
             this.$router.push({
-                name: 'MarriageApplication',
+                name: 'CivilWeddingAppointmentForm',
                 query: { date: this.selectedDate.toISOString() }
             });
         }
@@ -244,12 +244,12 @@ export default {
 
 /* Specific styling for allowed Mondays to guide the user */
 .available-monday:not(.selected) {
-    background: rgba(13, 110, 253, 0.05);
+    background: rgb(48, 155, 27);
     border: 1px dashed rgba(13, 110, 253, 0.3);
 }
 
 .calendar-day:hover:not(.disabled) {
-    background: rgba(13, 110, 253, 0.15);
+    background: rgb(48, 155, 27);
     transform: scale(1.05);
     z-index: 5;
 }

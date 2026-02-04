@@ -12,54 +12,36 @@
 
                         <div class="glass-card shadow-lg p-4 p-md-5 border border-white border-opacity-20">
 
-                            <div
-                                class="d-flex justify-content-center gap-2 mb-4 bg-white bg-opacity-10 p-1 rounded-pill border border-white border-opacity-10">
-                                <button @click="loginMethod = 'code'"
-                                    :class="['btn btn-sm rounded-pill px-3 transition-all border-0', loginMethod === 'code' ? 'bg-white text-dark shadow' : 'text-white opacity-75']">
-                                    Access Code
-                                </button>
-                                <button @click="loginMethod = 'credentials'"
-                                    :class="['btn btn-sm rounded-pill px-3 transition-all border-0', loginMethod === 'credentials' ? 'bg-white text-dark shadow' : 'text-white opacity-75']">
-                                    Credentials
-                                </button>
-                            </div>
-
                             <form @submit.prevent="handleLogin">
 
-                                <div v-if="loginMethod === 'code'" class="animate-fade">
-                                    <div class="mb-4">
-                                        <label
-                                            class="form-label small fw-bold text-white text-uppercase tracking-wider opacity-75">
-                                            Reference Code
-                                        </label>
-                                        <div class="input-group glass-input-group">
-                                            <span
-                                                class="input-group-text bg-transparent border-white border-opacity-25 text-white">
-                                                <i class="bi bi-hash"></i>
-                                            </span>
-                                            <input type="text" class="form-control glass-input border-start-0 ps-0"
-                                                placeholder="e.g. ABC-12345" required>
-                                        </div>
-                                        <div class="form-text text-white-50 small mt-2">Enter the code sent to your
-                                            email.</div>
+                                <div class="mb-3 animate-fade">
+                                    <label
+                                        class="form-label small fw-bold text-white text-uppercase tracking-wider opacity-75">
+                                        Username
+                                    </label>
+                                    <div class="input-group glass-input-group">
+                                        <span
+                                            class="input-group-text bg-transparent border-white border-opacity-25 text-white">
+                                            <i class="bi bi-person"></i>
+                                        </span>
+                                        <input type="text" v-model="username"
+                                            class="form-control glass-input border-start-0 ps-0"
+                                            placeholder="admin_user" required>
                                     </div>
                                 </div>
 
-                                <div v-else class="animate-fade">
-                                    <div class="mb-3">
-                                        <label
-                                            class="form-label small fw-bold text-white text-uppercase tracking-wider opacity-75">
-                                            Username
-                                        </label>
-                                        <input type="text" class="form-control glass-input" placeholder="admin_user"
-                                            required>
-                                    </div>
-                                    <div class="mb-4">
-                                        <label
-                                            class="form-label small fw-bold text-white text-uppercase tracking-wider opacity-75">
-                                            Password
-                                        </label>
-                                        <input type="password" class="form-control glass-input" placeholder="••••••••"
+                                <div class="mb-4 animate-fade" style="animation-delay: 0.1s;">
+                                    <label
+                                        class="form-label small fw-bold text-white text-uppercase tracking-wider opacity-75">
+                                        Password
+                                    </label>
+                                    <div class="input-group glass-input-group">
+                                        <span
+                                            class="input-group-text bg-transparent border-white border-opacity-25 text-white">
+                                            <i class="bi bi-lock"></i>
+                                        </span>
+                                        <input type="password" v-model="password"
+                                            class="form-control glass-input border-start-0 ps-0" placeholder="••••••••"
                                             required>
                                     </div>
                                 </div>
@@ -89,14 +71,15 @@ export default {
     name: 'GovPortalLogin',
     data() {
         return {
-            loginMethod: 'code', // Switch between 'code' and 'credentials'
+            username: '',
+            password: ''
         };
     },
     methods: {
         handleLogin() {
-            // Add your authentication logic here
-            console.log("Login Method:", this.loginMethod);
-            // Example: this.$router.push('/Staff/Dashboard');
+            // Logic for authentication
+            console.log("Attempting login for:", this.username);
+            // Example: axios.post('/api/login', { user: this.username, pass: this.password })
         }
     }
 };
@@ -106,8 +89,8 @@ export default {
 /* BACKGROUND CONTAINER */
 .main-container {
     font-family: 'Inter', sans-serif;
-    /* Darker gradient overlays help the white "glass" stand out */
-    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)),
+    /* Ensure background.jpg exists in your public folder */
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)),
         url('../../../../public/background.jpg');
     background-size: cover;
     background-position: center;
@@ -176,13 +159,10 @@ export default {
     color: white !important;
 }
 
-.transition-all {
-    transition: all 0.2s ease;
-}
-
 /* ANIMATION */
 .animate-fade {
-    animation: slideIn 0.4s ease-out;
+    animation: slideIn 0.4s ease-out forwards;
+    opacity: 0;
 }
 
 @keyframes slideIn {

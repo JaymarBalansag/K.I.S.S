@@ -31,6 +31,12 @@ const routes = [
         path: "/Service-Status", name: "ServiceDashboard", component: () => import("../pages/User/Dashboard.vue"),
     },
     {
+        path: "/Civil-Wedding-Appointment-Form", name: "CivilWeddingAppointmentForm", component: () => import("../pages/main/WeddingAppointment/CivilWeddingAppointmentForm.vue"),
+    },
+    {
+        path: "/Pre-Marriage-Counseling-Form", name: "PreMarriageCounselingAppointmentForm", component: () => import("../pages/main/WeddingAppointment/PreMarriageAppointmentForm.vue"),
+    },
+    {
         path: "/Staff",
         component: () => import("../pages/Staff/Layout.vue"), // The Wrapper
         children: [
@@ -51,9 +57,9 @@ const routes = [
             },
             {
                 path: "User-Registry", name: "StaffUserRegistry", component: () => import("../pages/Staff/UserRegistry.vue")
-            }
+            },
         ]
-        
+
     },
     {
         path: "/admin", component: () => import("../pages/admin/Layout.vue"), // The Wrapper
