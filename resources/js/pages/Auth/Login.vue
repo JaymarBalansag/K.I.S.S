@@ -1,5 +1,6 @@
 <template>
     <div class="main-container min-vh-100 d-flex flex-column">
+        <Navbar></Navbar>
         <main class="flex-grow-1 d-flex align-items-center py-5">
             <div class="container mt-5">
                 <div class="row justify-content-center">
@@ -63,11 +64,18 @@
                 </div>
             </div>
         </main>
+        <Footer></Footer>
     </div>
 </template>
 
 <script>
+import Navbar from '../../components/navbar.vue';
+import Footer from '../../components/footer.vue';
 export default {
+    components: {
+        Navbar,
+        Footer
+    },
     name: 'GovPortalLogin',
     data() {
         return {
