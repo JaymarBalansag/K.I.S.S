@@ -1,20 +1,20 @@
 <template>
     <div class="main-container min-vh-100 d-flex flex-column">
 
-        <!-- For the navbar -->
-        <Navbar></Navbar>
-
         <!-- For the main Content -->
         <main class="flex-grow-1 d-flex align-items-center py-5">
             <div class="container py-5 mt-5">
+                <router-link to="/home" class="text-white text-decoration-none fw-bold">
+                    <span class="me-2">&larr;</span> Back
+                </router-link>
                 <div class="row justify-content-center text-center mb-5 mt-4">
-                    <div class="col-lg-9 col-xl-8">
+                    <div class="col-lg-9 col-xl-8 w-auto">
                         <span
                             class="badge bg-primary bg-opacity-75 rounded-pill px-4 py-2 mb-3 shadow-sm text-uppercase fw-bold"
                             style="letter-spacing: 1px;">
-                            Civil Registry Portal
+                            Services
                         </span>
-                        <h1 class="display-2 fw-bolder text-white mb-3 text-shadow-heavy">
+                        <h1 class="display-2 fw-bolder text-white mb-3 text-shadow-heavy w-auto">
                             {{ config.servicesHeading }}
                         </h1>
                         <p class="lead text-white fw-medium mb-4 text-shadow-medium opacity-90 mx-auto"
@@ -44,31 +44,24 @@
                 </div>
             </div>
         </main>
-
-        <!-- For the footer -->
-        <Footer></Footer>
     </div>
 </template>
 
 <script>
-import Navbar from '../../components/navbar.vue';
-import Footer from '../../components/footer.vue';
 export default {
     name: 'GovPortal',
     components: {
-        Navbar,
-        Footer
     },
     data() {
         return {
             config: {
-                servicesHeading: "Marriage license & Civil Wedding",
-                servicesSubtext: "Apply for marriage license documents and schedule appointments with ease through our secure digital gateway."
+                servicesHeading: "Pre-Marriage Counseling & Wedding Appointments",
+                servicesSubtext: "Apply for pre-marriage counseling sessions and schedule civil wedding appointments with our Mayor."
             },
 
             services: [
-                { title: "Marriage License", emoji: "🆔", description: "Apply for certified true copies of marriage license online.", gradient: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)", link: '/marriage-license' },
-                { title: "Wedding Appointment", emoji: "📅", description: "Book an available slot for your civil ceremony and coordinate with our officials.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", link: '/wedding-appointment' }
+                { title: "Pre-Marriage Counseling", emoji: "🆔", description: "Apply for Pre-Marriage Counseling sessions with our licensed counselors.", gradient: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)", link: '/Pre-Marriage-Counseling' },
+                { title: "Civil Wedding Appointment", emoji: "📅", description: "Book an available slot for your civil ceremony and coordinate with our officials.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", link: '/Civil-Wedding-Appointment' }
             ]
         };
     }
@@ -113,7 +106,7 @@ export default {
 .main-container {
     font-family: 'Inter', sans-serif;
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
-        url('../../../../public/background.jpg');
+        url('../../../../../public/background.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

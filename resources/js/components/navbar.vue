@@ -10,81 +10,81 @@
         </div>
       </a>
 
-      <button 
-        class="navbar-toggler border-0 shadow-none" 
-        type="button" 
-        data-bs-toggle="collapse" 
-        data-bs-target="#mainNav" 
-        aria-controls="mainNav" 
-        aria-expanded="false" 
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li v-for="link in navLinks" :key="link.text" class="nav-item">
+                        <RouterLink class="nav-link fw-bold px-3 text-uppercase small text-center" :to="link.url">
+                            {{ link.text }}
+                        </RouterLink>
+                    </li>
+                </ul>
 
-      <div class="collapse navbar-collapse" id="mainNav">
-        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-          <li v-for="link in navLinks" :key="link.text" class="nav-item">
-            <RouterLink class="nav-link fw-bold px-3 text-uppercase small text-center" :to="link.url">
-              {{ link.text }}
-            </RouterLink> 
-          </li>
-        </ul>
-      </div>
+                <div class="d-flex justify-content-center mt-3 mt-lg-0">
+                    <router-link to="/login"
+                        class="btn btn-primary btn-sm rounded-pill px-4 fw-bold text-uppercase tracking-wider shadow-sm">
+                        Sign In
+                    </router-link>
+                </div>
+            </div>
 
-    </div>
-  </nav>
+        </div>
+    </nav>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      config: {
-        siteName: "LCRO Abuyog"
-      },
-      navLinks: [
-        { text: 'Services', url: '/home' },
-        { text: 'About Us', url: '/about' },
-        { text: 'Contact', url: '/contact' },
-        { text: 'FAQ', url: '/faq' }
-      ],
-    };
-  }
+    data() {
+        return {
+            config: {
+                siteName: "LCRO Abuyog"
+            },
+            navLinks: [
+                { text: 'Services', url: '/home' },
+                { text: 'About Us', url: '/about' },
+                { text: 'Contact', url: '/contact' },
+                { text: 'FAQ', url: '/faq' }
+            ],
+        };
+    }
 }
 </script>
 
 <style scoped>
-/* NAVBAR STYLING */
 .nav-glass {
-  background-color: rgba(33, 37, 41, 0.92) !important;
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(33, 37, 41, 0.92) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .nav-link {
-  color: #ffffff !important;
-  transition: opacity 0.2s ease;
-  position: relative;
+    color: #ffffff !important;
+    transition: all 0.2s ease;
 }
 
 .nav-link:hover {
-  opacity: 0.7;
+    color: #0d6efd !important;
+    opacity: 1;
 }
 
-/* MOBILE FIXES */
+.tracking-wider {
+    letter-spacing: 1px;
+    font-size: 0.8rem;
+}
+
+/* Mobile Adjustments */
 @media (max-width: 991px) {
-  .navbar-collapse {
-    background: #212529 !important;
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin-top: 10px;
-  }
-  
-  .nav-link {
-    padding: 12px 0 !important;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-  }
+    .navbar-collapse {
+        background: #212529 !important;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-top: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .nav-link {
+        padding: 12px 0 !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
 }
 </style>
