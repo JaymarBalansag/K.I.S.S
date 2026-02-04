@@ -830,7 +830,7 @@ export default {
   name: 'MarriageFormSteps',
   data() {
     return {
-      step: 28,
+      step: 1,
       totalSteps: 28,
       ageError: '',
       isPreviouslyMarried: false,

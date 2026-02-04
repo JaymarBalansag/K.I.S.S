@@ -67,7 +67,7 @@ export default {
             },
 
             services: [
-                { title: "Marriage License", emoji: "🆔", description: "Apply for certified true copies of marriage license online.", gradient: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)", link: '/marriage-license' },
+                { title: "Marriage License", emoji: "🆔", description: "Apply for certified true copies of marriage license online.", gradient: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)", link: '/isCohabiting' },
                 { title: "Wedding Appointment", emoji: "📅", description: "Book an available slot for your civil ceremony and coordinate with our officials.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", link: '/wedding-appointment' }
             ]
         };
