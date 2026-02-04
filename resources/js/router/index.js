@@ -21,10 +21,12 @@ const routes = [
     },
     {
         path: '/wedding-appointment', name: 'Wedding Appointment', component: () => import('../pages/main/WeddingAppointment/Services.vue')
-      path: '/isCohabiting', name: 'isCohabiting', component: () => import("../pages/main/MarriageLicense/isCohabiting.vue")  
     },
     {
       path: '/isForeigner/Cohab/:isCohabiting', name: 'IsForeigner', component: () => import("../pages/main/MarriageLicense/isForeigner.vue")
+    },
+    {
+        path: '/isCohabiting', name: 'isCohabiting', component: () => import("../pages/main/MarriageLicense/isCohabiting.vue")  
     },
     {
       path: '/ageRange/isForeigner/:isForeigner/Cohab/:isCohabiting', name: 'AgeRange', component: () => import("../pages/main/MarriageLicense/AgeRange.vue")
