@@ -93,6 +93,15 @@ const routes = [
             {
                 path: "Staffs/Edit/:id", name: "EditStaff", component: () => import("../pages/admin/EditStaffForm.vue")
             },
+            {
+                path: "Position", name: "AdminPosition", component: () => import("../pages/admin/Position.vue")
+            },
+            {
+                path: "Position/Add", name: "AddPosition", component: () => import("../pages/admin/AddPositionForm.vue")
+            },
+            {
+                path: "Position/Edit/:id", name: "EditPosition", component: () => import("../pages/admin/EditPositionForm.vue")
+            },
         ]
     }
 ];

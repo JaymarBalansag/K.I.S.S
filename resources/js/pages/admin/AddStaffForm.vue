@@ -16,7 +16,8 @@
                     <div class="col-md-12">
                         <label class="form-label text-white small fw-bold opacity-75">Full Name</label>
                         <input v-model="form.name" type="text" class="form-control glass-input"
-                            placeholder="e.g. Maria Clara" required>
+                            :class="{ 'border-danger': errors.name }" placeholder="e.g. Maria Clara" required>
+                        <small v-if="errors.name" class="text-danger d-block mt-1">{{ errors.name }}</small>
                     </div>
 
                     <div class="col-md-6">
@@ -31,6 +32,13 @@
                     </div>
 
                     <div class="col-md-6">
+                        <label class="form-label text-white small fw-bold opacity-75">Phone Number</label>
+                        <input v-model="form.phone" type="text" class="form-control glass-input"
+                            :class="{ 'border-danger': errors.phone }" placeholder="09123456789" required>
+                        <small v-if="errors.phone" class="text-danger d-block mt-1">{{ errors.phone }}</small>
+                    </div>
+
+                    <div class="col-md-12">
                         <label class="form-label text-white small fw-bold opacity-75">Email Address</label>
                         <input v-model="form.email" type="email" class="form-control glass-input"
                             placeholder="name@lcro.gov" required>
@@ -61,14 +69,45 @@ export default {
             form: {
                 name: '',
                 role: '',
-                email: ''
+                email: '',
+                phone: ''
+            },
+            errors: {
+                name: '',
+                phone: ''
             }
         };
     },
+    watch: {
+        // Watch the name field
+        'form.name'(newValue) {
+            const sanitized = newValue.replace(/[^a-zA-Z\s]/g, '');
+            if (newValue !== sanitized) {
+                this.errors.name = "Names can only contain letters and spaces.";
+                this.form.name = sanitized; // Force update the value
+            } else {
+                this.errors.name = "";
+            }
+        },
+        // Watch the phone field
+        'form.phone'(newValue) {
+            const sanitized = newValue.replace(/\D/g, '');
+            if (newValue !== sanitized) {
+                this.errors.phone = "Phone number must contain digits only.";
+                this.form.phone = sanitized; // Force update the value
+            } else {
+                this.errors.phone = "";
+            }
+        }
+    },
     methods: {
         handleSubmit() {
+            if (this.errors.name || this.errors.phone) {
+                alert("Please correct the errors before submitting.");
+                return;
+            }
+
             console.log("New Staff Data:", this.form);
-            // Logic to save data to your API/Store goes here
             alert("Staff added successfully!");
             this.$router.push('/Admin/Staffs');
         }
@@ -107,10 +146,13 @@ export default {
     color: rgba(255, 255, 255, 0.3);
 }
 
+.border-danger {
+    border-color: #ff4d4d !important;
+}
+
 /* Select dropdown fix */
 select.glass-input option {
     background: #1e293b;
-    /* Dark background for dropdown options */
     color: white;
 }
 
