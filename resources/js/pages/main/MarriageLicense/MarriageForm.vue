@@ -26,6 +26,9 @@
                 <!-- STEP 1 – GROOM NAME -->
                 <div v-if="step === 1">
                   <h4 class="section-title">Groom – Name</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-4">
                       <label class="form-label">First Name</label>
@@ -45,6 +48,9 @@
                 <!-- STEP 2 – GROOM BIRTH DATE -->
                 <div v-if="step === 2">
                   <h4 class="section-title">Groom – Birth Date Details</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-4">
                       <label class="form-label">Day</label>
@@ -64,6 +70,9 @@
                 <!-- STEP 3 – GROOM PLACE OF BIRTH -->
                 <div v-if="step === 3">
                   <h4 class="section-title">Groom – Place of Birth</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-4">
                       <label class="form-label">City / Municipality</label>
@@ -83,6 +92,9 @@
                 <!-- STEP 4 – GROOM INFO -->
                 <div v-if="step === 4">
                   <h4 class="section-title">Groom – Personal Info</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-4">
                       <label class="form-label">Age</label>
@@ -113,6 +125,9 @@
                 <!-- STEP 5 – GROOM RESIDENCE -->
                 <div v-if="step === 5">
                   <h4 class="section-title">Groom – Residence</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-12">
                       <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
@@ -125,6 +140,9 @@
                 <!-- STEP 6 – GROOM RELIGION -->
                 <div v-if="step === 6">
                   <h4 class="section-title">Groom – Religion / Religion Sect</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-12">
                       <label class="form-label">Religion / Religion Sect</label>
@@ -136,6 +154,9 @@
                 <!-- STEP 7 – GROOM CIVIL STATUS -->
                 <div v-if="step === 7">
                   <h4 class="section-title">Groom – Civil Status</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-12">
                       <label class="form-label">Civil Status</label>
@@ -202,6 +223,9 @@
                 <!-- STEP 9 – GROOM FATHER'S INFO -->
                 <div v-if="step === 9">
                   <h4 class="section-title">Groom – Father's Info</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-4">
                       <label class="form-label">First Name</label>
@@ -230,6 +254,9 @@
                 <!-- STEP 10 – GROOM FATHER'S RESIDENCE -->
                 <div v-if="step === 10">
                   <h4 class="section-title">Groom – Father's Residence</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-12">
                       <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
@@ -242,6 +269,9 @@
                 <!-- STEP 11 – GROOM MOTHER'S MAIDEN INFO -->
                 <div v-if="step === 11">
                   <h4 class="section-title">Groom – Mother's Maiden Info</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-4">
                       <label class="form-label">First Name</label>
@@ -270,6 +300,9 @@
                 <!-- STEP 12 – GROOM MOTHER'S MAIDEN RESIDENCE -->
                 <div v-if="step === 12">
                   <h4 class="section-title">Groom – Mother's Maiden Residence</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-12">
                       <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
@@ -313,6 +346,9 @@
                 <!-- STEP 14 – BRIDE NAME -->
                 <div v-if="step === 14">
                   <h4 class="section-title">Bride – Name</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-4">
                       <label class="form-label">First Name</label>
@@ -332,6 +368,9 @@
                 <!-- STEP 15 – BRIDE BIRTH DATE -->
                 <div v-if="step === 15">
                   <h4 class="section-title">Bride – Birth Date Details</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-4">
                       <label class="form-label">Day</label>
@@ -351,6 +390,9 @@
                 <!-- STEP 16 – BRIDE PLACE OF BIRTH -->
                 <div v-if="step === 16">
                   <h4 class="section-title">Bride – Place of Birth</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-4">
                       <label class="form-label">City / Municipality</label>
@@ -370,6 +412,9 @@
                 <!-- STEP 17 – BRIDE INFO -->
                 <div v-if="step === 17">
                   <h4 class="section-title">Bride – Personal Info</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-4">
                       <label class="form-label">Age</label>
@@ -398,6 +443,9 @@
                 <!-- STEP 18 – BRIDE RESIDENCE -->
                 <div v-if="step === 18">
                   <h4 class="section-title">Bride – Residence</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-12">
                       <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
@@ -410,6 +458,9 @@
                 <!-- STEP 19 – BRIDE RELIGION -->
                 <div v-if="step === 19">
                   <h4 class="section-title">Bride – Religion / Religion Sect</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-12">
                       <label class="form-label">Religion / Religion Sect</label>
@@ -421,6 +472,9 @@
                 <!-- STEP 20 – BRIDE CIVIL STATUS -->
                 <div v-if="step === 20">
                   <h4 class="section-title">Bride – Civil Status</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-12">
                       <label class="form-label">Civil Status</label>
@@ -487,6 +541,9 @@
                 <!-- STEP 22 – BRIDE FATHER'S INFO -->
                 <div v-if="step === 22">
                   <h4 class="section-title">Bride – Father's Info</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-4">
                       <label class="form-label">First Name</label>
@@ -515,6 +572,9 @@
                 <!-- STEP 23 – BRIDE FATHER'S RESIDENCE -->
                 <div v-if="step === 23">
                   <h4 class="section-title">Bride – Father's Residence</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-12">
                       <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
@@ -527,6 +587,9 @@
                 <!-- STEP 24 – BRIDE MOTHER'S MAIDEN INFO -->
                 <div v-if="step === 24">
                   <h4 class="section-title">Bride – Mother's Maiden Info</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-4">
                       <label class="form-label">First Name</label>
@@ -555,6 +618,9 @@
                 <!-- STEP 25 – BRIDE MOTHER'S MAIDEN RESIDENCE -->
                 <div v-if="step === 25">
                   <h4 class="section-title">Bride – Mother's Maiden Residence</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
                   <div class="row g-3">
                     <div class="col-md-12">
                       <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
@@ -623,7 +689,9 @@
                 <!-- STEP 28 – Marriage Required Documents -->
                 <div v-if="step === 28" class="glass-panel">
                   <h4 class="section-title text-white mb-4">Required Documents</h4>
-
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>  
                   <div class="row g-4">
                     <!-- For Groom -->
                     <div class="col-md-6 border-end border-white-10">
@@ -826,10 +894,16 @@
 </template>
 
 <script>
+import WarningForm from '../../../components/WarningForm.vue';
+
 export default {
   name: 'MarriageFormSteps',
+  components: {
+    WarningForm,
+  },
   data() {
     return {
+      message: [],
       step: 1,
       totalSteps: 28,
       ageError: '',
@@ -887,8 +961,272 @@ export default {
     goBack(){
       this.step--
     },
-    goNext(){
-      this.step++
+    goNext() {
+      // Clear any existing messages before starting new validation
+      this.message = [];
+
+      // Validation on every step
+      switch (this.step) {
+        /* --- GROOM VALIDATION --- */
+        case 1: // Groom Name
+          if (!this.form.groom.firstName || !this.form.groom.lastName) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.groom.middleName) this.form.groom.middleName = "N/A";
+          break;
+
+        case 2: // Groom Birth Date
+          if (!this.form.groom.day || !this.form.groom.month || !this.form.groom.year) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          const gYear = parseInt(this.form.groom.year);
+          const currentYear = new Date().getFullYear();
+          if (gYear < 1900 || gYear > currentYear) {
+            this.message.push("Please enter a valid 4-digit year (e.g., 1995).");
+            this.scrollToError();
+            return;
+          }
+          const gBirthDate = new Date(gYear, parseInt(this.form.groom.month) - 1, parseInt(this.form.groom.day));
+          if (gBirthDate.getFullYear() !== gYear || gBirthDate.getMonth() !== parseInt(this.form.groom.month) - 1) {
+            this.message.push("The date entered is invalid. Please check the day and month.");
+            this.scrollToError();
+            return;
+          }
+          // Use the age calculated by your watcher/handler
+          if (this.form.groom.age < 18) {
+            this.message.push("The groom must be at least 18 years old.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 3: // Groom Birth Place
+          if (!this.form.groom.cityMunicipality || !this.form.groom.province || !this.form.groom.country) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 4: // Groom Personal Info
+          if (!this.form.groom.age || !this.form.groom.sex || !this.form.groom.citizenship) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 5: // Groom Residence
+          if (!this.form.groom.residence) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 6: // Groom Religion
+          if (!this.form.groom.religion) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 7: // Groom Civil Status
+          if (!this.form.groom.civilStatus) {
+            this.message.push("Please fill in Civil Status.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.groom.previousMarriageDissolve) this.form.groom.previousMarriageDissolve = "N/A";
+          if (!this.form.groom.dissolvedCityMunicipality) this.form.groom.dissolvedCityMunicipality = "N/A";
+          if (!this.form.groom.dissolvedProvince) this.form.groom.dissolvedProvince = "N/A";
+          if (!this.form.groom.dissolvedCountry) this.form.groom.dissolvedCountry = "N/A";
+          if (!this.form.groom.dissolvedDay) this.form.groom.dissolvedDay = "N/A";
+          if (!this.form.groom.dissolvedMonth) this.form.groom.dissolvedMonth = "N/A";
+          if (!this.form.groom.dissolvedYear) this.form.groom.dissolvedYear = "N/A";
+          break;
+
+        case 8: // Groom Degree
+          if (!this.form.groom.degree) this.form.groom.degree = "N/A";
+          break;
+
+        case 9: // Groom Father Info
+          if (!this.form.groom.fatherFirstName || !this.form.groom.fatherLastName || !this.form.groom.fatherCitizenship) {
+            this.message.push("Please fill in all required fields excluding Middle Name.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.groom.fatherMiddleName) this.form.groom.fatherMiddleName = "N/A";
+          break;
+
+        case 10: // Groom Father Residence
+          if (!this.form.groom.fatherResidence) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 11: // Groom Mother Info
+          if (!this.form.groom.motherMaidenFirstName || !this.form.groom.motherMaidenLastName || !this.form.groom.motherMaidenCitizenship) {
+            this.message.push("Please fill in all required fields excluding Middle Name.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.groom.motherMaidenMiddleName) this.form.groom.motherMaidenMiddleName = "N/A";
+          break;
+
+        case 12: // Groom Mother Residence
+          if (!this.form.groom.motherMaidenResidence) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        /* --- BRIDE VALIDATION --- */
+        case 14: // Bride Name
+          if (!this.form.bride.firstName || !this.form.bride.lastName) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.bride.middleName) this.form.bride.middleName = "N/A";
+          break;
+
+        case 15: // Bride Birth Date
+          if (!this.form.bride.day || !this.form.bride.month || !this.form.bride.year) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          const bYear = parseInt(this.form.bride.year);
+          if (bYear < 1900 || bYear > new Date().getFullYear()) {
+            this.message.push("Please enter a valid 4-digit year.");
+            this.scrollToError();
+            return;
+          }
+          const bBirthDate = new Date(bYear, parseInt(this.form.bride.month) - 1, parseInt(this.form.bride.day));
+          if (bBirthDate.getFullYear() !== bYear) {
+            this.message.push("The date entered is invalid.");
+            this.scrollToError();
+            return;
+          }
+          if (this.form.bride.age < 18) {
+            this.message.push("The bride must be at least 18 years old.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 16: // Bride Birth Place
+          if (!this.form.bride.cityMunicipality || !this.form.bride.province || !this.form.bride.country) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 17: // Bride Personal Info
+          if (!this.form.bride.age || !this.form.bride.sex || !this.form.bride.citizenship) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 18: // Bride Residence
+          if (!this.form.bride.residence) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 19: // Bride Religion
+          if (!this.form.bride.religion) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 20: // Bride Civil Status
+          if (!this.form.bride.civilStatus) {
+            this.message.push("Please fill in Civil Status.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.bride.previousMarriageDissolve) this.form.bride.previousMarriageDissolve = "N/A";
+          if (!this.form.bride.dissolvedCityMunicipality) this.form.bride.dissolvedCityMunicipality = "N/A";
+          if (!this.form.bride.dissolvedProvince) this.form.bride.dissolvedProvince = "N/A";
+          if (!this.form.bride.dissolvedCountry) this.form.bride.dissolvedCountry = "N/A";
+          if (!this.form.bride.dissolvedDay) this.form.bride.dissolvedDay = "N/A";
+          if (!this.form.bride.dissolvedMonth) this.form.bride.dissolvedMonth = "N/A";
+          if (!this.form.bride.dissolvedYear) this.form.bride.dissolvedYear = "N/A";
+          break;
+
+        case 21: // Bride Degree
+          if (!this.form.bride.degree) this.form.bride.degree = "N/A";
+          break;
+
+        case 22: // Bride Father Info
+          if (!this.form.bride.fatherFirstName || !this.form.bride.fatherLastName || !this.form.bride.fatherCitizenship) {
+            this.message.push("Please fill in all required fields excluding Middle Name.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.bride.fatherMiddleName) this.form.bride.fatherMiddleName = "N/A";
+          break;
+
+        case 23: // Bride Father Residence
+          if (!this.form.bride.fatherResidence) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 24: // Bride Mother Info
+          if (!this.form.bride.motherMaidenFirstName || !this.form.bride.motherMaidenLastName || !this.form.bride.motherMaidenCitizenship) {
+            this.message.push("Please fill in all required fields excluding Middle Name.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.bride.motherMaidenMiddleName) this.form.bride.motherMaidenMiddleName = "N/A";
+          break;
+
+        case 25: // Bride Mother Residence
+          if (!this.form.bride.motherMaidenResidence) {
+            this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 28: // Documents
+          const requiredDocs = ['cenomar', 'psa', 'govtIssuedId', 'pmocCertificate'];
+          let missingGroom = requiredDocs.some(doc => !this.form.groom.documents[doc]);
+          let missingBride = requiredDocs.some(doc => !this.form.bride.documents[doc]);
+
+          if (missingGroom || missingBride) {
+            this.message.push("Please upload all required documents for both Groom and Bride.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        default:
+          break;
+      }
+
+      // If validation passes, move to next step
+      this.step++;
     },
     handlePersonValidation(person, type) {
       const today = new Date();
@@ -948,8 +1286,41 @@ export default {
     },
 
     submitForm() {
+      this.message = [];
+      const groomDocs = this.form.groom.documents;
+      const brideDocs = this.form.bride.documents;
+
+      // List of required keys based on your HTML template
+      const requiredDocs = ['cenomar', 'psa', 'govtIssuedId', 'pmocCertificate'];
+      let missingGroom = false;
+      let missingBride = false;
+
+      // Check Groom
+      requiredDocs.forEach(doc => {
+        if (!groomDocs[doc]) missingGroom = true;
+      });
+
+      // Check Bride
+      requiredDocs.forEach(doc => {
+        if (!brideDocs[doc]) missingBride = true;
+      });
+
+      if (missingGroom || missingBride) {
+        this.message.push("Please upload all required documents for both Groom and Bride.");
+        this.scrollToError();
+        return;
+      }
       console.log(this.form);
       alert('Application Submitted!');
+    },
+    scrollToError() {
+      this.$nextTick(() => {
+        // We use $nextTick to ensure the DOM has updated with the new error message
+        const element = this.$refs.errorContainer;
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
     }
   }
 }
