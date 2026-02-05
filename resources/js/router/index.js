@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
     {
-        path: '/', redirect: '/login',
+        path: '/', redirect: '/home',
     },
     {
         path: '/login', name: 'Login', component: () => import('../pages/Auth/Login.vue')
@@ -26,7 +26,7 @@ const routes = [
       path: '/isForeigner/Cohab/:isCohabiting', name: 'IsForeigner', component: () => import("../pages/main/MarriageLicense/isForeigner.vue")
     },
     {
-        path: '/isCohabiting', name: 'isCohabiting', component: () => import("../pages/main/MarriageLicense/isCohabiting.vue")  
+        path: '/isCohabiting', name: 'isCohabiting', component: () => import("../pages/main/MarriageLicense/isCohabiting.vue")
     },
     {
       path: '/ageRange/isForeigner/:isForeigner/Cohab/:isCohabiting', name: 'AgeRange', component: () => import("../pages/main/MarriageLicense/AgeRange.vue")
@@ -34,8 +34,8 @@ const routes = [
     {
       path: '/Marriage-Form/ageRange/requirements/:requirements/isForeigner/:isForeigner/Cohab/:isCohabiting', name: 'MarriageForm', component: () => import("../pages/main/MarriageLicense/MarriageForm.vue")
     },
-    { 
-        path: '/home', name: 'Home', component: () => import('../pages/main/LandingPage.vue') 
+    {
+        path: '/home', name: 'Home', component: () => import('../pages/main/LandingPage.vue')
     },
     {
         path: '/Civil-Wedding-Appointment', name: 'Marriage License', component: () => import('../pages/main/WeddingAppointment/CivilWedding.vue')
@@ -71,9 +71,6 @@ const routes = [
             {
                 path: "Applications", name: "StaffApplications", component: () => import("../pages/Staff/Applications.vue")
             },
-            {
-                path: "User-Registry", name: "StaffUserRegistry", component: () => import("../pages/Staff/UserRegistry.vue")
-            },
         ]
 
     },
@@ -89,7 +86,22 @@ const routes = [
             },
             {
                 path: "Staffs", name: "AdminStaffs", component: () => import("../pages/admin/Staffs.vue")
-            }
+            },
+            {
+                path: "Staffs/Add", name: "AddStaff", component: () => import("../pages/admin/AddStaffForm.vue")
+            },
+            {
+                path: "Staffs/Edit/:id", name: "EditStaff", component: () => import("../pages/admin/EditStaffForm.vue")
+            },
+            {
+                path: "Position", name: "AdminPosition", component: () => import("../pages/admin/Position.vue")
+            },
+            {
+                path: "Position/Add", name: "AddPosition", component: () => import("../pages/admin/AddPositionForm.vue")
+            },
+            {
+                path: "Position/Edit/:id", name: "EditPosition", component: () => import("../pages/admin/EditPositionForm.vue")
+            },
         ]
     }
 ];

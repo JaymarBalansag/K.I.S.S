@@ -1,9 +1,9 @@
 <template>
-    <div class="staff-content animate__animated animate__fadeIn px-2 px-md-3">
+    <div class="position-content animate__animated animate__fadeIn px-2 px-md-3">
 
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
-            <h4 class="text-white fw-bold mb-0">Staff Management</h4>
-            <router-link to="/Admin/Staffs/Add"
+            <h4 class="text-white fw-bold mb-0">Position Management</h4>
+            <router-link to="/Admin/Position/Add"
                 class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm border-0 transition-all">
                 <i class="bi bi-plus-lg me-1"></i> Add Staff
             </router-link>
@@ -13,36 +13,41 @@
             <table class="table glass-table align-middle">
                 <thead>
                     <tr class="text-uppercase small opacity-75 ls-1">
-                        <th class="px-4 py-3 text-white border-0">Staff Name</th>
-                        <th class="py-3 text-white border-0">Position</th>
-                        <th class="py-3 text-white border-0">Email Address</th>
+                        <th class="px-4 py-3 text-white border-0">Position Title</th>
+                        <th class="py-3 text-white border-0">Department/Category</th>
+                        <th class="py-3 text-white border-0 text-center">Staff Count</th>
                         <th class="py-3 text-center text-white border-0">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(staff, index) in staffList" :key="staff.id" class="glass-row transition">
+                    <tr v-for="(pos, index) in positionList" :key="pos.id" class="glass-row transition">
                         <td class="px-4 fw-bold text-white border-0 rounded-start-4">
                             <div class="d-flex align-items-center">
                                 <div
-                                    class="avatar-sm bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center shadow-sm">
-                                    {{ staff.name.charAt(0) }}
+                                    class="icon-sm bg-info text-white rounded-3 me-3 d-flex align-items-center justify-content-center shadow-sm">
+                                    <i class="bi bi-briefcase"></i>
                                 </div>
-                                {{ staff.name }}
+                                {{ pos.title }}
                             </div>
                         </td>
+
                         <td class="border-0">
                             <span class="badge glass-pill text-info border border-info border-opacity-25 px-3 py-2">
-                                {{ staff.role }}
+                                {{ pos.category }}
                             </span>
                         </td>
-                        <td class="text-white opacity-75 border-0">{{ staff.email }}</td>
+
+                        <td class="text-white opacity-75 border-0 text-center">
+                            <span class="badge rounded-pill bg-white bg-opacity-10 px-3">{{ pos.count }} Members</span>
+                        </td>
+
                         <td class="text-center border-0 rounded-end-4 px-4">
                             <div class="d-flex justify-content-center gap-2">
-                                <router-link :to="`/Admin/Staffs/Edit/${staff.id}`"
+                                <router-link :to="`/Admin/Position/Edit/${pos.id}`"
                                     class="btn btn-action-glass text-info" title="Edit">
                                     <i class="bi bi-pencil-square"></i>
                                 </router-link>
-                                <button @click="deleteStaff(index)" class="btn btn-action-glass text-danger"
+                                <button @click="deletePosition(index)" class="btn btn-action-glass text-danger"
                                     title="Delete">
                                     <i class="bi bi-trash3"></i>
                                 </button>
@@ -54,17 +59,18 @@
         </div>
 
         <div class="d-md-none">
-            <div v-for="(staff, index) in staffList" :key="'mob-' + staff.id"
+            <div v-for="(pos, index) in positionList" :key="'mob-' + pos.id"
                 class="mobile-staff-card glass-row rounded-4 p-3 mb-3 animate__animated animate__fadeInUp border-white border-opacity-10">
-                <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
                     <div class="d-flex align-items-center">
-                        <div class="avatar-md bg-primary rounded-circle me-3 d-flex align-items-center justify-content-center shadow-lg"
-                            style="width: 48px; height: 48px;">
-                            {{ staff.name.charAt(0) }}
+                        <div class="icon-md bg-info rounded-3 me-3 d-flex align-items-center justify-content-center shadow-lg"
+                            style="width: 42px; height: 42px;">
+                            <i class="bi bi-briefcase text-white"></i>
                         </div>
                         <div>
-                            <h6 class="text-white fw-bold mb-0">{{ staff.name }}</h6>
-                            <small class="text-info opacity-75 fw-medium">{{ staff.role }}</small>
+                            <h6 class="text-white fw-bold mb-0">{{ pos.title }}</h6>
+                            <span class="extra-small text-info opacity-75 fw-medium text-uppercase ls-1">{{ pos.category
+                                }}</span>
                         </div>
                     </div>
                     <div class="dropdown">
@@ -73,50 +79,48 @@
                         </button>
                         <ul
                             class="dropdown-menu dropdown-menu-end glass-dropdown border-white border-opacity-10 shadow-lg">
-                            <li><button @click="openModal(staff, index)" class="dropdown-item text-white py-2"><i
+                            <li><button @click="openModal(pos)" class="dropdown-item text-white py-2"><i
                                         class="bi bi-pencil me-2 text-info"></i>Edit</button></li>
-                            <li><button @click="deleteStaff(index)" class="dropdown-item text-danger py-2"><i
+                            <li><button @click="deletePosition(index)" class="dropdown-item text-danger py-2"><i
                                         class="bi bi-trash me-2"></i>Delete</button></li>
                         </ul>
                     </div>
                 </div>
-                <div class="pt-2 border-top border-white border-opacity-10 d-flex align-items-center">
-                    <span class="small text-white opacity-50 text-truncate">
-                        <i class="bi bi-envelope me-1"></i> {{ staff.email }}
-                    </span>
+                <div
+                    class="pt-2 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center">
+                    <span class="small text-white opacity-50">Current Usage:</span>
+                    <span class="badge rounded-pill bg-info bg-opacity-10 text-info px-3">{{ pos.count }} Staff</span>
                 </div>
             </div>
         </div>
 
-        <div v-if="staffList.length === 0"
-            class="text-center py-5 text-white opacity-50 animate__animated animate__fadeIn">
-            <i class="bi bi-people fs-1 d-block mb-3"></i>
-            <p>No staff records found.</p>
+        <div v-if="positionList.length === 0" class="text-center py-5 text-white opacity-50">
+            <i class="bi bi-award fs-1 d-block mb-3"></i>
+            <p>No positions defined yet.</p>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'StaffManagement',
+    name: 'PositionManagement',
     data() {
         return {
-            staffList: [
-                { id: 1, name: "Maria Clara", role: "Head Registrar", email: "m.clara@lcro.gov" },
-                { id: 2, name: "Juan Dela Cruz", role: "Wedding Coordinator", email: "j.delacruz@lcro.gov" },
-                { id: 3, name: "Crisostomo Ibarra", role: "Records Officer", email: "c.ibarra@lcro.gov" },
-                { id: 4, name: "Leonor Rivera", role: "Clerk II", email: "l.rivera@lcro.gov" }
+            positionList: [
+                { id: 1, title: "Head Registrar", category: "Administrative", count: 1 },
+                { id: 2, title: "Wedding Coordinator", category: "Events", count: 3 },
+                { id: 3, title: "Records Officer", category: "Documentation", count: 2 },
+                { id: 4, title: "Clerk II", category: "Administrative", count: 5 }
             ]
         };
     },
     methods: {
-        openModal(staff = null, index = null) {
-            // Trigger your modal logic here
-            console.log(staff ? "Editing: " + staff.name : "Adding New Staff");
+        openModal(position = null) {
+            console.log(position ? "Editing Position: " + position.title : "Adding New Position");
         },
-        deleteStaff(index) {
-            if (confirm("Are you sure you want to remove this staff member?")) {
-                this.staffList.splice(index, 1);
+        deletePosition(index) {
+            if (confirm("Warning: Deleting this position may affect staff records assigned to it. Proceed?")) {
+                this.positionList.splice(index, 1);
             }
         }
     }
@@ -124,13 +128,12 @@ export default {
 </script>
 
 <style scoped>
-/* TABLE CONFIGURATION - ESSENTIAL FOR GLASS LOOK */
+/* TABLE CONFIGURATION */
 .glass-table {
     --bs-table-bg: transparent !important;
     --bs-table-hover-bg: transparent !important;
     border-collapse: separate !important;
     border-spacing: 0 12px !important;
-    /* Creates the space between floating rows */
 }
 
 /* FLOATING GLASS ROW */
@@ -148,7 +151,6 @@ export default {
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
 
-/* TABLE CELL PADDING REFINEMENT */
 .glass-row td {
     padding-top: 1.2rem;
     padding-bottom: 1.2rem;
@@ -156,14 +158,14 @@ export default {
 
 /* GLASS PILL BADGE */
 .glass-pill {
-    background: rgba(13, 202, 240, 0.1) !important;
+    background: rgba(13, 202, 240, 0.12) !important;
     backdrop-filter: blur(4px);
-    border: 1px solid rgba(13, 202, 240, 0.2) !important;
+    border: 1px solid rgba(13, 202, 240, 0.25) !important;
     font-size: 0.75rem;
     font-weight: 500;
 }
 
-/* ACTION BUTTONS (Frosty style) */
+/* ACTION BUTTONS */
 .btn-action-glass {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -178,47 +180,30 @@ export default {
     transform: scale(1.1);
 }
 
-/* AVATAR STYLE (Gradient match to LCRO theme) */
-.avatar-sm {
+/* ICON BOXES */
+.icon-sm {
     width: 36px;
     height: 36px;
-    background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
-    font-size: 0.9rem;
-    font-weight: bold;
+    background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%);
 }
 
-/* DROPDOWN REFINEMENT (Mobile) */
+.extra-small {
+    font-size: 0.65rem;
+}
+
+/* MOBILE DROPDOWN */
 .glass-dropdown {
     background: rgba(15, 23, 42, 0.95);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
-    padding: 0.5rem;
 }
 
-.dropdown-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white !important;
-    border-radius: 8px;
-}
-
-/* UTILITIES */
 .ls-1 {
     letter-spacing: 1px;
 }
 
 .transition-all {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.transition {
-    transition: all 0.3s ease;
-}
-
-/* FIX FOR IOS/SAFARI BACKDROP BLUR */
-@supports not (backdrop-filter: blur(15px)) {
-    .glass-row {
-        background: rgba(30, 41, 59, 0.9) !important;
-    }
 }
 </style>

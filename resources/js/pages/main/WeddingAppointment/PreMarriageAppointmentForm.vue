@@ -2,7 +2,7 @@
     <div class="main-container min-vh-100 d-flex flex-column">
         <main class="flex-grow-1 d-flex align-items-center py-5">
             <div class="container py-5 mt-5">
-                <router-link to="/pre-marriage-appointment" class="text-white text-decoration-none fw-bold">
+                <router-link to="/pre-marriage-counseling" class="text-white text-decoration-none fw-bold">
                     <span class="me-2">&larr;</span> Back
                 </router-link>
                 <div class="row justify-content-center text-center mb-5 mt-4">
@@ -32,20 +32,25 @@
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">First
                                                 Name</label>
                                             <input type="text" v-model="form.firstName"
-                                                class="form-control custom-input" placeholder="John" required>
+                                                class="form-control custom-input"
+                                                :class="{ 'border-danger': errors.name }" placeholder="John" required>
                                         </div>
+
                                         <div class="col-md-3">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">Middle
                                                 Name</label>
                                             <input type="text" v-model="form.middleName"
-                                                class="form-control custom-input" placeholder="Quency">
+                                                class="form-control custom-input"
+                                                :class="{ 'border-danger': errors.name }" placeholder="Quency">
                                         </div>
+
                                         <div class="col-md-3">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">Last
                                                 Name</label>
                                             <input type="text" v-model="form.lastName" class="form-control custom-input"
-                                                placeholder="Doe" required>
+                                                :class="{ 'border-danger': errors.name }" placeholder="Doe" required>
                                         </div>
+
                                         <div class="col-md-3">
                                             <label
                                                 class="form-label small fw-bold text-uppercase tracking-wider">Extension</label>
@@ -65,9 +70,22 @@
                                                 <span class="input-group-text bg-white border-end-0">+63</span>
                                                 <input type="tel" v-model="form.phone"
                                                     class="form-control custom-input border-start-0"
-                                                    placeholder="912 345 6789" required>
+                                                    :class="{ 'border-danger': errors.phone }" placeholder="9XXXXXXXXX"
+                                                    required>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <small v-if="errors.phone" class="text-danger d-block mt-1">{{
+                                                    errors.phone }}</small>
+                                                <small v-else class="text-muted mt-1">Must be 10 digits starting with
+                                                    9</small>
+                                                <small class="text-muted mt-1">{{ form.phone.length }}/10</small>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    <div v-if="errors.name"
+                                        class="alert alert-danger border-0 py-2 px-3 mt-4 small shadow-sm">
+                                        <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errors.name }}
                                     </div>
                                 </div>
 
@@ -85,13 +103,12 @@
                 </div>
             </div>
         </main>
-
     </div>
 </template>
 
 <script>
 export default {
-    name: 'CivilWeddingAppointmentForm',
+    name: 'PreMarriageCounselingForm',
     data() {
         return {
             config: {
@@ -104,11 +121,67 @@ export default {
                 lastName: '',
                 extension: '',
                 phone: ''
+            },
+            errors: {
+                name: '',
+                phone: ''
             }
         };
     },
+    watch: {
+        // Name Validations
+        'form.firstName'(val) {
+            const clean = val.replace(/[^a-zA-Z\s]/g, '');
+            if (val !== clean) {
+                this.errors.name = "Names should only contain letters and spaces.";
+                this.form.firstName = clean;
+            } else { this.errors.name = ""; }
+        },
+        'form.middleName'(val) {
+            const clean = val.replace(/[^a-zA-Z\s]/g, '');
+            if (val !== clean) {
+                this.errors.name = "Names should only contain letters and spaces.";
+                this.form.middleName = clean;
+            } else { this.errors.name = ""; }
+        },
+        'form.lastName'(val) {
+            const clean = val.replace(/[^a-zA-Z\s]/g, '');
+            if (val !== clean) {
+                this.errors.name = "Names should only contain letters and spaces.";
+                this.form.lastName = clean;
+            } else { this.errors.name = ""; }
+        },
+        // Phone Validation: Starts with 9, Max 10 digits
+        'form.phone'(val) {
+            let clean = val.replace(/\D/g, ''); // Remove non-digits
+
+            if (clean.length > 0 && clean[0] !== '9') {
+                this.errors.phone = "Number must start with 9.";
+                this.form.phone = ''; // Clear input if it doesn't start with 9
+                return;
+            }
+
+            if (clean.length > 10) {
+                clean = clean.slice(0, 10);
+            }
+
+            this.errors.phone = "";
+            this.form.phone = clean;
+        }
+    },
     methods: {
         handleSubmit() {
+            // Final check for phone length before submitting
+            if (this.form.phone.length !== 10) {
+                this.errors.phone = "Phone number must be exactly 10 digits.";
+                return;
+            }
+
+            if (this.errors.name || this.errors.phone) {
+                alert("Please correct the errors in the form.");
+                return;
+            }
+
             console.log("Form Submitted:", this.form);
             alert("Proceeding to next step...");
         }
@@ -158,6 +231,10 @@ export default {
     outline: none;
 }
 
+.border-danger {
+    border-color: #dc3545 !important;
+}
+
 .input-group-text {
     border-radius: 12px 0 0 12px;
     color: #555;
@@ -196,7 +273,6 @@ export default {
     filter: brightness(1.1);
 }
 
-/* MOBILE FIXES */
 @media (max-width: 768px) {
     .glass-card {
         padding: 1.5rem !important;

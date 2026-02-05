@@ -1,14 +1,20 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top nav-glass shadow-sm" style="z-index: 2000;">
-    <div class="container">
-      
-      <a class="navbar-brand d-flex align-items-center" href="#">
-        <img src="../../../../public/favicon.ico" class="me-2" alt="logo" style="width: 3rem;">
-        <div class="brand-text text-start">
-          <span class="fw-bold d-block lh-1 text-white fs-5">{{ config.siteName }}</span>
-          <small class="text-white-50 d-none d-sm-block" style="font-size: 0.75rem; letter-spacing: 0.5px;">Marriage Services</small>
-        </div>
-      </a>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top nav-glass shadow-sm" style="z-index: 2000;">
+        <div class="container">
+
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="../../../../public/favicon.ico" class="me-2" alt="logo" style="width: 3rem;">
+                <div class="brand-text text-start">
+                    <span class="fw-bold d-block lh-1 text-white fs-5">{{ config.siteName }}</span>
+                    <small class="text-white-50 d-none d-sm-block"
+                        style="font-size: 0.75rem; letter-spacing: 0.5px;">Marriage Services</small>
+                </div>
+            </a>
+
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
@@ -26,7 +32,6 @@
                     </router-link>
                 </div>
             </div>
-
         </div>
     </nav>
 </template>
