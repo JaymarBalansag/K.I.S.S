@@ -3,7 +3,7 @@
         <div class="container">
 
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="../../../../public/favicon.ico" class="me-2" alt="logo" style="width: 3rem;">
+                <img src="/public/favicon.ico" class="me-2" alt="logo" style="width: 3rem;">
                 <div class="brand-text text-start">
                     <span class="fw-bold d-block lh-1 text-white fs-5">{{ config.siteName }}</span>
                     <small class="text-white-50 d-none d-sm-block"
