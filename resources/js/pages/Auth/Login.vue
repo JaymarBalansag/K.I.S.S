@@ -12,22 +12,24 @@
                         </div>
 
                         <div class="glass-card shadow-lg p-4 p-md-5 border border-white border-opacity-20">
+                            
+                            <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"></WarningForm>
 
                             <form @submit.prevent="handleLogin">
-
+                                
                                 <div class="mb-3 animate-fade">
                                     <label
                                         class="form-label small fw-bold text-white text-uppercase tracking-wider opacity-75">
-                                        Username
+                                        Email
                                     </label>
                                     <div class="input-group glass-input-group">
                                         <span
                                             class="input-group-text bg-transparent border-white border-opacity-25 text-white">
                                             <i class="bi bi-person"></i>
                                         </span>
-                                        <input type="text" v-model="username"
+                                        <input type="email" v-model="email"
                                             class="form-control glass-input border-start-0 ps-0"
-                                            placeholder="admin_user" required>
+                                            placeholder="admin_user@lcro.gov.ph" required>
                                     </div>
                                 </div>
 
@@ -48,7 +50,7 @@
                                 </div>
 
                                 <button type="submit"
-                                    class="btn btn-white-glass w-100 py-3 fw-bold rounded-3 mt-2 shadow">
+                                    class="btn btn-white-glass w-100 py-3 fw-bold rounded-3 mt-2 shadow bg-info">
                                     Sign In <i class="bi bi-arrow-right ms-2"></i>
                                 </button>
                             </form>
@@ -71,24 +73,60 @@
 <script>
 import Navbar from '../../components/navbar.vue';
 import Footer from '../../components/footer.vue';
+import { login } from '../../controller/Authentication';
+import WarningForm from '../../components/WarningForm.vue';
 export default {
     components: {
         Navbar,
-        Footer
+        Footer,
+        WarningForm
     },
     name: 'GovPortalLogin',
     data() {
         return {
-            username: '',
+            loading : false,
+            message: [],
+            email: '',
             password: ''
         };
     },
     methods: {
-        handleLogin() {
-            // Logic for authentication
-            console.log("Attempting login for:", this.username);
-            // Example: axios.post('/api/login', { user: this.username, pass: this.password })
-        }
+        async handleLogin() {
+            this.loading = true;
+            this.message = []; // Clear previous messages
+            try {
+                const res = await login(this.email, this.password);
+
+                localStorage.setItem("access_token", res.data.token);
+                const user = res.data.user;
+                // Ensure res has data before proceeding
+                if (user) {
+
+                    localStorage.setItem("userInfo", JSON.stringify(
+                        {
+                            first_name: user.first_name,
+                            last_name: user.last_name,
+                            email: user.email,
+                            role: user.role
+                        }
+                    ));
+
+                    if (user.role === "admin") {
+                        this.$router.push("/admin/Dashboard");
+                    } else if (user.role === "staff") {
+                        this.$router.push("/Staff/Dashboard");
+                    }
+
+                } else {
+                    this.message = [];
+                    this.message.push("Invalid credentials. Please check your email and password.");
+                }
+            } catch (error) {
+                this.message.push(error.response?.data?.message || "Something went wrong during login.");
+            } finally {
+                this.loading = false;
+            }
+        },
     }
 };
 </script>

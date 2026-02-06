@@ -55,6 +55,7 @@ const routes = [
     {
         path: "/Staff",
         component: () => import("../pages/Staff/Layout.vue"), // The Wrapper
+        meta: { requiresAuth: true, roleIsStaff: true },
         children: [
             {
                 path: "", // This handles the base /Staff URL
@@ -75,7 +76,8 @@ const routes = [
 
     },
     {
-        path: "/admin", component: () => import("../pages/admin/Layout.vue"), // The Wrapper
+        path: "/Admin", component: () => import("../pages/admin/Layout.vue"), // The Wrapper
+        meta: { requiresAuth: true, roleIsAdmin: true },
         children: [
             {
                 path: "", // This handles the base /admin URL
@@ -110,6 +112,43 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+    const isLoggedIn = !!localStorage.getItem("access_token");
+    
+    // 1. Get the userInfo string and parse it back to an object
+    const userInfoString = localStorage.getItem("userInfo");
+    const user = userInfoString ? JSON.parse(userInfoString) : null;
+    
+    // 2. Safely get the role
+    const role = user ? user.role : "guest";
+
+    // Debugging: Check your console to see if role is now 'staff' or 'admin'
+    console.log("Current User Role:", role);
+
+    // Redirect logged-in users away from Login/Register
+    if ((to.path === "/login" || to.path === "/register") && isLoggedIn) {
+        return next("/home");
+    }
+    
+    // Check for Staff permissions
+    if (to.meta.roleIsStaff && role !== 'staff') {
+        return next("/home"); 
+    }
+    
+    // Check for Admin permissions
+    if (to.meta.roleIsAdmin && role !== 'admin') {
+        return next("/home"); 
+    }
+
+    // Check if route requires auth but user is logged out
+    if (to.meta.requiresAuth && !isLoggedIn) {
+        localStorage.removeItem("userInfo");
+        return next("/login");
+    }
+    
+    next();
+});
 
 
 
