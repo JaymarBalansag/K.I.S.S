@@ -3,7 +3,7 @@
         <div class="container">
 
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="../../../../public/favicon.ico" class="me-2" alt="logo" style="width: 3rem;">
+                <img src="/public/favicon.ico" class="me-2" alt="logo" style="width: 3rem;">
                 <div class="brand-text text-start">
                     <span class="fw-bold d-block lh-1 text-white fs-5">{{ config.siteName }}</span>
                     <small class="text-white-50 d-none d-sm-block"
@@ -26,9 +26,17 @@
                 </ul>
 
                 <div class="d-flex justify-content-center mt-3 mt-lg-0">
-                    <router-link to="/login"
+                    <router-link v-if="role === 'guest'" to="/login"
                         class="btn btn-primary btn-sm rounded-pill px-4 fw-bold text-uppercase tracking-wider shadow-sm">
                         Sign In
+                    </router-link>
+                    <router-link v-if="role === 'admin'" to="/Admin/Dashboard"
+                        class="btn btn-primary btn-sm rounded-pill px-4 fw-bold text-uppercase tracking-wider shadow-sm">
+                        Dashboard
+                    </router-link>
+                    <router-link v-if="role === 'staff'" to="/Staff/Dashboard"
+                        class="btn btn-primary btn-sm rounded-pill px-4 fw-bold text-uppercase tracking-wider shadow-sm">
+                        Dashboard
                     </router-link>
                 </div>
             </div>
@@ -37,9 +45,12 @@
 </template>
 
 <script>
+import api from '../controller/api';
+
 export default {
     data() {
         return {
+            role: "guest",
             config: {
                 siteName: "LCRO Abuyog"
             },
@@ -50,6 +61,22 @@ export default {
                 { text: 'FAQ', url: '/faq' }
             ],
         };
+    },
+    mounted() {
+        const userInfoString = localStorage.getItem("userInfo");
+        const user = userInfoString ? JSON.parse(userInfoString) : null;
+
+        const role = user ? user.role : "guest";
+        if (role) {
+            this.role = role;
+        }
+
+    },
+    methods: {
+        async login() {
+            await api.post("/login");
+            this.$router.push("/login");
+        }
     }
 }
 </script>
