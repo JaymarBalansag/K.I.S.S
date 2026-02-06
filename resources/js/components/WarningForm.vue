@@ -1,7 +1,7 @@
 <template>
 
     <div class="alert alert-warning" role="alert">
-        {{ message }}
+        <i class="bi bi-exclamation-triangle me-2"></i>{{ message }}
     </div>
 
 </template>
