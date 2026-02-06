@@ -1,97 +1,109 @@
 <template>
-    <div class="staff-form-container animate__animated animate__fadeIn">
+    <div class="staff-form-container animate__animated animate__fadeIn px-2 px-md-3">
         <router-link to="/Admin/Staffs" class="btn btn-link text-white opacity-75 text-decoration-none mb-4 p-0">
             <i class="bi bi-arrow-left me-2"></i> Back to Staff List
         </router-link>
 
-        <div class="card glass-card border-0 shadow-lg p-4 p-md-5">
+        <div class="card glass-card border-0 shadow-lg p-4 p-md-5" v-if="!loading">
             <div class="mb-4">
                 <h3 class="text-white fw-bold mb-1">Edit Staff Profile</h3>
-                <p class="text-white opacity-50 small">Updating information for: <strong>{{ form.name }}</strong></p>
+                <p class="text-white opacity-50 small">Updating: <strong>{{ form.first_name }} {{ form.last_name
+                        }}</strong></p>
             </div>
 
             <form @submit.prevent="handleUpdate">
                 <div class="row g-4">
-                    <div class="col-md-12">
-                        <label class="form-label text-white small fw-bold opacity-75">Full Name</label>
-                        <input v-model="form.name" type="text" class="form-control glass-input" required>
+                    <div class="col-md-6">
+                        <label class="form-label text-white small fw-bold opacity-75">First Name</label>
+                        <input v-model="form.first_name" type="text" class="form-control glass-input" required>
                     </div>
-
+                    <div class="col-md-6">
+                        <label class="form-label text-white small fw-bold opacity-75">Last Name</label>
+                        <input v-model="form.last_name" type="text" class="form-control glass-input" required>
+                    </div>
                     <div class="col-md-6">
                         <label class="form-label text-white small fw-bold opacity-75">Position</label>
                         <select v-model="form.role" class="form-select glass-input" required>
-                            <option value="Head Registrar">Head Registrar</option>
-                            <option value="Wedding Coordinator">Wedding Coordinator</option>
-                            <option value="Records Officer">Records Officer</option>
-                            <option value="Clerk II">Clerk II</option>
+                            <option value="staff">Staff</option>
+                            <option value="admin">Admin</option>
                         </select>
                     </div>
-
                     <div class="col-md-6">
                         <label class="form-label text-white small fw-bold opacity-75">Email Address</label>
                         <input v-model="form.email" type="email" class="form-control glass-input" required>
                     </div>
-
+                    <div class="col-md-12">
+                        <label class="form-label text-white small fw-bold opacity-75">New Password (leave blank to keep
+                            current)</label>
+                        <input v-model="form.password" type="password" class="form-control glass-input">
+                    </div>
                     <div class="col-12 mt-5">
                         <div class="d-flex gap-3">
-                            <button type="submit" class="btn btn-info rounded-pill px-5 fw-bold shadow-sm border-0">
+                            <button type="submit" :disabled="submitting"
+                                class="btn btn-info rounded-pill px-5 fw-bold shadow-sm border-0">
+                                <span v-if="submitting" class="spinner-border spinner-border-sm me-2"></span>
                                 Update Changes
                             </button>
                             <router-link to="/Admin/Staffs"
-                                class="btn btn-action-glass text-white px-4 rounded-pill text-decoration-none">
-                                Cancel
-                            </router-link>
+                                class="btn btn-action-glass text-white px-4 rounded-pill">Cancel</router-link>
                         </div>
                     </div>
                 </div>
             </form>
         </div>
+        <div v-else class="text-center py-5">
+            <div class="spinner-border text-info"></div>
+        </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
+import Swal from 'sweetalert2';
+
 export default {
-    name: 'EditStaff',
     data() {
         return {
-            form: { id: null, name: '', role: '', email: '' }
+            form: { first_name: '', last_name: '', role: '', email: '', password: '' },
+            loading: true,
+            submitting: false
         };
     },
-    created() {
-        this.fetchStaff();
-    },
+    created() { this.fetchStaff(); },
     methods: {
-        fetchStaff() {
-            const staffId = this.$route.params.id;
-            // In a real app, fetch from your database/store using staffId
-            // Mock fetch:
-            const mockData = { id: 1, name: "Maria Clara", role: "Head Registrar", email: "m.clara@lcro.gov" };
-            this.form = { ...mockData };
+        async fetchStaff() {
+            try {
+                const response = await axios.get(`/api/staff/${this.$route.params.id}`);
+                this.form = { ...response.data, password: '' };
+            } catch (e) { this.$router.push('/Admin/Staffs'); }
+            finally { this.loading = false; }
         },
-        handleUpdate() {
-            console.log("Updating ID:", this.form.id, this.form);
-            alert("Changes Saved!");
-            this.$router.push('/Admin/Staffs');
+        async handleUpdate() {
+            this.submitting = true;
+            try {
+                await axios.put(`/api/Staffs/${this.$route.params.id}`, this.form);
+                Swal.fire({ icon: 'success', title: 'Updated', background: '#1a1d21', color: '#fff' });
+                this.$router.push('/Admin/Staffs');
+            } catch (e) { Swal.fire('Error', 'Update failed', 'error'); }
+            finally { this.submitting = false; }
         }
     }
 };
 </script>
 
 <style scoped>
-/* Same CSS as AddStaff.vue to keep glassmorphism consistent */
 .glass-card {
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(25px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 20px;
 }
 
 .glass-input {
     background: rgba(255, 255, 255, 0.05) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     color: white !important;
-    border-radius: 12px;
-    padding: 0.8rem 1.2rem;
+    border-radius: 10px;
 }
 
 .btn-action-glass {
