@@ -99,6 +99,7 @@
 </template>
 
 <script>
+import { logout } from '../../controller/Authentication';
 export default {
     name: 'StaffLayout',
     data() {
@@ -123,8 +124,9 @@ export default {
         closeMobile() {
             if (this.isMobile) this.mobileShow = false;
         },
-        handleLogout() {
+        async handleLogout() {
             if (confirm("Logout from LCRO Staff?")) {
+                const res = await logout();
                 this.$router.push('/login');
             }
         }

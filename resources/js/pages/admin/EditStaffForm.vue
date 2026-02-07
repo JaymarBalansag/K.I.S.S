@@ -60,6 +60,7 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { UpdateStaff, ShowStaff } from '../../controller/Staffs';
 
 export default {
     data() {
@@ -69,11 +70,13 @@ export default {
             submitting: false
         };
     },
-    created() { this.fetchStaff(); },
+    created() { 
+        this.fetchStaff(); 
+    },
     methods: {
         async fetchStaff() {
             try {
-                const response = await axios.get(`/api/staff/${this.$route.params.id}`);
+                const response = await ShowStaff(this.$route.params.id);
                 this.form = { ...response.data, password: '' };
             } catch (e) { this.$router.push('/Admin/Staffs'); }
             finally { this.loading = false; }
@@ -81,7 +84,7 @@ export default {
         async handleUpdate() {
             this.submitting = true;
             try {
-                await axios.put(`/api/Staffs/${this.$route.params.id}`, this.form);
+                await UpdateStaff(this.$route.params.id, this.form);
                 Swal.fire({ icon: 'success', title: 'Updated', background: '#1a1d21', color: '#fff' });
                 this.$router.push('/Admin/Staffs');
             } catch (e) { Swal.fire('Error', 'Update failed', 'error'); }

@@ -26,17 +26,13 @@
                 </ul>
 
                 <div class="d-flex justify-content-center mt-3 mt-lg-0">
-                    <router-link v-if="role === 'guest'" to="/login"
-                        class="btn btn-primary btn-sm rounded-pill px-4 fw-bold text-uppercase tracking-wider shadow-sm">
-                        Sign In
-                    </router-link>
                     <router-link v-if="role === 'admin'" to="/Admin/Dashboard"
                         class="btn btn-primary btn-sm rounded-pill px-4 fw-bold text-uppercase tracking-wider shadow-sm">
-                        Dashboard
+                        Admin Dashboard
                     </router-link>
                     <router-link v-if="role === 'staff'" to="/Staff/Dashboard"
                         class="btn btn-primary btn-sm rounded-pill px-4 fw-bold text-uppercase tracking-wider shadow-sm">
-                        Dashboard
+                        Staff Dashboard
                     </router-link>
                 </div>
             </div>
