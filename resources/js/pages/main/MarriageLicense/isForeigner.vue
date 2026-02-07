@@ -25,7 +25,7 @@
 
         <div class="row g-4 justify-content-center">
           <div v-for="service in services" :key="service.title" class="col-md-6 col-lg-5" >
-            <div class="card h-100 border-0 shadow-lg glass-card p-4 " @click="navigateTo(service.value)" style="cursor: pointer;">
+            <div class="card h-100 border-0 shadow-lg glass-card p-4 " @click="navigateTo(service.value, service.type)" style="cursor: pointer;">
               <div class="card-body d-flex align-items-center justify-content-center ">
                 <div class="service-icon-box rounded-4 mb-4 d-flex align-items-center justify-content-center text-white shadow" 
                      :style="{ background: service.gradient }">
@@ -52,19 +52,21 @@ export default {
     return {
       IsCohabiting: null,
       config: {
-        servicesHeading: "Are you a foreigner?",
-        servicesSubtext: "Yes or No."
+        servicesHeading: "Are any of you foreigners?",
+        servicesSubtext: "She or He."
       },
       
       services: [
-        { title: "Yes", emoji: "✔", description: "Is one or both are foreigner?", gradient: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)", value: true },
-        { title: "No", emoji: "❌", description: "No there is no foreigner.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", value: false }
+        { title: "Yes", emoji: "🤵", description: "He is a foreigner.", gradient: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)", value: true, type: "groom" },
+        { title: "Yes", emoji: "👰", description: "She is a foreigner.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", value: true, type: "bride" },
+        { title: "Yes", emoji: "✔", description: "Both of us are foreigners.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", value: true, type: "both" },
+        { title: "No", emoji: "❌", description: "Neither of us is a foreigner.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", value: false, type: "filipino" },
       ]
     };
   },
   methods: {
-    navigateTo(value) {
-      const link = `/ageRange/isForeigner/${value}/Cohab/${this.IsCohabiting}`;
+    navigateTo(value, type) {
+      const link = `/ageRange/isForeigner/${value}/${type}/Cohab/${this.IsCohabiting}`;
       this.$router.push(link);
     }
   },

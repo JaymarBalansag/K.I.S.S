@@ -51,18 +51,23 @@ export default {
   data() {
     return {
       config: {
-        servicesHeading: "Are you and your partner cohabiting without a marriage license?",
+        servicesHeading: "Are you and your partner cohabiting?",
         servicesSubtext: "For atleast 5 years prior to application."
       },
       
       services: [
         { title: "Yes", emoji: "✔", description: "Yes we did.", gradient: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)", value: true },
-        { title: "No", emoji: "❌", description: "No we didn't.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", value: false }
+        { title: "No", emoji: "❌", description: "No, we have not lived together for 5 years.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", value: false }
       ]
     };
   },
   methods: {
     navigateTo(value) {
+      if(value === true){
+        sessionStorage.setItem("isCohabiting", true)
+        this.$router.push("/home")
+        return
+      }
       const link = `/isForeigner/Cohab/${value}`;
       this.$router.push(link);
     }

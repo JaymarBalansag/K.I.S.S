@@ -10,6 +10,10 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/login', [App\Http\Controllers\Api\AuthenticationController::class, 'login']);
 
+Route::controller(App\Http\Controllers\MarriageApplicationController::class)->group(function () {
+    Route::post("/submit/marriage-license-application", "store");
+});
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(App\Http\Controllers\Api\AuthenticationController::class)->group(function () {

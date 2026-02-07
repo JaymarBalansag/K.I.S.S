@@ -23,7 +23,9 @@ return new class extends Migration
             $table->string('suffix')->nullable();
 
             // Birth Details (Step 2/3 & 15/16)
-            $table->date('birth_date'); // Combined from day/month/year
+            $table->string("day");
+            $table->string("month");
+            $table->string("year");
             $table->string('birth_city');
             $table->string('birth_province');
             $table->string('birth_country');
@@ -39,7 +41,10 @@ return new class extends Migration
             // Dissolution Info (If not Single)
             $table->text('dissolution_details')->nullable(); 
             $table->string('dissolution_place')->nullable();
-            $table->date('dissolution_date')->nullable();
+            $table->text('dissolution_day')->nullable();
+            $table->text('dissolution_month')->nullable();
+            $table->text('dissolution_year')->nullable();
+
 
             // Relationship Degree (Step 8 & 21)
             $table->string('relationship_degree')->nullable();

@@ -53,6 +53,7 @@
 <script>
 import Navbar from '../../components/navbar.vue';
 import Footer from '../../components/footer.vue';
+import IsCohabiting from './MarriageLicense/isCohabiting.vue';
 export default {
     name: 'GovPortal',
     components: {
@@ -71,6 +72,23 @@ export default {
                 { title: "Wedding Appointment", emoji: "📅", description: "Book an available slot for your civil ceremony and coordinate with our officials.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", link: '/wedding-appointment' }
             ]
         };
+    },
+    methods: {
+      isCohabitingMessage() {
+        Swal.fire({
+            title: "Is Cohabiting?",
+            text: "Couples or Partner do not need marriage license",
+            icon: "question"
+        });
+      }  
+    },
+    mounted() {
+        const isCohabiting = sessionStorage.getItem("isCohabiting");
+
+        if(isCohabiting){
+            this.isCohabitingMessage();
+            sessionStorage.removeItem("isCohabiting")
+        }
     }
 };
 </script>
