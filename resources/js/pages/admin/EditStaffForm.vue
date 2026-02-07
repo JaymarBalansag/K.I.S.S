@@ -60,7 +60,7 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { UpdateStaff } from '../../controller/Staffs';
+import { UpdateStaff, ShowStaff } from '../../controller/Staffs';
 
 export default {
     data() {

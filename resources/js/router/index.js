@@ -5,7 +5,7 @@ const routes = [
         path: '/', redirect: '/home',
     },
     {
-        path: '/login', name: 'Login', component: () => import('../pages/Auth/Login.vue')
+        path: '/staff-portal', name: 'Login', component: () => import('../pages/Auth/Login.vue')
     },
     {
         path: '/home', name: 'Home', component: () => import('../pages/main/LandingPage.vue')

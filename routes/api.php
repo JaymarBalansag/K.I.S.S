@@ -17,7 +17,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', 'logout');
     });
 
-    Route::apiResource('Staffs', \App\Http\Controllers\UserController::class);
+    Route::middleware("is_admin")->group(function () {
+        Route::apiResource('Staffs', \App\Http\Controllers\UserController::class);
+    });
+
 
 });
 
