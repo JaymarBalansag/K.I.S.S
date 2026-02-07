@@ -57,8 +57,8 @@
 </template>
 
 <script>
-import axios from 'axios';
 import Swal from 'sweetalert2';
+import { CreateStaff } from '../../controller/Staffs';
 
 export default {
     data() {
@@ -71,7 +71,7 @@ export default {
         async handleSubmit() {
             this.submitting = true;
             try {
-                await axios.post('/api/Staffs', this.form);
+                await CreateStaff(this.form);
                 Swal.fire({ icon: 'success', title: 'Success', text: 'Staff registered!', background: '#1a1d21', color: '#fff' });
                 this.$router.push('/Admin/Staffs');
             } catch (e) {

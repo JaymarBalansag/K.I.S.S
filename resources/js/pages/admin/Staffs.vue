@@ -130,6 +130,7 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { DeleteStaff, ReadStaff } from '../../controller/Staffs';
 
 export default {
     name: 'StaffManagement',
@@ -146,7 +147,7 @@ export default {
         async fetchStaffs() {
             try {
                 this.loading = true;
-                const response = await axios.get('/api/Staffs');
+                const response = await ReadStaff('/Staffs');
                 const data = response.data.data || response.data;
                 this.staffList = Array.isArray(data) ? data : [];
             } catch (error) {
@@ -171,7 +172,7 @@ export default {
 
             if (result.isConfirmed) {
                 try {
-                    await axios.delete(`/api/Staffs/${id}`);
+                    await DeleteStaff(id);
                     this.staffList = this.staffList.filter(s => s.id !== id);
                     Swal.fire({
                         title: 'Deleted!',
