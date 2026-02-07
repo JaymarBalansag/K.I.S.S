@@ -16,5 +16,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/add-user', 'AddUser');
         Route::post('/logout', 'logout');
     });
-    
 });
+
+Route::apiResource('Staffs', \App\Http\Controllers\UserController::class);
