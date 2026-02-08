@@ -29,10 +29,10 @@ const routes = [
         path: '/isCohabiting', name: 'isCohabiting', component: () => import("../pages/main/MarriageLicense/isCohabiting.vue")
     },
     {
-      path: '/ageRange/isForeigner/:isForeigner/Cohab/:isCohabiting', name: 'AgeRange', component: () => import("../pages/main/MarriageLicense/AgeRange.vue")
+      path: '/ageRange/isForeigner/:isForeigner/:type/Cohab/:isCohabiting', name: 'AgeRange', component: () => import("../pages/main/MarriageLicense/AgeRange.vue")
     },
     {
-      path: '/Marriage-Form/ageRange/requirements/:requirements/isForeigner/:isForeigner/Cohab/:isCohabiting', name: 'MarriageForm', component: () => import("../pages/main/MarriageLicense/MarriageForm.vue")
+      path: '/Marriage-Form/requirements/groom/:groomRequirement/bride/:brideRequirement/isForeigner/:isForeigner/:type/Cohab/:isCohabiting', name: 'MarriageForm', component: () => import("../pages/main/MarriageLicense/MarriageForm.vue")
     },
     {
         path: '/home', name: 'Home', component: () => import('../pages/main/LandingPage.vue')
@@ -124,7 +124,7 @@ router.beforeEach((to, from, next) => {
     const role = user ? user.role : "guest";
 
     // Debugging: Check your console to see if role is now 'staff' or 'admin'
-    console.log("Current User Role:", role);
+    // console.log("Current User Role:", role);
 
     // Redirect logged-in users away from Login/Register
     if ((to.path === "/login" || to.path === "/register") && isLoggedIn) {

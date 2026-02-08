@@ -23,8 +23,517 @@
 
               <div class="card-body p-4 p-md-5">
 
-                <!-- STEP 1 – GROOM NAME -->
-                <div v-if="step === 1">
+                <div v-if="step > 6" class="alert alert-light bg-white bg-opacity-10 border-0 mb-4 py-2">
+                  <small class="text-white-50"><i class="bi bi-save me-1"></i> Your progress is being automatically saved as you go to next step.</small>
+                </div>
+
+                <!-- STEP 1 – Marriage Required Documents -->
+                <div v-if="step === 1" class="glass-panel">
+                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
+                      <div>
+                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
+                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <h4 class="section-title text-white mb-4">Required Documents</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>  
+                  <div class="row g-4">
+                    <!-- For Groom -->
+                    <div class="col-md-6 border-end border-white-10">
+                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
+                      
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">CENOMAR <span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'cenomar')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.groom.cenomar">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Groom CENOMAR</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('groom', 'cenomar')" :src="previews.groom.cenomar" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- For Bride -->
+                    <div class="col-md-6">
+                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i> Bride's Documents</h5>
+                      
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">CENOMAR <span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'cenomar')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.bride.cenomar">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Bride CENOMAR</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('bride', 'cenomar')" :src="previews.bride.cenomar" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!-- STEP 2 – Marriage Required Documents -->
+                <div v-if="step === 2" class="glass-panel">
+                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
+                      <div>
+                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
+                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <h4 class="section-title text-white mb-4">Required Documents</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>  
+                  <div class="row g-4">
+                    <!-- For Groom -->
+                    <div class="col-md-6 border-end border-white-10">
+                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
+                      
+
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">PSA Birth Certificate <span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'psa')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.groom.psa">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Groom PSA</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('groom', 'psa')" :src="previews.groom.psa" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- For Bride -->
+                    <div class="col-md-6">
+                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i> Bride's Documents</h5>
+
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">PSA Birth Certificate <span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'psa')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.bride.psa">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Bride PSA</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('bride', 'psa')" :src="previews.bride.psa" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!-- STEP 3 – Marriage Required Documents -->
+                <div v-if="step === 3" class="glass-panel">
+                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
+                      <div>
+                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
+                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <h4 class="section-title text-white mb-4">Required Documents</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>  
+                  <div class="row g-4">
+                    <!-- For Groom -->
+                    <div class="col-md-6 border-end border-white-10">
+                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
+
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">National ID or any govt-issued ID <span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'govtIssuedId')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.groom.govtIssuedId">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Groom Government Issued ID</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('groom', 'govtIssuedId')" :src="previews.groom.govtIssuedId" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- For Bride -->
+                    <div class="col-md-6">
+                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i> Bride's Documents</h5>
+
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">National ID or any govt-issued ID <span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'govtIssuedId')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.bride.govtIssuedId">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Bride Government Issued ID</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('bride', 'govtIssuedId')" :src="previews.bride.govtIssuedId" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!-- STEP 4 – Marriage Required Documents -->
+                <div v-if="step === 4" class="glass-panel">
+                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
+                      <div>
+                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
+                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <h4 class="section-title text-white mb-4">Required Documents</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>  
+                  <div class="row g-4">
+                    <!-- For Groom -->
+                    <div class="col-md-6 border-end border-white-10">
+                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
+
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">PMOC Certificate <span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'pmocCertificate')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.groom.pmocCertificate">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Groom PMOC Certificate</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('groom', 'pmocCertificate')" :src="previews.groom.pmocCertificate" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- For Bride -->
+                    <div class="col-md-6">
+                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i> Bride's Documents</h5>
+
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">PMOC Certificate <span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'pmocCertificate')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.bride.pmocCertificate">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Bride PMOC Certificate</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('bride', 'pmocCertificate')" :src="previews.bride.pmocCertificate" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!-- STEP 5 – Foreigner Required Documents  -->
+                <div v-if="step === 5 && this.type !== 'filipino'" class="glass-panel">
+                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
+                      <div>
+                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
+                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <h4 class="section-title text-white mb-4">Foreigner Required Documents</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>  
+                  <div class="row g-4">
+                    <!-- For Groom -->
+                    <div v-if="this.type === 'groom' || this.type === 'both' " :class="this.type === 'groom' ? 'col-12' : 'col-md-6'" class="border-end border-white-10 " > 
+                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
+
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">Certification of Legal Capacity to Contract<span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'legalCapacity')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.groom.legalCapacity">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Groom Certificate of Legal Capacity to Contract</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('groom', 'legalCapacity')" :src="previews.groom.legalCapacity" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">Valid passport / BI Clearance Cert / ACR i-card<span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'validPassport')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.groom.validPassport">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Valid passport / BI Clearance Cert / ACR i-card</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('groom', 'validPassport')" :src="previews.groom.validPassport" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">Apostilled Foreign Death Cert of dead spouse / Divorce Decree, if previously married<span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'apostilledOrDecree')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.groom.apostilledOrDecree">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Apostilled Foreign Death Cert of dead spouse / Divorce Decree, if previously married</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('groom', 'apostilledOrDecree')" :src="previews.groom.apostilledOrDecree" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- For Bride -->
+                    <div v-if="this.type === 'bride' || this.type === 'both'" :class="this.type === 'bride' ? 'col-12' : 'col-md-6'">
+                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i>Foreigner Bride's Documents</h5>
+
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">Certification of Legal Capacity to Contract<span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'legalCapacity')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.bride.legalCapacity">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Bride Certificate of Legal Capacity to Contract</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('bride', 'legalCapacity')" :src="previews.bride.legalCapacity" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">Valid passport / BI Clearance Cert / ACR i-card<span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'validPassport')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.bride.validPassport">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Valid passport / BI Clearance Cert / ACR i-card</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('bride', 'validPassport')" :src="previews.bride.validPassport" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mb-4">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">Apostilled Foreign Death Cert of dead spouse / Divorce Decree, if previously married<span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'apostilledOrDecree')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.bride.apostilledOrDecree">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Apostilled Foreign Death Cert of dead spouse / Divorce Decree, if previously married</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('bride', 'apostilledOrDecree')" :src="previews.bride.apostilledOrDecree" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!-- STEP 6 – Age Required Documents -->
+                <div v-if="step === 6 && (this.groomRequirement !== 'no-need' || this.brideRequirement !== 'no-need')" class="glass-panel">
+                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
+                      <div>
+                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
+                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <h4 class="section-title text-white mb-4">Age Required Documents</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>  
+                  <div class="row g-4">
+                    <!-- For Groom -->
+                    <div class="col-md-6 border-end border-white-10">
+                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
+
+                      <div class="mb-4" v-if="this.groomRequirement === 'parental-consent'">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">Parental Consent <span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'parentalConsent')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.groom.parentalConsent">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Parental Consent</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('groom', 'parentalConsent')" :src="previews.groom.parentalConsent" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mb-4" v-if="this.groomRequirement === 'parental-advise'">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">Parental Advise <span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'parentalAdvise')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.groom.parentalAdvise">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Parental Advise</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('groom', 'parentalAdvise')" :src="previews.groom.parentalAdvise" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- For Bride -->
+                    <div class="col-md-6">
+                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i> Bride's Documents</h5>
+
+                      <div class="mb-4" v-if="this.brideRequirement === 'parental-consent'">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">Parental Consent <span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'parentalConsent')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.bride.parentalConsent">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Parental Consent</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('bride', 'parentalConsent')" :src="previews.bride.parentalConsent" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mb-4" v-if="this.brideRequirement === 'parental-advise'">
+                        <label class="form-label fw-semibold small text-uppercase text-white-50">Parental Advise <span class="text-info">*</span></label>
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'parentalAdvise')" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
+                            <div v-if="!previews.bride.parentalAdvise">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
+                              <p class="mb-0 smallest text-white">Upload Parental Advise</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('bride', 'parentalAdvise')" :src="previews.bride.parentalAdvise" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!-- STEP 7 – GROOM NAME -->
+                <div v-if="step === 7">
                   <h4 class="section-title">Groom – Name</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -45,8 +554,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 2 – GROOM BIRTH DATE -->
-                <div v-if="step === 2">
+                <!-- STEP 8 – GROOM BIRTH DATE -->
+                <div v-if="step === 8">
                   <h4 class="section-title">Groom – Birth Date Details</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -67,8 +576,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 3 – GROOM PLACE OF BIRTH -->
-                <div v-if="step === 3">
+                <!-- STEP 9 – GROOM PLACE OF BIRTH -->
+                <div v-if="step === 9">
                   <h4 class="section-title">Groom – Place of Birth</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -89,8 +598,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 4 – GROOM INFO -->
-                <div v-if="step === 4">
+                <!-- STEP 10 – GROOM INFO -->
+                <div v-if="step === 10">
                   <h4 class="section-title">Groom – Personal Info</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -103,11 +612,7 @@
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Sex</label>
-                      <select class="form-control" v-model="form.groom.sex">
-                        <option value="" disabled>Select Sex</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                      </select>
+                      <input class="form-control bg-light" v-model="form.groom.sex" readonly placeholder="Auto-calculated">
                     </div>
 
                     <div class="col-md-4">
@@ -115,15 +620,14 @@
                       <select class="form-control" v-model="form.groom.citizenship">
                         <option value="" disabled>Select Citizenship</option>
                         <option value="Filipino">Filipino</option>
-                        <option value="Dual Citizenship">Dual Citizenship</option>
                         <option value="Foreign National">Foreign National</option>
                       </select>
                     </div>
                   </div>
                 </div>
 
-                <!-- STEP 5 – GROOM RESIDENCE -->
-                <div v-if="step === 5">
+                <!-- STEP 11 – GROOM RESIDENCE -->
+                <div v-if="step === 11">
                   <h4 class="section-title">Groom – Residence</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -137,8 +641,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 6 – GROOM RELIGION -->
-                <div v-if="step === 6">
+                <!-- STEP 12 – GROOM RELIGION -->
+                <div v-if="step === 12">
                   <h4 class="section-title">Groom – Religion / Religion Sect</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -151,8 +655,8 @@
                   </div>
                 </div>
                 
-                <!-- STEP 7 – GROOM CIVIL STATUS -->
-                <div v-if="step === 7">
+                <!-- STEP 13 – GROOM CIVIL STATUS -->
+                <div v-if="step === 13">
                   <h4 class="section-title">Groom – Civil Status</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -208,8 +712,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 8 – GROOM DEGREE -->
-                <div v-if="step === 8">
+                <!-- STEP 14 – GROOM DEGREE -->
+                <div v-if="step === 14">
                   <h4 class="section-title">Groom - Degree of relationship contracting parties</h4>
                   <div class="row g-3">
                     <div class="col-md-12">
@@ -220,8 +724,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 9 – GROOM FATHER'S INFO -->
-                <div v-if="step === 9">
+                <!-- STEP 15 – GROOM FATHER'S INFO -->
+                <div v-if="step === 15">
                   <h4 class="section-title">Groom – Father's Info</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -244,15 +748,14 @@
                       <select class="form-control" v-model="form.groom.fatherCitizenship">
                         <option value="" disabled>Select Citizenship</option>
                         <option value="Filipino">Filipino</option>
-                        <option value="Dual Citizenship">Dual Citizenship</option>
                         <option value="Foreign National">Foreign National</option>
                       </select>
                     </div>
                   </div>
                 </div>
 
-                <!-- STEP 10 – GROOM FATHER'S RESIDENCE -->
-                <div v-if="step === 10">
+                <!-- STEP 16 – GROOM FATHER'S RESIDENCE -->
+                <div v-if="step === 16">
                   <h4 class="section-title">Groom – Father's Residence</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -266,8 +769,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 11 – GROOM MOTHER'S MAIDEN INFO -->
-                <div v-if="step === 11">
+                <!-- STEP 17 – GROOM MOTHER'S MAIDEN INFO -->
+                <div v-if="step === 17">
                   <h4 class="section-title">Groom – Mother's Maiden Info</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -290,15 +793,14 @@
                       <select class="form-control" v-model="form.groom.motherMaidenCitizenship">
                         <option value="" disabled>Select Citizenship</option>
                         <option value="Filipino">Filipino</option>
-                        <option value="Dual Citizenship">Dual Citizenship</option>
                         <option value="Foreign National">Foreign National</option>
                       </select>
                     </div>
                   </div>
                 </div>
 
-                <!-- STEP 12 – GROOM MOTHER'S MAIDEN RESIDENCE -->
-                <div v-if="step === 12">
+                <!-- STEP 18 – GROOM MOTHER'S MAIDEN RESIDENCE -->
+                <div v-if="step === 18">
                   <h4 class="section-title">Groom – Mother's Maiden Residence</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -312,39 +814,53 @@
                   </div>
                 </div>
 
-                <!-- STEP 13 – GROOM REVIEW -->
-                <div v-if="step === 13">
-                  <h4 class="section-title mb-4">Review Groom's Full Information</h4>
-                  <div class="review-scroll-area glass-inner">
-                    <table class="table table-sm text-white review-table mb-0">
-                      <thead>
-                        <tr class="table-header-row"><th colspan="2">Personal Details</th></tr>
-                      </thead>
-                      <tbody>
-                        <tr><td>Full Name</td><td class="text-info fw-bold">{{ form.groom.firstName }} {{ form.groom.middleName }} {{ form.groom.lastName }}</td></tr>
-                        <tr><td>Birth Details</td><td>{{ form.groom.month }}/{{ form.groom.day }}/{{ form.groom.year }} (Age: {{ form.groom.age }})</td></tr>
-                        <tr><td>Birth Place</td><td>{{ form.groom.cityMunicipality }}, {{ form.groom.province }}</td></tr>
-                        <tr><td>Identity</td><td>{{ form.groom.sex }} | {{ form.groom.citizenship }} | {{ form.groom.religion }}</td></tr>
-                        <tr><td>Civil Status</td><td><span class="badge bg-primary glow-badge">{{ form.groom.civilStatus }}</span></td></tr>
-                        <tr v-if="form.groom.civilStatus !== 'Single'">
-                          <td>Dissolution</td>
-                          <td class="small text-warning">{{ form.groom.previousMarriageDissolve }}</td>
-                        </tr>
-                        <tr><td>Residence</td><td class="small opacity-75">{{ form.groom.residence }}</td></tr>
-                      </tbody>
-                      <thead>
-                        <tr class="table-header-row"><th colspan="2">Family Details</th></tr>
-                      </thead>
-                      <tbody>
-                        <tr><td>Father</td><td>{{ form.groom.fatherFirstName }} {{ form.groom.fatherLastName }} ({{ form.groom.fatherCitizenship }})</td></tr>
-                        <tr><td>Mother</td><td>{{ form.groom.motherMaidenFirstName }} {{ form.groom.motherMaidenLastName }} ({{ form.groom.motherMaidenCitizenship }})</td></tr>
-                      </tbody>
-                    </table>
+                <!-- STEP 19 – GROOM REVIEW -->
+                <div v-if="step === 19">
+                  <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary p-2 rounded-3 me-3">
+                      <i class="bi bi-person-check-fill fs-4 text-white"></i>
+                    </div>
+                    <h4 class="section-title mb-0 border-0 p-0">Review Groom's Information</h4>
+                  </div>
+
+                  <div class="review-scroll-area glass-inner p-4">
+                    <div class="row g-4">
+                      <div class="col-12">
+                        <h6 class="text-info small fw-bold text-uppercase mb-3" style="letter-spacing: 1px;">
+                          <i class="bi bi-info-circle me-2"></i>Personal Details
+                        </h6>
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                          <div class="col"><small class="text-white-50 d-block">Full Name</small><span class="text-white fw-bold">{{ form.groom.firstName }} {{ form.groom.middleName }} {{ form.groom.lastName }}</span></div>
+                          <div class="col"><small class="text-white-50 d-block">Birth Date</small><span class="text-white">{{ form.groom.month }}/{{ form.groom.day }}/{{ form.groom.year }} (Age: {{ form.groom.age }})</span></div>
+                          <div class="col"><small class="text-white-50 d-block">Civil Status</small><span class="badge bg-primary glow-badge mt-1">{{ form.groom.civilStatus }}</span></div>
+                          <div class="col"><small class="text-white-50 d-block">Citizenship | Religion</small><span class="text-white">{{ form.groom.citizenship }} | {{ form.groom.religion }}</span></div>
+                          <div class="col-12"><small class="text-white-50 d-block">Residence</small><span class="text-white small">{{ form.groom.residence }}</span></div>
+                        </div>
+                      </div>
+
+                      <div class="col-12 border-top border-white-10 pt-4">
+                        <h6 class="text-info small fw-bold text-uppercase mb-3" style="letter-spacing: 1px;">
+                          <i class="bi bi-people me-2"></i>Family Background
+                        </h6>
+                        <div class="row g-3">
+                          <div class="col-md-6 border-end border-white-10">
+                            <small class="text-white-50 d-block">Father's Name</small>
+                            <span class="text-white d-block">{{ form.groom.fatherFirstName }} {{ form.groom.fatherLastName }}</span>
+                            <span class="smallest text-white-50 italic">({{ form.groom.fatherCitizenship }})</span>
+                          </div>
+                          <div class="col-md-6">
+                            <small class="text-white-50 d-block">Mother's Maiden Name</small>
+                            <span class="text-white d-block">{{ form.groom.motherMaidenFirstName }} {{ form.groom.motherMaidenLastName }}</span>
+                            <span class="smallest text-white-50 italic">({{ form.groom.motherMaidenCitizenship }})</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <!-- STEP 14 – BRIDE NAME -->
-                <div v-if="step === 14">
+                <!-- STEP 20 – BRIDE NAME -->
+                <div v-if="step === 20">
                   <h4 class="section-title">Bride – Name</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -365,8 +881,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 15 – BRIDE BIRTH DATE -->
-                <div v-if="step === 15">
+                <!-- STEP 21 – BRIDE BIRTH DATE -->
+                <div v-if="step === 21">
                   <h4 class="section-title">Bride – Birth Date Details</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -387,8 +903,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 16 – BRIDE PLACE OF BIRTH -->
-                <div v-if="step === 16">
+                <!-- STEP 22 – BRIDE PLACE OF BIRTH -->
+                <div v-if="step === 22">
                   <h4 class="section-title">Bride – Place of Birth</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -409,8 +925,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 17 – BRIDE INFO -->
-                <div v-if="step === 17">
+                <!-- STEP 23 – BRIDE INFO -->
+                <div v-if="step === 23">
                   <h4 class="section-title">Bride – Personal Info</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -422,26 +938,21 @@
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Sex</label>
-                      <select class="form-control" v-model="form.bride.sex">
-                        <option value="" disabled>Select Sex</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                      </select>
+                      <input class="form-control bg-light" v-model="form.bride.sex" readonly placeholder="Auto-calculated">
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Citizenship</label>
                       <select class="form-control" v-model="form.bride.citizenship">
                         <option value="" disabled>Select Citizenship</option>
                         <option value="Filipino">Filipino</option>
-                        <option value="Dual Citizenship">Dual Citizenship</option>
                         <option value="Foreign National">Foreign National</option>
                       </select>
                     </div>
                   </div>
                 </div>
 
-                <!-- STEP 18 – BRIDE RESIDENCE -->
-                <div v-if="step === 18">
+                <!-- STEP 24 – BRIDE RESIDENCE -->
+                <div v-if="step === 24">
                   <h4 class="section-title">Bride – Residence</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -455,8 +966,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 19 – BRIDE RELIGION -->
-                <div v-if="step === 19">
+                <!-- STEP 25 – BRIDE RELIGION -->
+                <div v-if="step === 25">
                   <h4 class="section-title">Bride – Religion / Religion Sect</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -469,8 +980,8 @@
                   </div>
                 </div>
                 
-                <!-- STEP 20 – BRIDE CIVIL STATUS -->
-                <div v-if="step === 20">
+                <!-- STEP 26 – BRIDE CIVIL STATUS -->
+                <div v-if="step === 26">
                   <h4 class="section-title">Bride – Civil Status</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -526,8 +1037,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 21 – BRIDE DEGREE -->
-                <div v-if="step === 21">
+                <!-- STEP 27 – BRIDE DEGREE -->
+                <div v-if="step === 27">
                   <h4 class="section-title">Brides - Degree of relationship contracting parties</h4>
                   <div class="row g-3">
                     <div class="col-md-12">
@@ -538,8 +1049,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 22 – BRIDE FATHER'S INFO -->
-                <div v-if="step === 22">
+                <!-- STEP 28 – BRIDE FATHER'S INFO -->
+                <div v-if="step === 28">
                   <h4 class="section-title">Bride – Father's Info</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -562,15 +1073,14 @@
                       <select class="form-control" v-model="form.bride.fatherCitizenship">
                         <option value="" disabled>Select Citizenship</option>
                         <option value="Filipino">Filipino</option>
-                        <option value="Dual Citizenship">Dual Citizenship</option>
                         <option value="Foreign National">Foreign National</option>
                       </select>
                     </div>
                   </div>
                 </div>
 
-                <!-- STEP 23 – BRIDE FATHER'S RESIDENCE -->
-                <div v-if="step === 23">
+                <!-- STEP 29 – BRIDE FATHER'S RESIDENCE -->
+                <div v-if="step === 29">
                   <h4 class="section-title">Bride – Father's Residence</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -584,8 +1094,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 24 – BRIDE MOTHER'S MAIDEN INFO -->
-                <div v-if="step === 24">
+                <!-- STEP 30 – BRIDE MOTHER'S MAIDEN INFO -->
+                <div v-if="step === 30">
                   <h4 class="section-title">Bride – Mother's Maiden Info</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -608,15 +1118,14 @@
                       <select class="form-control" v-model="form.bride.motherMaidenCitizenship">
                         <option value="" disabled>Select Citizenship</option>
                         <option value="Filipino">Filipino</option>
-                        <option value="Dual Citizenship">Dual Citizenship</option>
                         <option value="Foreign National">Foreign National</option>
                       </select>
                     </div>
                   </div>
                 </div>
 
-                <!-- STEP 25 – BRIDE MOTHER'S MAIDEN RESIDENCE -->
-                <div v-if="step === 25">
+                <!-- STEP 31 – BRIDE MOTHER'S MAIDEN RESIDENCE -->
+                <div v-if="step === 31">
                   <h4 class="section-title">Bride – Mother's Maiden Residence</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -630,35 +1139,53 @@
                   </div>
                 </div>
 
-                <!-- STEP 26 – BRIDE REVIEW -->
-                <div v-if="step === 26">
-                  <h4 class="section-title mb-4">Review Bride's Full Information</h4>
-                  <div class="review-scroll-area glass-inner">
-                    <table class="table table-sm text-white review-table mb-0">
-                      <thead>
-                        <tr class="table-header-row"><th colspan="2">Personal Details</th></tr>
-                      </thead>
-                      <tbody>
-                        <tr><td>Full Name</td><td class="text-info fw-bold">{{ form.bride.firstName }} {{ form.bride.middleName }} {{ form.bride.lastName }}</td></tr>
-                        <tr><td>Birth Details</td><td>{{ form.bride.month }}/{{ form.bride.day }}/{{ form.bride.year }} (Age: {{ form.bride.age }})</td></tr>
-                        <tr><td>Birth Place</td><td>{{ form.bride.cityMunicipality }}, {{ form.bride.province }}</td></tr>
-                        <tr><td>Identity</td><td>{{ form.bride.sex }} | {{ form.bride.citizenship }} | {{ form.bride.religion }}</td></tr>
-                        <tr><td>Civil Status</td><td><span class="badge bg-danger glow-badge">{{ form.bride.civilStatus }}</span></td></tr>
-                        <tr><td>Residence</td><td class="small opacity-75">{{ form.bride.residence }}</td></tr>
-                      </tbody>
-                      <thead>
-                        <tr class="table-header-row"><th colspan="2">Family Details</th></tr>
-                      </thead>
-                      <tbody>
-                        <tr><td>Father</td><td>{{ form.bride.fatherFirstName }} {{ form.bride.fatherLastName }}</td></tr>
-                        <tr><td>Mother</td><td>{{ form.bride.motherMaidenFirstName }} {{ form.bride.motherMaidenLastName }}</td></tr>
-                      </tbody>
-                    </table>
+                <!-- STEP 32 – BRIDE REVIEW -->
+                <div v-if="step === 32">
+                  <div class="d-flex align-items-center mb-4">
+                    <div class="bg-danger p-2 rounded-3 me-3">
+                      <i class="bi bi-person-check-fill fs-4 text-white"></i>
+                    </div>
+                    <h4 class="section-title mb-0 border-0 p-0 text-white">Review Bride's Information</h4>
+                  </div>
+
+                  <div class="review-scroll-area glass-inner p-4">
+                    <div class="row g-4">
+                      <div class="col-12">
+                        <h6 class="text-danger-emphasis small fw-bold text-uppercase mb-3" style="letter-spacing: 1px; color: #ff8fa3 !important;">
+                          <i class="bi bi-info-circle me-2"></i>Personal Details
+                        </h6>
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                          <div class="col"><small class="text-white-50 d-block">Full Name</small><span class="text-white fw-bold">{{ form.bride.firstName }} {{ form.bride.middleName }} {{ form.bride.lastName }}</span></div>
+                          <div class="col"><small class="text-white-50 d-block">Birth Date</small><span class="text-white">{{ form.bride.month }}/{{ form.bride.day }}/{{ form.bride.year }} (Age: {{ form.bride.age }})</span></div>
+                          <div class="col"><small class="text-white-50 d-block">Civil Status</small><span class="badge bg-danger glow-badge mt-1">{{ form.bride.civilStatus }}</span></div>
+                          <div class="col"><small class="text-white-50 d-block">Citizenship | Religion</small><span class="text-white">{{ form.bride.citizenship }} | {{ form.bride.religion }}</span></div>
+                          <div class="col-12"><small class="text-white-50 d-block">Residence</small><span class="text-white small">{{ form.bride.residence }}</span></div>
+                        </div>
+                      </div>
+
+                      <div class="col-12 border-top border-white-10 pt-4">
+                        <h6 class="text-danger-emphasis small fw-bold text-uppercase mb-3" style="letter-spacing: 1px; color: #ff8fa3 !important;">
+                          <i class="bi bi-people me-2"></i>Family Background
+                        </h6>
+                        <div class="row g-3">
+                          <div class="col-md-6 border-end border-white-10">
+                            <small class="text-white-50 d-block">Father's Name</small>
+                            <span class="text-white d-block">{{ form.bride.fatherFirstName }} {{ form.bride.fatherLastName }}</span>
+                            <span class="smallest text-white-50 italic">({{ form.bride.fatherCitizenship }})</span>
+                          </div>
+                          <div class="col-md-6">
+                            <small class="text-white-50 d-block">Mother's Maiden Name</small>
+                            <span class="text-white d-block">{{ form.bride.motherMaidenFirstName }} {{ form.bride.motherMaidenLastName }}</span>
+                            <span class="smallest text-white-50 italic">({{ form.bride.motherMaidenCitizenship }})</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <!-- STEP 27 – REVIEW -->
-                <div v-if="step === 27">
+                <!-- STEP 33 – REVIEW -->
+                <div v-if="step === 33">
                   <h4 class="section-title mb-4 text-center border-0">Final Verification</h4>
                   <div class="row g-3">
                     <div class="col-md-6">
@@ -686,171 +1213,6 @@
                   </div>
                 </div>
 
-                <!-- STEP 28 – Marriage Required Documents -->
-                <div v-if="step === 28" class="glass-panel">
-                  <h4 class="section-title text-white mb-4">Required Documents</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>  
-                  <div class="row g-4">
-                    <!-- For Groom -->
-                    <div class="col-md-6 border-end border-white-10">
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
-                      
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">CENOMAR <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'cenomar')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.groom.cenomar">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Groom CENOMAR</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('groom', 'cenomar')" :src="previews.groom.cenomar" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">PSA Birth Certificate <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'psa')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.groom.psa">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Groom PSA</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('groom', 'psa')" :src="previews.groom.psa" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">National ID or any govt-issued ID <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'govtIssuedId')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.groom.govtIssuedId">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Groom Government Issued ID</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('groom', 'govtIssuedId')" :src="previews.groom.govtIssuedId" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">PMOC Certificate <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'pmocCertificate')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.groom.pmocCertificate">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Groom PMOC Certificate</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('groom', 'pmocCertificate')" :src="previews.groom.pmocCertificate" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <!-- For Bride -->
-                    <div class="col-md-6">
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i> Bride's Documents</h5>
-                      
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">CENOMAR <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'cenomar')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.bride.cenomar">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Bride CENOMAR</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('bride', 'cenomar')" :src="previews.bride.cenomar" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">PSA Birth Certificate <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'psa')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.bride.psa">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Bride PSA</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('bride', 'psa')" :src="previews.bride.psa" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">National ID or any govt-issued ID <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'govtIssuedId')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.bride.govtIssuedId">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Bride Government Issued ID</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('bride', 'govtIssuedId')" :src="previews.bride.govtIssuedId" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">PMOC Certificate <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'pmocCertificate')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.bride.pmocCertificate">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Bride PMOC Certificate</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('bride', 'pmocCertificate')" :src="previews.bride.pmocCertificate" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-
                 <!-- NAVIGATION -->
                 <div class="d-flex justify-content-between mt-5">
                   <button class="btn btn-outline-light"
@@ -859,19 +1221,10 @@
                     Back
                   </button>
 
-                  <button v-if="step < totalSteps && step != 27"
+                  <button v-if="step < totalSteps && step != 33"
                           class="btn btn-primary glow-button"
                           @click="goNext()">
                     Next
-                  </button>
-
-                  <button v-else-if="step == 27">
-
-                    <button class="btn btn-success glow-button"
-                            @click="goNext()">
-                      Proceed to Required Documents
-                    </button>
-
                   </button>
 
                   <button v-else
@@ -880,8 +1233,6 @@
                     Submit
                   </button>
                 </div>
-
-                
 
               </div>
             </div>
@@ -895,6 +1246,7 @@
 
 <script>
 import WarningForm from '../../../components/WarningForm.vue';
+import { submitMarriageLicenseApplication } from '../../../controller/MarriageLicense';
 
 export default {
   name: 'MarriageFormSteps',
@@ -903,9 +1255,15 @@ export default {
   },
   data() {
     return {
+      isCohabiting: null,
+      isForeigner: null,
+      type: null,
+      groomRequirement: null,
+      brideRequirement: null,
+      ageRequirements : null,
       message: [],
       step: 1,
-      totalSteps: 28,
+      totalSteps: 33,
       ageError: '',
       isPreviouslyMarried: false,
       previews: {
@@ -917,8 +1275,8 @@ export default {
         bride: { cenomar: '', psa: '', lcro: '' }
       },
       form: {
-        groom: { documents: {} },
-        bride: { documents: {} }
+        groom: { documents: {}, sex: "Male" },
+        bride: { documents: {}, sex: "Female" }
       }
     }
   },
@@ -958,17 +1316,116 @@ export default {
       const type = this.fileTypes[person][docType];
       return type && type.startsWith('image/');
     },
-    goBack(){
-      this.step--
+    goBack() {
+      let prevStep = this.step - 1;
+
+      // If going back to Step 6, but it was skipped (no-need for parental docs)
+      if (prevStep === 6 && this.brideRequirement === "no-need" && this.groomRequirement === "no-need") {
+        prevStep--;
+      }
+
+      // If going back to Step 5, but they are not a foreigner
+      const foreignerCheck = String(this.isForeigner) === 'true';
+      if (prevStep === 5 && !foreignerCheck) {
+        prevStep--;
+      }
+
+      this.step = prevStep;
+      window.scrollTo(0, 0);
     },
     goNext() {
       // Clear any existing messages before starting new validation
       this.message = [];
 
+      let currentRequiredDocs = [];
+      let isGroomMissing = false;
+      let isBrideMissing = false;
       // Validation on every step
       switch (this.step) {
         /* --- GROOM VALIDATION --- */
-        case 1: // Groom Name
+        case 1: // CENOMAR
+          currentRequiredDocs = ['cenomar'];
+          isGroomMissing = currentRequiredDocs.some(doc => !this.form.groom.documents[doc]);
+          isBrideMissing = currentRequiredDocs.some(doc => !this.form.bride.documents[doc]);
+          if (isGroomMissing || isBrideMissing) {
+            this.message.push("Please upload the CENOMAR for both Groom and Bride.");
+          }
+          break;
+
+        case 2: // PSA
+          currentRequiredDocs = ['psa']; // Re-assigning, not re-declaring
+          isGroomMissing = currentRequiredDocs.some(doc => !this.form.groom.documents[doc]);
+          isBrideMissing = currentRequiredDocs.some(doc => !this.form.bride.documents[doc]);
+          if (isGroomMissing || isBrideMissing) {
+            this.message.push("Please upload the Birth Certificate for both Groom and Bride.");
+          }
+          break;
+
+        case 3: // Govt ID
+          currentRequiredDocs = ['govtIssuedId'];
+          isGroomMissing = currentRequiredDocs.some(doc => !this.form.groom.documents[doc]);
+          isBrideMissing = currentRequiredDocs.some(doc => !this.form.bride.documents[doc]);
+          if (isGroomMissing || isBrideMissing) {
+            this.message.push("Please upload a Valid ID for both parties.");
+          }
+          break;
+
+        case 4: // PMOC
+          currentRequiredDocs = ['pmocCertificate'];
+          isGroomMissing = currentRequiredDocs.some(doc => !this.form.groom.documents[doc]);
+          isBrideMissing = currentRequiredDocs.some(doc => !this.form.bride.documents[doc]);
+          if (isGroomMissing || isBrideMissing) {
+            this.message.push("Please upload the PMOC Certificate.");
+          }
+          break;
+
+        case 5: // Foreigner Documents
+          let missingGroomForeign = false;
+          let missingBrideForeign = false;
+          const foreignDocs = ['legalCapacity', 'validPassport', 'apostilledOrDecree'];
+
+          // Logic: Only validate these if the person is flagged as a foreigner
+          if (this.type === "groom" || this.type === "both") {
+            missingGroomForeign = foreignDocs.some(doc => !this.form.groom.documents[doc]);
+          }
+          
+          if (this.type === "bride" || this.type === "both") {
+            missingBrideForeign = foreignDocs.some(doc => !this.form.bride.documents[doc]);
+          }
+
+          if (missingGroomForeign || missingBrideForeign) {
+            this.message.push("Foreigner documents (Legal Capacity, Passport, Decree) are required.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 6: // Age-Based Documents (Consent/Advice)
+          let missingGroomAge = false;
+          let missingBrideAge = false;
+
+          // Validation for Groom based on his specific age selection
+          if (this.groomRequirements === "parental-consent") {
+            if (!this.form.groom.documents['parental-consent']) missingGroomAge = true;
+          } else if (this.groomRequirements === "parental-advise") {
+            if (!this.form.groom.documents['parental-advise']) missingGroomAge = true;
+          }
+
+          // Validation for Bride based on her specific age selection
+          if (this.brideRequirements === "parental-consent") {
+            if (!this.form.bride.documents['parental-consent']) missingBrideAge = true;
+          } else if (this.brideRequirements === "parental-advise") {
+            if (!this.form.bride.documents['parental-advise']) missingBrideAge = true;
+          }
+
+          if (missingGroomAge || missingBrideAge) {
+            this.message.push("Please upload the required Parental Consent or Advise documents.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 7: // Groom Name
           if (!this.form.groom.firstName || !this.form.groom.lastName) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -977,7 +1434,7 @@ export default {
           if (!this.form.groom.middleName) this.form.groom.middleName = "N/A";
           break;
 
-        case 2: // Groom Birth Date
+        case 8: // Groom Birth Date
           if (!this.form.groom.day || !this.form.groom.month || !this.form.groom.year) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1004,7 +1461,7 @@ export default {
           }
           break;
 
-        case 3: // Groom Birth Place
+        case 9: // Groom Birth Place
           if (!this.form.groom.cityMunicipality || !this.form.groom.province || !this.form.groom.country) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1012,7 +1469,7 @@ export default {
           }
           break;
 
-        case 4: // Groom Personal Info
+        case 10: // Groom Personal Info
           if (!this.form.groom.age || !this.form.groom.sex || !this.form.groom.citizenship) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1020,7 +1477,7 @@ export default {
           }
           break;
 
-        case 5: // Groom Residence
+        case 11: // Groom Residence
           if (!this.form.groom.residence) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1028,7 +1485,7 @@ export default {
           }
           break;
 
-        case 6: // Groom Religion
+        case 12: // Groom Religion
           if (!this.form.groom.religion) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1036,26 +1493,26 @@ export default {
           }
           break;
 
-        case 7: // Groom Civil Status
+        case 13: // Groom Civil Status
           if (!this.form.groom.civilStatus) {
             this.message.push("Please fill in Civil Status.");
             this.scrollToError();
             return;
           }
-          if (!this.form.groom.previousMarriageDissolve) this.form.groom.previousMarriageDissolve = "N/A";
-          if (!this.form.groom.dissolvedCityMunicipality) this.form.groom.dissolvedCityMunicipality = "N/A";
-          if (!this.form.groom.dissolvedProvince) this.form.groom.dissolvedProvince = "N/A";
-          if (!this.form.groom.dissolvedCountry) this.form.groom.dissolvedCountry = "N/A";
-          if (!this.form.groom.dissolvedDay) this.form.groom.dissolvedDay = "N/A";
-          if (!this.form.groom.dissolvedMonth) this.form.groom.dissolvedMonth = "N/A";
-          if (!this.form.groom.dissolvedYear) this.form.groom.dissolvedYear = "N/A";
+          // if (!this.form.groom.previousMarriageDissolve) this.form.groom.previousMarriageDissolve = "N/A";
+          // if (!this.form.groom.dissolvedCityMunicipality) this.form.groom.dissolvedCityMunicipality = "N/A";
+          // if (!this.form.groom.dissolvedProvince) this.form.groom.dissolvedProvince = "N/A";
+          // if (!this.form.groom.dissolvedCountry) this.form.groom.dissolvedCountry = "N/A";
+          // if (!this.form.groom.dissolvedDay) this.form.groom.dissolvedDay = "N/A";
+          // if (!this.form.groom.dissolvedMonth) this.form.groom.dissolvedMonth = "N/A";
+          // if (!this.form.groom.dissolvedYear) this.form.groom.dissolvedYear = "N/A";
           break;
 
-        case 8: // Groom Degree
+        case 14: // Groom Degree
           if (!this.form.groom.degree) this.form.groom.degree = "N/A";
           break;
 
-        case 9: // Groom Father Info
+        case 15: // Groom Father Info
           if (!this.form.groom.fatherFirstName || !this.form.groom.fatherLastName || !this.form.groom.fatherCitizenship) {
             this.message.push("Please fill in all required fields excluding Middle Name.");
             this.scrollToError();
@@ -1064,7 +1521,7 @@ export default {
           if (!this.form.groom.fatherMiddleName) this.form.groom.fatherMiddleName = "N/A";
           break;
 
-        case 10: // Groom Father Residence
+        case 16: // Groom Father Residence
           if (!this.form.groom.fatherResidence) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1072,7 +1529,7 @@ export default {
           }
           break;
 
-        case 11: // Groom Mother Info
+        case 17: // Groom Mother Info
           if (!this.form.groom.motherMaidenFirstName || !this.form.groom.motherMaidenLastName || !this.form.groom.motherMaidenCitizenship) {
             this.message.push("Please fill in all required fields excluding Middle Name.");
             this.scrollToError();
@@ -1081,7 +1538,7 @@ export default {
           if (!this.form.groom.motherMaidenMiddleName) this.form.groom.motherMaidenMiddleName = "N/A";
           break;
 
-        case 12: // Groom Mother Residence
+        case 18: // Groom Mother Residence
           if (!this.form.groom.motherMaidenResidence) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1090,7 +1547,7 @@ export default {
           break;
 
         /* --- BRIDE VALIDATION --- */
-        case 14: // Bride Name
+        case 20: // Bride Name
           if (!this.form.bride.firstName || !this.form.bride.lastName) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1099,7 +1556,7 @@ export default {
           if (!this.form.bride.middleName) this.form.bride.middleName = "N/A";
           break;
 
-        case 15: // Bride Birth Date
+        case 21: // Bride Birth Date
           if (!this.form.bride.day || !this.form.bride.month || !this.form.bride.year) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1124,7 +1581,7 @@ export default {
           }
           break;
 
-        case 16: // Bride Birth Place
+        case 22: // Bride Birth Place
           if (!this.form.bride.cityMunicipality || !this.form.bride.province || !this.form.bride.country) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1132,7 +1589,7 @@ export default {
           }
           break;
 
-        case 17: // Bride Personal Info
+        case 23: // Bride Personal Info
           if (!this.form.bride.age || !this.form.bride.sex || !this.form.bride.citizenship) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1140,7 +1597,7 @@ export default {
           }
           break;
 
-        case 18: // Bride Residence
+        case 24: // Bride Residence
           if (!this.form.bride.residence) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1148,7 +1605,7 @@ export default {
           }
           break;
 
-        case 19: // Bride Religion
+        case 25: // Bride Religion
           if (!this.form.bride.religion) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1156,7 +1613,7 @@ export default {
           }
           break;
 
-        case 20: // Bride Civil Status
+        case 26: // Bride Civil Status
           if (!this.form.bride.civilStatus) {
             this.message.push("Please fill in Civil Status.");
             this.scrollToError();
@@ -1171,11 +1628,11 @@ export default {
           if (!this.form.bride.dissolvedYear) this.form.bride.dissolvedYear = "N/A";
           break;
 
-        case 21: // Bride Degree
+        case 27: // Bride Degree
           if (!this.form.bride.degree) this.form.bride.degree = "N/A";
           break;
 
-        case 22: // Bride Father Info
+        case 28: // Bride Father Info
           if (!this.form.bride.fatherFirstName || !this.form.bride.fatherLastName || !this.form.bride.fatherCitizenship) {
             this.message.push("Please fill in all required fields excluding Middle Name.");
             this.scrollToError();
@@ -1184,7 +1641,7 @@ export default {
           if (!this.form.bride.fatherMiddleName) this.form.bride.fatherMiddleName = "N/A";
           break;
 
-        case 23: // Bride Father Residence
+        case 29: // Bride Father Residence
           if (!this.form.bride.fatherResidence) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1192,7 +1649,7 @@ export default {
           }
           break;
 
-        case 24: // Bride Mother Info
+        case 30: // Bride Mother Info
           if (!this.form.bride.motherMaidenFirstName || !this.form.bride.motherMaidenLastName || !this.form.bride.motherMaidenCitizenship) {
             this.message.push("Please fill in all required fields excluding Middle Name.");
             this.scrollToError();
@@ -1201,21 +1658,9 @@ export default {
           if (!this.form.bride.motherMaidenMiddleName) this.form.bride.motherMaidenMiddleName = "N/A";
           break;
 
-        case 25: // Bride Mother Residence
+        case 31: // Bride Mother Residence
           if (!this.form.bride.motherMaidenResidence) {
             this.message.push("Please fill in all required fields.");
-            this.scrollToError();
-            return;
-          }
-          break;
-
-        case 28: // Documents
-          const requiredDocs = ['cenomar', 'psa', 'govtIssuedId', 'pmocCertificate'];
-          let missingGroom = requiredDocs.some(doc => !this.form.groom.documents[doc]);
-          let missingBride = requiredDocs.some(doc => !this.form.bride.documents[doc]);
-
-          if (missingGroom || missingBride) {
-            this.message.push("Please upload all required documents for both Groom and Bride.");
             this.scrollToError();
             return;
           }
@@ -1225,9 +1670,43 @@ export default {
           break;
       }
 
-      // If validation passes, move to next step
-      this.step++;
-    },
+      // 2. If there are error messages, stop here!
+      if (this.message.length > 0) return;
+
+      // 3. LOGIC FOR SKIPPING: Determine the NEXT step
+      let currentStep = this.step;
+      let nextStep = currentStep + 1;
+
+      // SKIP Case: Foreigner Documents (Step 5)
+      // If not a foreigner, skip step 5 and go straight to step 6
+      const foreignerCheck = String(this.isForeigner) === 'true'; // Handles both boolean and string
+      if (nextStep === 5 && !foreignerCheck) {
+          nextStep++;
+      }
+
+      // SKIP Case: Age Documents (Step 6)
+      // If neither needs Parental Consent/Advice, skip step 6 and go to step 7
+      if (nextStep === 6 && this.brideRequirement === "no-need" && this.groomRequirement === "no-need") {
+        nextStep++;
+      }
+
+      // We only save the text data. Browsers cannot save "File" objects in localStorage.
+      const progressData = {
+          step: nextStep,
+          groom: { ...this.form.groom, documents: {} }, // Strip documents
+          bride: { ...this.form.bride, documents: {} }, // Strip documents
+          isForeigner: this.isForeigner,  
+          type: this.type,
+          groomRequirement: this.groomRequirement,
+          brideRequirement: this.brideRequirement
+      };
+
+      localStorage.setItem('marriage_form_progress', JSON.stringify(progressData));
+
+      // 4. Finalize the move
+      this.step = nextStep;
+      window.scrollTo(0, 0);
+    },  
     handlePersonValidation(person, type) {
       const today = new Date();
       const currentYear = today.getFullYear();
@@ -1285,33 +1764,82 @@ export default {
 
     },
 
-    submitForm() {
-      this.message = [];
-      const groomDocs = this.form.groom.documents;
-      const brideDocs = this.form.bride.documents;
+    async submitForm() {
 
-      // List of required keys based on your HTML template
-      const requiredDocs = ['cenomar', 'psa', 'govtIssuedId', 'pmocCertificate'];
-      let missingGroom = false;
-      let missingBride = false;
-
-      // Check Groom
-      requiredDocs.forEach(doc => {
-        if (!groomDocs[doc]) missingGroom = true;
+      // 2. Show Final Confirmation
+      const finalCheck = await Swal.fire({
+        title: 'Final Confirmation',
+        text: "Please ensure all uploaded photos are clear. Incomplete or blurry documents will cause delays.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#0d6efd',
+        confirmButtonText: 'Yes, Submit My Application'
       });
 
-      // Check Bride
-      requiredDocs.forEach(doc => {
-        if (!brideDocs[doc]) missingBride = true;
-      });
+      if (!finalCheck.isConfirmed) return;
 
-      if (missingGroom || missingBride) {
-        this.message.push("Please upload all required documents for both Groom and Bride.");
-        this.scrollToError();
-        return;
+      // 3. Start Actual Submission to Laravel
+      try {
+        Swal.fire({ title: 'Processing...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+        const formData = new FormData();
+        formData.append('type', this.type);
+        formData.append('groom', JSON.stringify(this.form.groom));
+        formData.append('bride', JSON.stringify(this.form.bride));
+
+        // Append all documents from the "Bucket" logic we built earlier
+        Object.keys(this.form.groom.documents).forEach(key => {
+          formData.append(`documents_groom[${key}]`, this.form.groom.documents[key]);
+        });
+        Object.keys(this.form.bride.documents).forEach(key => {
+          formData.append(`documents_bride[${key}]`, this.form.bride.documents[key]);
+        });
+
+        const response = await submitMarriageLicenseApplication(formData);
+
+        localStorage.removeItem('marriage_form_progress')
+
+        // 4. Success Message showing the Control Number
+        Swal.fire({
+          icon: 'success',
+          title: 'Application Submitted!',
+          html: `
+            <div class="p-3 glass-inner text-center">
+              <p class="mb-2">Your Control Number is:</p>
+              <h2 class="text-primary fw-bold mb-3" style="letter-spacing: 2px;">
+                ${response.data.control_number}
+              </h2>
+              
+              <div class="alert alert-warning border-0 shadow-sm py-3 px-2 mb-3">
+                <h6 class="fw-bold mb-1">📸 ACTION REQUIRED:</h6>
+                <p class="small mb-0">
+                  Please <b>SCREENSHOT</b> this screen. Present this at the <b>Abuyog LCRO Office</b> to verify your application.
+                </p>
+              </div>
+
+              <div class="mt-4 p-2 border-top border-white-50">
+                <p class="small mb-2 text-muted">Questions or problems with your application?</p>
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                  <i class="bi bi-person-badge-fill text-primary"></i>
+                  <span class="fw-bold">LCRO Marriage Section Staff</span>
+                </div>
+                <p class="mb-0 fw-bold text-success">
+                  <i class="bi bi-telephone-fill"></i> 0912-345-6789
+                </p>
+                <p class="x-small text-muted italic">(Available Mon-Fri, 8AM - 5PM)</p>
+              </div>
+            </div>
+          `,
+          confirmButtonText: 'I have saved my control number',
+          confirmButtonColor: '#198754',
+          allowOutsideClick: false
+        }).then(() => {
+          this.$router.push('/home');
+        });
+
+      } catch (error) {
+        Swal.fire('Error', 'Something went wrong during submission. Please try again.', 'error');
       }
-      console.log(this.form);
-      alert('Application Submitted!');
     },
     scrollToError() {
       this.$nextTick(() => {
@@ -1321,6 +1849,56 @@ export default {
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       });
+    }
+  },
+  mounted() {
+    // Conditional Cohabitation
+    this.isCohabiting = this.$route.params.isCohabiting;
+    // For foreigner classification
+    this.isForeigner = this.$route.params.isForeigner;
+    this.type = this.$route.params.type;
+
+    // 2. AUTO-FILL CITIZENSHIP LOGIC
+    if (this.type === 'filipino') {
+        this.form.groom.citizenship = 'Filipino';
+        this.form.bride.citizenship = 'Filipino';
+    } else if (this.type === 'groom') {
+        this.form.groom.citizenship = 'Foreign National';
+        this.form.bride.citizenship = 'Filipino';
+    } else if (this.type === 'bride') {
+        this.form.groom.citizenship = 'Filipino';
+        this.form.bride.citizenship = 'Foreign National';
+    } else if (this.type === 'both') {
+        this.form.groom.citizenship = 'Foreign National';
+        this.form.bride.citizenship = 'Foreign National';
+    }
+
+    // For ager requirements
+    this.groomRequirement = this.$route.params.groomRequirement;
+    this.brideRequirement = this.$route.params.brideRequirement;
+    // console.log(this.isForeigner)
+
+    const savedData = localStorage.getItem('marriage_form_progress');
+    if (savedData) {
+        const parsed = JSON.parse(savedData);
+        // Only load if the user actually wants to continue
+        this.form.groom = { ...this.form.groom, ...parsed.groom };
+        this.form.bride = { ...this.form.bride, ...parsed.bride };
+        // this.step = parsed.step;
+
+        Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'info',
+        title: 'Progress Restored',
+        html: '<small>We saved your text info. <b>Note:</b> You must re-upload your document photos for security reasons.</small>',
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        background: '#1e3c72',
+        color: '#fff'
+      });
+
     }
   }
 }
@@ -1562,5 +2140,32 @@ export default {
 
 .border-white-10 {
   border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Better Label Styling */
+small.text-white-50 {
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+/* Scroll area padding fix */
+.review-scroll-area {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Vertical Divider for Desktop */
+@media (min-width: 768px) {
+  .border-white-10 {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
+/* Italic text for secondary info */
+.italic {
+  font-style: italic;
 }
 </style>
