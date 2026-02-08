@@ -23,8 +23,21 @@
 
               <div class="card-body p-4 p-md-5">
 
+                <div v-if="step > 6" class="alert alert-light bg-white bg-opacity-10 border-0 mb-4 py-2">
+                  <small class="text-white-50"><i class="bi bi-save me-1"></i> Your progress is being automatically saved as you go to next step.</small>
+                </div>
+
                 <!-- STEP 1 – Marriage Required Documents -->
                 <div v-if="step === 1" class="glass-panel">
+                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
+                      <div>
+                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
+                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
+                      </div>
+                    </div>
+                  </div>
                   <h4 class="section-title text-white mb-4">Required Documents</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -82,6 +95,15 @@
 
                 <!-- STEP 2 – Marriage Required Documents -->
                 <div v-if="step === 2" class="glass-panel">
+                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
+                      <div>
+                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
+                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
+                      </div>
+                    </div>
+                  </div>
                   <h4 class="section-title text-white mb-4">Required Documents</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -140,6 +162,15 @@
 
                 <!-- STEP 3 – Marriage Required Documents -->
                 <div v-if="step === 3" class="glass-panel">
+                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
+                      <div>
+                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
+                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
+                      </div>
+                    </div>
+                  </div>
                   <h4 class="section-title text-white mb-4">Required Documents</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -197,6 +228,15 @@
 
                 <!-- STEP 4 – Marriage Required Documents -->
                 <div v-if="step === 4" class="glass-panel">
+                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
+                      <div>
+                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
+                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
+                      </div>
+                    </div>
+                  </div>
                   <h4 class="section-title text-white mb-4">Required Documents</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -253,14 +293,23 @@
                 </div>
 
                 <!-- STEP 5 – Foreigner Required Documents  -->
-                <div v-if="step === 5" class="glass-panel">
+                <div v-if="step === 5 && this.type !== 'filipino'" class="glass-panel">
+                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
+                      <div>
+                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
+                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
+                      </div>
+                    </div>
+                  </div>
                   <h4 class="section-title text-white mb-4">Foreigner Required Documents</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
                   </div>  
                   <div class="row g-4">
                     <!-- For Groom -->
-                    <div v-if="this.type === 'groom' || this.type === 'both' " class="col-md-6 border-end border-white-10">
+                    <div v-if="this.type === 'groom' || this.type === 'both' " :class="this.type === 'groom' ? 'col-12' : 'col-md-6'" class="border-end border-white-10 " > 
                       <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
 
                       <div class="mb-4">
@@ -320,7 +369,7 @@
                     </div>
 
                     <!-- For Bride -->
-                    <div v-if="this.type === 'bride' || this.type === 'both' " class="col-md-6">
+                    <div v-if="this.type === 'bride' || this.type === 'both'" :class="this.type === 'bride' ? 'col-12' : 'col-md-6'">
                       <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i>Foreigner Bride's Documents</h5>
 
                       <div class="mb-4">
@@ -382,7 +431,16 @@
                 </div>
 
                 <!-- STEP 6 – Age Required Documents -->
-                <div v-if="step === 6" class="glass-panel">
+                <div v-if="step === 6 && (this.groomRequirement !== 'no-need' || this.brideRequirement !== 'no-need')" class="glass-panel">
+                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
+                      <div>
+                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
+                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
+                      </div>
+                    </div>
+                  </div>
                   <h4 class="section-title text-white mb-4">Age Required Documents</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -554,11 +612,7 @@
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Sex</label>
-                      <select class="form-control" v-model="form.groom.sex">
-                        <option value="" disabled>Select Sex</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                      </select>
+                      <input class="form-control bg-light" v-model="form.groom.sex" readonly placeholder="Auto-calculated">
                     </div>
 
                     <div class="col-md-4">
@@ -566,7 +620,6 @@
                       <select class="form-control" v-model="form.groom.citizenship">
                         <option value="" disabled>Select Citizenship</option>
                         <option value="Filipino">Filipino</option>
-                        <option value="Dual Citizenship">Dual Citizenship</option>
                         <option value="Foreign National">Foreign National</option>
                       </select>
                     </div>
@@ -695,7 +748,6 @@
                       <select class="form-control" v-model="form.groom.fatherCitizenship">
                         <option value="" disabled>Select Citizenship</option>
                         <option value="Filipino">Filipino</option>
-                        <option value="Dual Citizenship">Dual Citizenship</option>
                         <option value="Foreign National">Foreign National</option>
                       </select>
                     </div>
@@ -741,7 +793,6 @@
                       <select class="form-control" v-model="form.groom.motherMaidenCitizenship">
                         <option value="" disabled>Select Citizenship</option>
                         <option value="Filipino">Filipino</option>
-                        <option value="Dual Citizenship">Dual Citizenship</option>
                         <option value="Foreign National">Foreign National</option>
                       </select>
                     </div>
@@ -765,32 +816,46 @@
 
                 <!-- STEP 19 – GROOM REVIEW -->
                 <div v-if="step === 19">
-                  <h4 class="section-title mb-4">Review Groom's Full Information</h4>
-                  <div class="review-scroll-area glass-inner">
-                    <table class="table table-sm text-white review-table mb-0">
-                      <thead>
-                        <tr class="table-header-row"><th colspan="2">Personal Details</th></tr>
-                      </thead>
-                      <tbody>
-                        <tr><td>Full Name</td><td class="text-info fw-bold">{{ form.groom.firstName }} {{ form.groom.middleName }} {{ form.groom.lastName }}</td></tr>
-                        <tr><td>Birth Details</td><td>{{ form.groom.month }}/{{ form.groom.day }}/{{ form.groom.year }} (Age: {{ form.groom.age }})</td></tr>
-                        <tr><td>Birth Place</td><td>{{ form.groom.cityMunicipality }}, {{ form.groom.province }}</td></tr>
-                        <tr><td>Identity</td><td>{{ form.groom.sex }} | {{ form.groom.citizenship }} | {{ form.groom.religion }}</td></tr>
-                        <tr><td>Civil Status</td><td><span class="badge bg-primary glow-badge">{{ form.groom.civilStatus }}</span></td></tr>
-                        <tr v-if="form.groom.civilStatus !== 'Single'">
-                          <td>Dissolution</td>
-                          <td class="small text-warning">{{ form.groom.previousMarriageDissolve }}</td>
-                        </tr>
-                        <tr><td>Residence</td><td class="small opacity-75">{{ form.groom.residence }}</td></tr>
-                      </tbody>
-                      <thead>
-                        <tr class="table-header-row"><th colspan="2">Family Details</th></tr>
-                      </thead>
-                      <tbody>
-                        <tr><td>Father</td><td>{{ form.groom.fatherFirstName }} {{ form.groom.fatherLastName }} ({{ form.groom.fatherCitizenship }})</td></tr>
-                        <tr><td>Mother</td><td>{{ form.groom.motherMaidenFirstName }} {{ form.groom.motherMaidenLastName }} ({{ form.groom.motherMaidenCitizenship }})</td></tr>
-                      </tbody>
-                    </table>
+                  <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary p-2 rounded-3 me-3">
+                      <i class="bi bi-person-check-fill fs-4 text-white"></i>
+                    </div>
+                    <h4 class="section-title mb-0 border-0 p-0">Review Groom's Information</h4>
+                  </div>
+
+                  <div class="review-scroll-area glass-inner p-4">
+                    <div class="row g-4">
+                      <div class="col-12">
+                        <h6 class="text-info small fw-bold text-uppercase mb-3" style="letter-spacing: 1px;">
+                          <i class="bi bi-info-circle me-2"></i>Personal Details
+                        </h6>
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                          <div class="col"><small class="text-white-50 d-block">Full Name</small><span class="text-white fw-bold">{{ form.groom.firstName }} {{ form.groom.middleName }} {{ form.groom.lastName }}</span></div>
+                          <div class="col"><small class="text-white-50 d-block">Birth Date</small><span class="text-white">{{ form.groom.month }}/{{ form.groom.day }}/{{ form.groom.year }} (Age: {{ form.groom.age }})</span></div>
+                          <div class="col"><small class="text-white-50 d-block">Civil Status</small><span class="badge bg-primary glow-badge mt-1">{{ form.groom.civilStatus }}</span></div>
+                          <div class="col"><small class="text-white-50 d-block">Citizenship | Religion</small><span class="text-white">{{ form.groom.citizenship }} | {{ form.groom.religion }}</span></div>
+                          <div class="col-12"><small class="text-white-50 d-block">Residence</small><span class="text-white small">{{ form.groom.residence }}</span></div>
+                        </div>
+                      </div>
+
+                      <div class="col-12 border-top border-white-10 pt-4">
+                        <h6 class="text-info small fw-bold text-uppercase mb-3" style="letter-spacing: 1px;">
+                          <i class="bi bi-people me-2"></i>Family Background
+                        </h6>
+                        <div class="row g-3">
+                          <div class="col-md-6 border-end border-white-10">
+                            <small class="text-white-50 d-block">Father's Name</small>
+                            <span class="text-white d-block">{{ form.groom.fatherFirstName }} {{ form.groom.fatherLastName }}</span>
+                            <span class="smallest text-white-50 italic">({{ form.groom.fatherCitizenship }})</span>
+                          </div>
+                          <div class="col-md-6">
+                            <small class="text-white-50 d-block">Mother's Maiden Name</small>
+                            <span class="text-white d-block">{{ form.groom.motherMaidenFirstName }} {{ form.groom.motherMaidenLastName }}</span>
+                            <span class="smallest text-white-50 italic">({{ form.groom.motherMaidenCitizenship }})</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -873,18 +938,13 @@
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Sex</label>
-                      <select class="form-control" v-model="form.bride.sex">
-                        <option value="" disabled>Select Sex</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                      </select>
+                      <input class="form-control bg-light" v-model="form.bride.sex" readonly placeholder="Auto-calculated">
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Citizenship</label>
                       <select class="form-control" v-model="form.bride.citizenship">
                         <option value="" disabled>Select Citizenship</option>
                         <option value="Filipino">Filipino</option>
-                        <option value="Dual Citizenship">Dual Citizenship</option>
                         <option value="Foreign National">Foreign National</option>
                       </select>
                     </div>
@@ -1013,7 +1073,6 @@
                       <select class="form-control" v-model="form.bride.fatherCitizenship">
                         <option value="" disabled>Select Citizenship</option>
                         <option value="Filipino">Filipino</option>
-                        <option value="Dual Citizenship">Dual Citizenship</option>
                         <option value="Foreign National">Foreign National</option>
                       </select>
                     </div>
@@ -1059,7 +1118,6 @@
                       <select class="form-control" v-model="form.bride.motherMaidenCitizenship">
                         <option value="" disabled>Select Citizenship</option>
                         <option value="Filipino">Filipino</option>
-                        <option value="Dual Citizenship">Dual Citizenship</option>
                         <option value="Foreign National">Foreign National</option>
                       </select>
                     </div>
@@ -1083,28 +1141,46 @@
 
                 <!-- STEP 32 – BRIDE REVIEW -->
                 <div v-if="step === 32">
-                  <h4 class="section-title mb-4">Review Bride's Full Information</h4>
-                  <div class="review-scroll-area glass-inner">
-                    <table class="table table-sm text-white review-table mb-0">
-                      <thead>
-                        <tr class="table-header-row"><th colspan="2">Personal Details</th></tr>
-                      </thead>
-                      <tbody>
-                        <tr><td>Full Name</td><td class="text-info fw-bold">{{ form.bride.firstName }} {{ form.bride.middleName }} {{ form.bride.lastName }}</td></tr>
-                        <tr><td>Birth Details</td><td>{{ form.bride.month }}/{{ form.bride.day }}/{{ form.bride.year }} (Age: {{ form.bride.age }})</td></tr>
-                        <tr><td>Birth Place</td><td>{{ form.bride.cityMunicipality }}, {{ form.bride.province }}</td></tr>
-                        <tr><td>Identity</td><td>{{ form.bride.sex }} | {{ form.bride.citizenship }} | {{ form.bride.religion }}</td></tr>
-                        <tr><td>Civil Status</td><td><span class="badge bg-danger glow-badge">{{ form.bride.civilStatus }}</span></td></tr>
-                        <tr><td>Residence</td><td class="small opacity-75">{{ form.bride.residence }}</td></tr>
-                      </tbody>
-                      <thead>
-                        <tr class="table-header-row"><th colspan="2">Family Details</th></tr>
-                      </thead>
-                      <tbody>
-                        <tr><td>Father</td><td>{{ form.bride.fatherFirstName }} {{ form.bride.fatherLastName }}</td></tr>
-                        <tr><td>Mother</td><td>{{ form.bride.motherMaidenFirstName }} {{ form.bride.motherMaidenLastName }}</td></tr>
-                      </tbody>
-                    </table>
+                  <div class="d-flex align-items-center mb-4">
+                    <div class="bg-danger p-2 rounded-3 me-3">
+                      <i class="bi bi-person-check-fill fs-4 text-white"></i>
+                    </div>
+                    <h4 class="section-title mb-0 border-0 p-0 text-white">Review Bride's Information</h4>
+                  </div>
+
+                  <div class="review-scroll-area glass-inner p-4">
+                    <div class="row g-4">
+                      <div class="col-12">
+                        <h6 class="text-danger-emphasis small fw-bold text-uppercase mb-3" style="letter-spacing: 1px; color: #ff8fa3 !important;">
+                          <i class="bi bi-info-circle me-2"></i>Personal Details
+                        </h6>
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                          <div class="col"><small class="text-white-50 d-block">Full Name</small><span class="text-white fw-bold">{{ form.bride.firstName }} {{ form.bride.middleName }} {{ form.bride.lastName }}</span></div>
+                          <div class="col"><small class="text-white-50 d-block">Birth Date</small><span class="text-white">{{ form.bride.month }}/{{ form.bride.day }}/{{ form.bride.year }} (Age: {{ form.bride.age }})</span></div>
+                          <div class="col"><small class="text-white-50 d-block">Civil Status</small><span class="badge bg-danger glow-badge mt-1">{{ form.bride.civilStatus }}</span></div>
+                          <div class="col"><small class="text-white-50 d-block">Citizenship | Religion</small><span class="text-white">{{ form.bride.citizenship }} | {{ form.bride.religion }}</span></div>
+                          <div class="col-12"><small class="text-white-50 d-block">Residence</small><span class="text-white small">{{ form.bride.residence }}</span></div>
+                        </div>
+                      </div>
+
+                      <div class="col-12 border-top border-white-10 pt-4">
+                        <h6 class="text-danger-emphasis small fw-bold text-uppercase mb-3" style="letter-spacing: 1px; color: #ff8fa3 !important;">
+                          <i class="bi bi-people me-2"></i>Family Background
+                        </h6>
+                        <div class="row g-3">
+                          <div class="col-md-6 border-end border-white-10">
+                            <small class="text-white-50 d-block">Father's Name</small>
+                            <span class="text-white d-block">{{ form.bride.fatherFirstName }} {{ form.bride.fatherLastName }}</span>
+                            <span class="smallest text-white-50 italic">({{ form.bride.fatherCitizenship }})</span>
+                          </div>
+                          <div class="col-md-6">
+                            <small class="text-white-50 d-block">Mother's Maiden Name</small>
+                            <span class="text-white d-block">{{ form.bride.motherMaidenFirstName }} {{ form.bride.motherMaidenLastName }}</span>
+                            <span class="smallest text-white-50 italic">({{ form.bride.motherMaidenCitizenship }})</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -1199,8 +1275,8 @@ export default {
         bride: { cenomar: '', psa: '', lcro: '' }
       },
       form: {
-        groom: { documents: {} },
-        bride: { documents: {} }
+        groom: { documents: {}, sex: "Male" },
+        bride: { documents: {}, sex: "Female" }
       }
     }
   },
@@ -1240,8 +1316,22 @@ export default {
       const type = this.fileTypes[person][docType];
       return type && type.startsWith('image/');
     },
-    goBack(){
-      this.step--
+    goBack() {
+      let prevStep = this.step - 1;
+
+      // If going back to Step 6, but it was skipped (no-need for parental docs)
+      if (prevStep === 6 && this.brideRequirement === "no-need" && this.groomRequirement === "no-need") {
+        prevStep--;
+      }
+
+      // If going back to Step 5, but they are not a foreigner
+      const foreignerCheck = String(this.isForeigner) === 'true';
+      if (prevStep === 5 && !foreignerCheck) {
+        prevStep--;
+      }
+
+      this.step = prevStep;
+      window.scrollTo(0, 0);
     },
     goNext() {
       // Clear any existing messages before starting new validation
@@ -1589,15 +1679,29 @@ export default {
 
       // SKIP Case: Foreigner Documents (Step 5)
       // If not a foreigner, skip step 5 and go straight to step 6
-      if (nextStep === 5 && !this.isForeigner) {
-        nextStep++;
+      const foreignerCheck = String(this.isForeigner) === 'true'; // Handles both boolean and string
+      if (nextStep === 5 && !foreignerCheck) {
+          nextStep++;
       }
 
       // SKIP Case: Age Documents (Step 6)
       // If neither needs Parental Consent/Advice, skip step 6 and go to step 7
-      if (nextStep === 6 && this.brideRequirements === "no-need" && this.groomRequirements === "no-need") {
+      if (nextStep === 6 && this.brideRequirement === "no-need" && this.groomRequirement === "no-need") {
         nextStep++;
       }
+
+      // We only save the text data. Browsers cannot save "File" objects in localStorage.
+      const progressData = {
+          step: nextStep,
+          groom: { ...this.form.groom, documents: {} }, // Strip documents
+          bride: { ...this.form.bride, documents: {} }, // Strip documents
+          isForeigner: this.isForeigner,  
+          type: this.type,
+          groomRequirement: this.groomRequirement,
+          brideRequirement: this.brideRequirement
+      };
+
+      localStorage.setItem('marriage_form_progress', JSON.stringify(progressData));
 
       // 4. Finalize the move
       this.step = nextStep;
@@ -1661,24 +1765,6 @@ export default {
     },
 
     async submitForm() {
-      // 1. Show the Contact Info Modal
-      const { value: contactDetails } = await Swal.fire({
-        title: 'Where should we send your Reference Code?',
-        html:
-          '<p class="small text-muted mb-3">The Abuyog LCRO needs this to notify you once your documents are reviewed.</p>' +
-          '<input id="swal-input-email" class="swal2-input" placeholder="Email Address">' +
-          '<input id="swal-input-phone" class="swal2-input" placeholder="Mobile Number (09xxxxxxxxx)">',
-        focusConfirm: false,
-        showCancelButton: true,
-        confirmButtonText: 'Continue',
-        preConfirm: () => {
-          const email = document.getElementById('swal-input-email').value;
-          const phone = document.getElementById('swal-input-phone').value;
-          
-          return { email: email, phone: phone };
-        }
-      });
-
 
       // 2. Show Final Confirmation
       const finalCheck = await Swal.fire({
@@ -1697,8 +1783,6 @@ export default {
         Swal.fire({ title: 'Processing...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
         const formData = new FormData();
-        formData.append('email', contactDetails.email);
-        formData.append('contact_number', contactDetails.phone);
         formData.append('type', this.type);
         formData.append('groom', JSON.stringify(this.form.groom));
         formData.append('bride', JSON.stringify(this.form.bride));
@@ -1713,6 +1797,8 @@ export default {
 
         const response = await submitMarriageLicenseApplication(formData);
 
+        localStorage.removeItem('marriage_form_progress')
+
         // 4. Success Message showing the Control Number
         Swal.fire({
           icon: 'success',
@@ -1724,25 +1810,29 @@ export default {
                 ${response.data.control_number}
               </h2>
               
-              <div class="alert alert-warning border-0 shadow-sm py-3 px-2">
+              <div class="alert alert-warning border-0 shadow-sm py-3 px-2 mb-3">
                 <h6 class="fw-bold mb-1">📸 ACTION REQUIRED:</h6>
                 <p class="small mb-0">
-                  Please <b>SCREENSHOT</b> this screen or write down the code now. 
+                  Please <b>SCREENSHOT</b> this screen. Present this at the <b>Abuyog LCRO Office</b> to verify your application.
                 </p>
               </div>
 
-              ${contactDetails.email 
-                ? `<p class="x-small mt-3 opacity-75">We will also try to send a backup copy to:<br><b>${contactDetails.email}</b></p>` 
-                : `<p class="x-small mt-3 text-white-50 italic text-decoration-underline">No email provided for backup.</p>`
-              }
-              
-              <hr class="border-white opacity-25">
-              <p class="small">Present this number at the <b>Abuyog LCRO Office</b> to verify your application.</p>
+              <div class="mt-4 p-2 border-top border-white-50">
+                <p class="small mb-2 text-muted">Questions or problems with your application?</p>
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                  <i class="bi bi-person-badge-fill text-primary"></i>
+                  <span class="fw-bold">LCRO Marriage Section Staff</span>
+                </div>
+                <p class="mb-0 fw-bold text-success">
+                  <i class="bi bi-telephone-fill"></i> 0912-345-6789
+                </p>
+                <p class="x-small text-muted italic">(Available Mon-Fri, 8AM - 5PM)</p>
+              </div>
             </div>
           `,
-          confirmButtonText: 'I have screenshotted my code',
-          confirmButtonColor: '#198754', // Success green
-          allowOutsideClick: false // Forces them to read and click the button
+          confirmButtonText: 'I have saved my control number',
+          confirmButtonColor: '#198754',
+          allowOutsideClick: false
         }).then(() => {
           this.$router.push('/home');
         });
@@ -1767,10 +1857,49 @@ export default {
     // For foreigner classification
     this.isForeigner = this.$route.params.isForeigner;
     this.type = this.$route.params.type;
+
+    // 2. AUTO-FILL CITIZENSHIP LOGIC
+    if (this.type === 'filipino') {
+        this.form.groom.citizenship = 'Filipino';
+        this.form.bride.citizenship = 'Filipino';
+    } else if (this.type === 'groom') {
+        this.form.groom.citizenship = 'Foreign National';
+        this.form.bride.citizenship = 'Filipino';
+    } else if (this.type === 'bride') {
+        this.form.groom.citizenship = 'Filipino';
+        this.form.bride.citizenship = 'Foreign National';
+    } else if (this.type === 'both') {
+        this.form.groom.citizenship = 'Foreign National';
+        this.form.bride.citizenship = 'Foreign National';
+    }
+
     // For ager requirements
     this.groomRequirement = this.$route.params.groomRequirement;
     this.brideRequirement = this.$route.params.brideRequirement;
     // console.log(this.isForeigner)
+
+    const savedData = localStorage.getItem('marriage_form_progress');
+    if (savedData) {
+        const parsed = JSON.parse(savedData);
+        // Only load if the user actually wants to continue
+        this.form.groom = { ...this.form.groom, ...parsed.groom };
+        this.form.bride = { ...this.form.bride, ...parsed.bride };
+        // this.step = parsed.step;
+
+        Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'info',
+        title: 'Progress Restored',
+        html: '<small>We saved your text info. <b>Note:</b> You must re-upload your document photos for security reasons.</small>',
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        background: '#1e3c72',
+        color: '#fff'
+      });
+
+    }
   }
 }
 </script>
@@ -2011,5 +2140,32 @@ export default {
 
 .border-white-10 {
   border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Better Label Styling */
+small.text-white-50 {
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+/* Scroll area padding fix */
+.review-scroll-area {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Vertical Divider for Desktop */
+@media (min-width: 768px) {
+  .border-white-10 {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
+/* Italic text for secondary info */
+.italic {
+  font-style: italic;
 }
 </style>

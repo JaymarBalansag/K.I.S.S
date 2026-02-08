@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\MarriageApplicationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -10,7 +11,7 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/login', [App\Http\Controllers\Api\AuthenticationController::class, 'login']);
 
-Route::controller(App\Http\Controllers\MarriageApplicationController::class)->group(function () {
+Route::controller(MarriageApplicationController::class)->group(function () {
     Route::post("/submit/marriage-license-application", "store");
 });
 

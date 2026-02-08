@@ -38,7 +38,9 @@ class MarriageApplicationController extends Controller
                     'first_name'         => $data['firstName'],
                     'middle_name'        => $data['middleName'] ?? 'N/A',
                     'last_name'          => $data['lastName'],
-                    'birth_date'         => "{$data['year']}-{$data['month']}-{$data['day']}",
+                    'day'         => $data['day'],
+                    'month'         => $data['month'],
+                    'year'         => $data['year'],
                     'birth_city'         => $data['cityMunicipality'],
                     'birth_province'     => $data['province'],
                     'birth_country'      => $data['country'],
@@ -51,14 +53,20 @@ class MarriageApplicationController extends Controller
                     // Dissolution Info (If not Single)
                     'dissolution_details' => $data["previousMarriageDissolve"] ?? 'N/A', 
                     'dissolution_place' => $data["previousMarriageDissolve"] ?? 'N/A', 
-                    'dissolution_date' => "{$data['year']}-{$data['month']}-{$data['day']}" ?? "N/A", 
+                    'dissolution_day' => $data['dissolvedDay'] ?? "N/A",
+                    'dissolution_month' => $data['dissolvedMonth'] ?? "N/A",
+                    'dissolution_year' => $data['dissolvedYear'] ?? "N/A",
+
+                    "relationship_degree" => $data['degree'],
 
                     // Parental info
                     'father_first_name'  => $data['fatherFirstName'] ?? 'N/A',
+                    'father_middle_name'  => $data['fatherMiddleName'] ?? 'N/A',
                     'father_last_name'   => $data['fatherLastName'] ?? 'N/A',
                     'father_citizenship' => $data['fatherCitizenship'] ?? 'N/A',
                     'father_residence'   => $data['fatherResidence'] ?? 'N/A',
                     'mother_first_name'  => $data['motherMaidenFirstName'] ?? 'N/A',
+                    'mother_middle_name'  => $data['motherMiddleName'] ?? 'N/A',
                     'mother_last_name'   => $data['motherMaidenLastName'] ?? 'N/A',
                     'mother_citizenship' => $data['motherMaidenCitizenship'] ?? 'N/A',
                     'mother_residence'   => $data['motherMaidenResidence'] ?? 'N/A',

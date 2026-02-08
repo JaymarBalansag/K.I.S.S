@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('control_number')->unique()->index();
             $table->enum('status', ['pending', 'under_review', 'approved', 'rejected', 'issued'])->default('pending');
-            $table->string('email');
-            $table->string('contact_number');
+            $table->string('foreigner_type')->nullable();
             $table->timestamp('submitted_at')->useCurrent();
             
             // Track which staff handled the application
             $table->foreignId('staff_id')->nullable()->constrained('users')->onDelete('set null');
-            
+            $table->boolean('is_confirmed')->default(false);
+            $table->timestamp('confirmed_at')->nullable();
             $table->timestamps();
         });
     }
