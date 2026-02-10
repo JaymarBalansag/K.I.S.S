@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MarriageApplicationController;
+use App\Http\Controllers\Api\MarriageLicenseApplicationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -24,6 +25,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware("is_admin")->group(function () {
         Route::apiResource('Staffs', \App\Http\Controllers\UserController::class);
+    });
+
+    Route::middleware("is_staff")->group(function () {
+        Route::controller(MarriageApplicationController::class)->group(function() {
+            Route::get("/applications", "getApplications");
+            Route::get("/view/applicants/{application_id}/{control_number}", "viewApplication");
+        });
     });
 
 

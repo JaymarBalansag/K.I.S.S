@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('application_id')->constrained('marriage_applications', "id")->onDelete('cascade');
             $table->enum('owner_type', ['groom', 'bride']);
-            
             $table->string('doc_type'); // e.g., 'PSA_Birth', 'CENOMAR'
             $table->string('file_path'); // Path to the file in storage
             $table->timestamps();

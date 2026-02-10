@@ -1431,7 +1431,7 @@ export default {
             this.scrollToError();
             return;
           }
-          if (!this.form.groom.middleName) this.form.groom.middleName = "N/A";
+          // if (!this.form.groom.middleName) this.form.groom.middleName = "N/A";
           break;
 
         case 8: // Groom Birth Date
@@ -1509,7 +1509,7 @@ export default {
           break;
 
         case 14: // Groom Degree
-          if (!this.form.groom.degree) this.form.groom.degree = "N/A";
+          // if (!this.form.groom.degree) this.form.groom.degree = "N/A";
           break;
 
         case 15: // Groom Father Info
@@ -1518,7 +1518,7 @@ export default {
             this.scrollToError();
             return;
           }
-          if (!this.form.groom.fatherMiddleName) this.form.groom.fatherMiddleName = "N/A";
+          // if (!this.form.groom.fatherMiddleName) this.form.groom.fatherMiddleName = "N/A";
           break;
 
         case 16: // Groom Father Residence
@@ -1535,7 +1535,7 @@ export default {
             this.scrollToError();
             return;
           }
-          if (!this.form.groom.motherMaidenMiddleName) this.form.groom.motherMaidenMiddleName = "N/A";
+          // if (!this.form.groom.motherMaidenMiddleName) this.form.groom.motherMaidenMiddleName = "N/A";
           break;
 
         case 18: // Groom Mother Residence
@@ -1553,7 +1553,7 @@ export default {
             this.scrollToError();
             return;
           }
-          if (!this.form.bride.middleName) this.form.bride.middleName = "N/A";
+          // if (!this.form.bride.middleName) this.form.bride.middleName = "N/A";
           break;
 
         case 21: // Bride Birth Date
@@ -1619,17 +1619,17 @@ export default {
             this.scrollToError();
             return;
           }
-          if (!this.form.bride.previousMarriageDissolve) this.form.bride.previousMarriageDissolve = "N/A";
-          if (!this.form.bride.dissolvedCityMunicipality) this.form.bride.dissolvedCityMunicipality = "N/A";
-          if (!this.form.bride.dissolvedProvince) this.form.bride.dissolvedProvince = "N/A";
-          if (!this.form.bride.dissolvedCountry) this.form.bride.dissolvedCountry = "N/A";
-          if (!this.form.bride.dissolvedDay) this.form.bride.dissolvedDay = "N/A";
-          if (!this.form.bride.dissolvedMonth) this.form.bride.dissolvedMonth = "N/A";
-          if (!this.form.bride.dissolvedYear) this.form.bride.dissolvedYear = "N/A";
+          // if (!this.form.bride.previousMarriageDissolve) this.form.bride.previousMarriageDissolve = "N/A";
+          // if (!this.form.bride.dissolvedCityMunicipality) this.form.bride.dissolvedCityMunicipality = "N/A";
+          // if (!this.form.bride.dissolvedProvince) this.form.bride.dissolvedProvince = "N/A";
+          // if (!this.form.bride.dissolvedCountry) this.form.bride.dissolvedCountry = "N/A";
+          // if (!this.form.bride.dissolvedDay) this.form.bride.dissolvedDay = "N/A";
+          // if (!this.form.bride.dissolvedMonth) this.form.bride.dissolvedMonth = "N/A";
+          // if (!this.form.bride.dissolvedYear) this.form.bride.dissolvedYear = "N/A";
           break;
 
         case 27: // Bride Degree
-          if (!this.form.bride.degree) this.form.bride.degree = "N/A";
+          // if (!this.form.bride.degree) this.form.bride.degree = "N/A";
           break;
 
         case 28: // Bride Father Info
@@ -1638,7 +1638,7 @@ export default {
             this.scrollToError();
             return;
           }
-          if (!this.form.bride.fatherMiddleName) this.form.bride.fatherMiddleName = "N/A";
+          // if (!this.form.bride.fatherMiddleName) this.form.bride.fatherMiddleName = "N/A";
           break;
 
         case 29: // Bride Father Residence
@@ -1655,7 +1655,7 @@ export default {
             this.scrollToError();
             return;
           }
-          if (!this.form.bride.motherMaidenMiddleName) this.form.bride.motherMaidenMiddleName = "N/A";
+          // if (!this.form.bride.motherMaidenMiddleName) this.form.bride.motherMaidenMiddleName = "N/A";
           break;
 
         case 31: // Bride Mother Residence
