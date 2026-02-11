@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+        /* 1. PAPER CONFIGURATION */
+        @page {
+            size: 8.5in 14in;
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 11pt;
+            color: black;
+        }
+
+        /* 2. THE ALIGNMENT CONTAINER */
+        .print-container {
+            position: relative;
+            width: 8.5in;
+            height: 14in;
+            box-sizing: border-box;
+            /* Updated to use public_path for Laravel DomPDF compatibility */
+            background: url('license2.jpg') no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .data {
+            position: absolute;
+            white-space: nowrap;
+        }
+
+        /* ---------------------------------------------------------
+           COORDINATE MAPPING (All Top values increased by 10px)
+           --------------------------------------------------------- */
+
+        /* Top Section */
+        .province {
+            top: 118px;
+            left: 175px;
+        }
+
+        .municipality {
+            top: 138px;
+            left: 230px;
+        }
+
+        .received-by {
+            top: 163px;
+            left: 185px;
+        }
+
+        .date {
+            top: 179px;
+            left: 195px;
+        }
+
+        /* Groom Column (Left) */
+        .b-fullname {
+            top: 270px;
+            left: 130px;
+            font-weight: bold;
+        }
+
+        .g-name-first {
+            top: 353px;
+            left: 155px;
+        }
+
+        .g-name-middle {
+            top: 370px;
+            left: 155px;
+        }
+
+        .g-name-last {
+            top: 385px;
+            left: 155px;
+        }
+
+        .g-bday {
+            top: 422px;
+            left: 130px;
+        }
+
+        .g-age {
+            top: 422px;
+            left: 350px;
+        }
+
+        .g-birthplace {
+            top: 460px;
+            left: 155px;
+            width: 300px;
+            font-size: 9pt;
+            white-space: normal;
+        }
+
+        .g-sex {
+            top: 495px;
+            left: 145px;
+        }
+
+        .g-citizenship {
+            top: 495px;
+            left: 270px;
+        }
+
+        .g-residence {
+            top: 525px;
+            left: 115px;
+            width: 250px;
+            font-size: 9pt;
+            white-space: normal;
+            text-align: center;
+        }
+
+        .g-religion {
+            top: 570px;
+            left: 180px;
+        }
+
+        .g-civil-status {
+            top: 600px;
+            left: 230px;
+        }
+
+        .g-if-married {
+            top: 638px;
+            left: 230px;
+        }
+
+        .g-place-dissolved {
+            top: 678px;
+            left: 140px;
+        }
+
+        .g-date-dissolved {
+            top: 710px;
+            left: 160px;
+        }
+
+        .g-relationship {
+            top: 745px;
+            left: 170px;
+        }
+
+        .g-fathername {
+            top: 780px;
+            left: 145px;
+        }
+
+        .g-father-citizenship {
+            top: 805px;
+            left: 200px;
+        }
+
+        .g-father-residence {
+            top: 839px;
+            left: 135px;
+            width: 250px;
+            font-size: 9pt;
+            white-space: normal;
+            text-align: center;
+        }
+
+        .g-mothername {
+            top: 885px;
+            left: 145px;
+        }
+
+        .g-mother-citizenship {
+            top: 913px;
+            left: 200px;
+        }
+
+        .g-mother-residence {
+            top: 934px;
+            left: 135px;
+            width: 250px;
+            font-size: 9pt;
+            white-space: normal;
+            text-align: center;
+        }
+
+        .g-give-consent {
+            top: 980px;
+            left: 200px;
+        }
+
+        .g-give-consent-relationship {
+            top: 1000px;
+            left: 200px;
+        }
+
+        .g-give-consent-citizenship {
+            top: 1025px;
+            left: 200px;
+        }
+
+        .g-give-consent-residence {
+            top: 1065px;
+            left: 135px;
+            width: 250px;
+            font-size: 9pt;
+            white-space: normal;
+            text-align: center;
+        }
+
+        /* Bride Column (Right) */
+        .g-fullname {
+            top: 272px;
+            left: 450px;
+            font-weight: bold;
+        }
+
+        .b-name-first {
+            top: 355px;
+            left: 550px;
+        }
+
+        .b-name-middle {
+            top: 370px;
+            left: 550px;
+        }
+
+        .b-name-last {
+            top: 385px;
+            left: 550px;
+        }
+
+        .b-bday {
+            top: 422px;
+            left: 530px;
+        }
+
+        .b-age {
+            top: 422px;
+            left: 720px;
+        }
+
+        .b-birthplace {
+            top: 460px;
+            left: 535px;
+            width: 300px;
+            font-size: 9pt;
+            white-space: normal;
+        }
+
+        .b-sex {
+            top: 495px;
+            left: 530px;
+        }
+
+        .b-citizenship {
+            top: 495px;
+            left: 650px;
+        }
+
+        .b-residence {
+            top: 525px;
+            left: 500px;
+            width: 250px;
+            font-size: 9pt;
+            white-space: normal;
+            text-align: center;
+        }
+
+        .b-religion {
+            top: 570px;
+            left: 580px;
+        }
+
+        .b-civil-status {
+            top: 600px;
+            left: 580px;
+        }
+
+        .b-if-married {
+            top: 638px;
+            left: 580px;
+        }
+
+        .b-place-dissolved {
+            top: 678px;
+            left: 500px;
+        }
+
+        .b-date-dissolved {
+            top: 710px;
+            left: 560px;
+        }
+
+        .b-relationship {
+            top: 745px;
+            left: 570px;
+        }
+
+        .b-fathername {
+            top: 780px;
+            left: 525px;
+        }
+
+        .b-father-citizenship {
+            top: 805px;
+            left: 600px;
+        }
+
+        .b-father-residence {
+            top: 839px;
+            left: 485px;
+            width: 250px;
+            font-size: 9pt;
+            white-space: normal;
+            text-align: center;
+        }
+
+        .b-mothername {
+            top: 885px;
+            left: 525px;
+        }
+
+        .b-mother-citizenship {
+            top: 913px;
+            left: 600px;
+        }
+
+        .b-mother-residence {
+            top: 934px;
+            left: 500px;
+            width: 250px;
+            font-size: 9pt;
+            white-space: normal;
+            text-align: center;
+        }
+
+        .b-give-consent {
+            top: 980px;
+            left: 550px;
+        }
+
+        .b-give-consent-relationship {
+            top: 1000px;
+            left: 550px;
+        }
+
+        .b-give-consent-citizenship {
+            top: 1025px;
+            left: 550px;
+        }
+
+        .b-give-consent-residence {
+            top: 1065px;
+            left: 500px;
+            width: 250px;
+            font-size: 9pt;
+            white-space: normal;
+            text-align: center;
+        }
+
+        @media print {
+            .print-container {
+                background: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="print-container">
+        <div class="data province">LEYTE</div>
+        <div class="data municipality">ABUYOG</div>
+        <div class="data received-by">MUNICIPAL CIVIL REGISTRAR</div>
+        <div class="data date">Feb 10, 2026</div>
+
+        <div class="data b-fullname">Russell Limos Taburada</div>
+        <div class="data g-name-first">Ruwilson</div>
+        <div class="data g-name-middle">Taburada</div>
+        <div class="data g-name-last">Hipos</div>
+        <div class="data g-bday">26 November, 2003</div>
+        <div class="data g-age">22</div>
+        <div class="data g-birthplace">Abuyog Leyte, Philippines</div>
+        <div class="data g-sex">Male</div>
+        <div class="data g-citizenship">Filipino</div>
+        <div class="data g-residence">340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines</div>
+        <div class="data g-religion">Roman Catholic</div>
+        <div class="data g-civil-status">Single</div>
+        <div class="data g-if-married">Divorced</div>
+        <div class="data g-place-dissolved">Abuyog Leyte, Philippines</div>
+        <div class="data g-date-dissolved">10 February, 2026</div>
+        <div class="data g-relationship">Not Applicable</div>
+        <div class="data g-fathername">Jaymar Sabillo Balansag</div>
+        <div class="data g-father-citizenship">Filipino</div>
+        <div class="data g-father-residence">340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines</div>
+        <div class="data g-mothername">Lorena Limos Taburada</div>
+        <div class="data g-mother-citizenship">Filipino</div>
+        <div class="data g-mother-residence">340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines</div>
+        <div class="data g-give-consent">NOT APPLICABLE</div>
+        <div class="data g-give-consent-relationship">NOT APPLICABLE</div>
+        <div class="data g-give-consent-citizenship">NOT APPLICABLE</div>
+        <div class="data g-give-consent-residence">NOT APPLICABLE</div>
+
+        <div class="data g-fullname">Ruwilson Taburada Hipos</div>
+        <div class="data b-name-first">Ruwilson</div>
+        <div class="data b-name-middle">Taburada</div>
+        <div class="data b-name-last">Hipos</div>
+        <div class="data b-bday">26 November, 2003</div>
+        <div class="data b-age">22</div>
+        <div class="data b-birthplace">Abuyog Leyte, Philippines</div>
+        <div class="data b-sex">Male</div>
+        <div class="data b-citizenship">Filipino</div>
+        <div class="data b-residence">340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines</div>
+        <div class="data b-religion">Roman Catholic</div>
+        <div class="data b-civil-status">Single</div>
+        <div class="data b-if-married">Divorced</div>
+        <div class="data b-place-dissolved">Abuyog Leyte, Philippines</div>
+        <div class="data b-date-dissolved">10 February, 2026</div>
+        <div class="data b-relationship">Not Applicable</div>
+        <div class="data b-fathername">Jaymar Sabillo Balansag</div>
+        <div class="data b-father-citizenship">Filipino</div>
+        <div class="data b-father-residence">340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines</div>
+        <div class="data b-mothername">Lorena Limos Taburada</div>
+        <div class="data b-mother-citizenship">Filipino</div>
+        <div class="data b-mother-residence">340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines</div>
+        <div class="data b-give-consent">NOT APPLICABLE</div>
+        <div class="data b-give-consent-relationship">NOT APPLICABLE</div>
+        <div class="data b-give-consent-citizenship">NOT APPLICABLE</div>
+        <div class="data b-give-consent-residence">NOT APPLICABLE</div>
+    </div>
+
+</body>
+
+</html>

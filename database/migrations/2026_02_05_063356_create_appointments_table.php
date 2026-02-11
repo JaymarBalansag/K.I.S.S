@@ -13,19 +13,19 @@ return new class extends Migration
     {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('application_id')->constrained('marriage_applications', "id")->onDelete('cascade');
+            $table->foreignId('application_id')->nullable()->constrained('marriage_applications', "id")->onDelete('cascade');
             $table->enum('appointment_type', ['counseling', 'ceremony']);
 
-            $table->string('first_name'); 
-            $table->string('last_name'); 
-            $table->string('middle_name')->nullable(); 
-            $table->string('extension')->nullable(); 
-            $table->string('phone_number'); 
-            $table->string('email')->nullable(); 
-            
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('middle_name')->nullable();
+            $table->string('extension')->nullable();
+            $table->string('phone_number');
+            $table->string('email')->nullable();
+
             $table->dateTime('requested_date'); // What the user picked
             $table->dateTime('scheduled_date')->nullable(); // What staff confirmed
-            
+
             $table->enum('status', ['pending', 'confirmed', 'completed', 'cancelled'])->default('pending');
             $table->text('remarks')->nullable();
             $table->timestamps();
