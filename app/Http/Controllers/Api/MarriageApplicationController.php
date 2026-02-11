@@ -165,13 +165,27 @@ class MarriageApplicationController extends Controller
             }
 
             $groomDocuments = DB::table("documents")
-            ->select("documents.*")
+            ->select("documents.*",
+            DB::raw("
+                CASE 
+                    WHEN documents.file_path IS NOT NULL 
+                    THEN CONCAT('" . asset('storage') . "/', documents.file_path) 
+                    ELSE NULL 
+                END as document_url
+            "))
             ->where("application_id", "=", $groom->application_id)
             ->where("owner_type", "=", $groom->applicant_type)
             ->get();
             
             $brideDocuments = DB::table("documents")
-            ->select("documents.*")
+            ->select("documents.*",
+            DB::raw("
+                CASE 
+                    WHEN documents.file_path IS NOT NULL 
+                    THEN CONCAT('" . asset('storage') . "/', documents.file_path) 
+                    ELSE NULL 
+                END as document_url
+            "))
             ->where("application_id", "=", $bride->application_id)
             ->where("owner_type", "=", $bride->applicant_type)
             ->get();
@@ -200,6 +214,95 @@ class MarriageApplicationController extends Controller
                 "groomDocuments" => [],
                 "brideDocuments" => [],
             ]);
+        }
+    }
+
+    public function searchApplicants(Request $request){
+        try {
+            
+            $searchTerm = $request->query('search'); // Get the search input from Vue
+
+            $applications = DB::table("marriage_applications")
+                ->join("applicants", "marriage_applications.id", "=", "applicants.application_id")
+                ->select(
+                    "marriage_applications.*",
+                    "applicants.first_name",
+                    "applicants.last_name"
+                )
+                ->where(function($query) use ($searchTerm) {
+                    $query->where('applicants.first_name', 'LIKE', "%{$searchTerm}%")
+                        ->orWhere('applicants.last_name', 'LIKE', "%{$searchTerm}%")
+                        ->orWhere('marriage_applications.control_number', 'LIKE', "%{$searchTerm}%");
+                })
+                // Group by ID to avoid duplicate rows for Groom/Bride in the main list
+                ->groupBy('marriage_applications.id') 
+                ->paginate(10);
+
+                if($applications->isEmpty()){
+                    return response()->json([
+                        "message" => "No application found",
+                        "data" => [],
+                    ]);
+                }
+
+                return response()->json([
+                    "message" => "Application Found",
+                    "data" => $applications
+                ]);
+            
+
+        } catch (\Exception $e) {
+            return response()->json([
+                "message" => "Something's wrong with the server" . $e->getMessage(),
+                "data" => [],
+            ]);
+        }
+    }
+
+    public function getApplicationByStatus(Request $request, string $status){
+        try {
+            // 1. Start the base query
+            $query = DB::table("marriage_applications")
+            ->join("applicants", "marriage_applications.id", "=", "applicants.application_id")
+            ->select(
+                "marriage_applications.*",
+                "applicants.first_name",
+                "applicants.last_name"
+            );
+
+            // 2. Filter by Status (Cleaned up the spaces)
+            if ($status !== 'all') {
+                $query->where("marriage_applications.status", "=", trim($status));
+            }
+
+            // 3. Add the SEARCH logic for the Search Bar
+            if ($request->has('search') && $request->search != '') {
+                $search = $request->search;
+                $query->where(function($q) use ($search) {
+                    $q->where('applicants.first_name', 'LIKE', "%$search%")
+                    ->orWhere('applicants.last_name', 'LIKE', "%$search%")
+                    ->orWhere('marriage_applications.control_number', 'LIKE', "%$search%");
+                });
+            }
+
+            // 4. Group by application ID so you don't get 2 rows (Groom/Bride) for one application
+            // 5. Paginate the result
+            // $data = $query->groupBy('marriage_applications.id')
+            // ->orderBy('marriage_applications.created_at', 'desc')
+            // ->paginate(10);
+            $data = $query->orderBy('marriage_applications.created_at', 'desc')
+            ->paginate(4);
+
+            return response()->json([
+                "message" => "Applicants found",
+                "data" => $data,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                "message" => "Something's wrong with the server: " . $e->getMessage(),
+                "data" => [],
+            ], 500);
         }
     }
 }
