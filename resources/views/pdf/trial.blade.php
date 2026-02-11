@@ -7,7 +7,7 @@
     <style>
         /* 1. PAPER CONFIGURATION */
         @page {
-            size: 8.5in 14in;
+            size: 8.5in 20in;
             margin: 0;
         }
 
@@ -160,7 +160,7 @@
         }
 
         .g-father-residence {
-            top: 839px;
+            top: 844px;
             left: 135px;
             width: 250px;
             font-size: 9pt;
@@ -179,7 +179,7 @@
         }
 
         .g-mother-residence {
-            top: 934px;
+            top: 939px;
             left: 135px;
             width: 250px;
             font-size: 9pt;
@@ -193,12 +193,12 @@
         }
 
         .g-give-consent-relationship {
-            top: 1000px;
+            top: 1003px;
             left: 200px;
         }
 
         .g-give-consent-citizenship {
-            top: 1025px;
+            top: 1027px;
             left: 200px;
         }
 
@@ -311,7 +311,7 @@
         }
 
         .b-father-residence {
-            top: 839px;
+            top: 844px;
             left: 485px;
             width: 250px;
             font-size: 9pt;
@@ -330,7 +330,7 @@
         }
 
         .b-mother-residence {
-            top: 934px;
+            top: 939px;
             left: 500px;
             width: 250px;
             font-size: 9pt;
@@ -344,17 +344,17 @@
         }
 
         .b-give-consent-relationship {
-            top: 1000px;
+            top: 1003px;
             left: 550px;
         }
 
         .b-give-consent-citizenship {
-            top: 1025px;
+            top: 1065px;
             left: 550px;
         }
 
         .b-give-consent-residence {
-            top: 1065px;
+            top: 1058px;
             left: 500px;
             width: 250px;
             font-size: 9pt;
