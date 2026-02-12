@@ -12,7 +12,7 @@ class PdfController extends Controller
         // 1. Load your trial.blade.php file
         $pdf = Pdf::loadView('pdf.trial');
 
-        // 2. Set the paper size to Legal (8.5in x 14in) 
+        // 2. Set the paper size to Legal (8.5in x 14in)
         // This is crucial so your absolute positioning (px) stays aligned
         $pdf->setPaper('legal', 'portrait');
 

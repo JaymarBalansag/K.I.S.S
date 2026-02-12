@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
     <style>
-        /* 1. PAPER CONFIGURATION */
         @page {
-            size: 8.5in 20in;
+            size: 8.5in 14in;
             margin: 0;
         }
 
@@ -19,25 +19,33 @@
             color: black;
         }
 
-        /* 2. THE ALIGNMENT CONTAINER */
+        /* MAIN PAPER */
         .print-container {
             position: relative;
             width: 8.5in;
             height: 14in;
-            box-sizing: border-box;
-            /* Updated to use public_path for Laravel DomPDF compatibility */
-            background: url('license2.jpg') no-repeat;
-            background-size: 100% 100%;
         }
 
+        /* BACKGROUND IMAGE WITH OPACITY */
+        .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8.5in;
+            height: 14in;
+            opacity: 0;
+            /* ← ADJUST OPACITY HERE */
+            z-index: 0;
+        }
+
+        /* TEXT LAYER */
         .data {
             position: absolute;
             white-space: nowrap;
+            z-index: 1;
         }
 
-        /* ---------------------------------------------------------
-           COORDINATE MAPPING (All Top values increased by 10px)
-           --------------------------------------------------------- */
+        /* ---------------- POSITIONS ---------------- */
 
         /* Top Section */
         .province {
@@ -60,7 +68,7 @@
             left: 195px;
         }
 
-        /* Groom Column (Left) */
+        /* Groom Column */
         .b-fullname {
             top: 270px;
             left: 130px;
@@ -203,7 +211,7 @@
         }
 
         .g-give-consent-residence {
-            top: 1065px;
+            top: 1060px;
             left: 135px;
             width: 250px;
             font-size: 9pt;
@@ -211,7 +219,7 @@
             text-align: center;
         }
 
-        /* Bride Column (Right) */
+        /* Bride Column */
         .g-fullname {
             top: 272px;
             left: 450px;
@@ -349,23 +357,17 @@
         }
 
         .b-give-consent-citizenship {
-            top: 1065px;
+            top: 1027px;
             left: 550px;
         }
 
         .b-give-consent-residence {
-            top: 1058px;
-            left: 500px;
+            top: 1060px;
+            left: 490px;
             width: 250px;
             font-size: 9pt;
             white-space: normal;
             text-align: center;
-        }
-
-        @media print {
-            .print-container {
-                background: none !important;
-            }
         }
     </style>
 </head>
@@ -373,6 +375,11 @@
 <body>
 
     <div class="print-container">
+
+        <!-- BACKGROUND IMAGE -->
+        <img src="license2.jpg" class="bg-image">
+
+        <!-- DATA -->
         <div class="data province">LEYTE</div>
         <div class="data municipality">ABUYOG</div>
         <div class="data received-by">MUNICIPAL CIVIL REGISTRAR</div>
@@ -382,6 +389,7 @@
         <div class="data g-name-first">Ruwilson</div>
         <div class="data g-name-middle">Taburada</div>
         <div class="data g-name-last">Hipos</div>
+
         <div class="data g-bday">26 November, 2003</div>
         <div class="data g-age">22</div>
         <div class="data g-birthplace">Abuyog Leyte, Philippines</div>
@@ -431,6 +439,7 @@
         <div class="data b-give-consent-relationship">NOT APPLICABLE</div>
         <div class="data b-give-consent-citizenship">NOT APPLICABLE</div>
         <div class="data b-give-consent-residence">NOT APPLICABLE</div>
+
     </div>
 
 </body>
