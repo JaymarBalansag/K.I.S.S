@@ -76,8 +76,8 @@
                         <ul
                             class="dropdown-menu dropdown-menu-end glass-dropdown shadow-lg border-white border-opacity-10 mt-2 p-2 animate__animated animate__fadeInUp animate__faster">
                             <li>
-                                <router-link class="dropdown-item rounded-2 text-white py-2" to="/Staff/Profile">
-                                    <i class="bi bi-person me-2"></i> Profile
+                                <router-link class="dropdown-item rounded-2 text-white py-2" to="/home">
+                                    <i class="bi bi-person me-2"></i> Home
                                 </router-link>
                             </li>
                             <li>

@@ -34,10 +34,6 @@
                         class="btn btn-primary btn-sm rounded-pill px-4 fw-bold text-uppercase tracking-wider shadow-sm">
                         Staff Dashboard
                     </router-link>
-                    <a v-if="role === 'guest'" href="/api/download"
-                        class="btn btn-primary btn-sm rounded-pill px-4 fw-bold text-uppercase tracking-wider shadow-sm">
-                        Download License
-                    </a>
                 </div>
             </div>
         </div>
