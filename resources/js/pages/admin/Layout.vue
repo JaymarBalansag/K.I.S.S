@@ -106,7 +106,6 @@
 </template>
 
 <script>
-import api from '../../controller/api';
 import { logout } from '../../controller/Authentication';
 export default {
     name: 'AdminLayout',
@@ -132,7 +131,7 @@ export default {
         async handleLogout() {
             if (confirm("Logout from LCRO Admin?")) {
                 const res = await logout();
-                this.$router.push('/login');
+                this.$router.push('/staff-portal');
             }
         }
     }

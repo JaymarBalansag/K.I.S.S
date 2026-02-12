@@ -127,7 +127,7 @@ export default {
         async handleLogout() {
             if (confirm("Logout from LCRO Staff?")) {
                 const res = await logout();
-                this.$router.push('/login');
+                this.$router.push('/staff-portal');
             }
         }
     }
