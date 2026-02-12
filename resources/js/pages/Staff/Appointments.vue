@@ -1,119 +1,117 @@
 <template>
-    <div class="management-page" :style="{ backgroundImage: 'url(/background.jpg)' }">
-        <main class="content-overlay">
-            <div class="container py-5 mt-5">
-                <div class="row justify-content-center text-center mb-4 mt-4">
-                    <div class="col-lg-9 col-xl-8">
-                        <span
-                            class="badge bg-primary bg-opacity-75 rounded-pill px-4 py-2 mb-3 shadow-sm text-uppercase fw-bold animate__animated animate__fadeInDown">
-                            Appointments Management
-                        </span>
-                        <h2 class="text-white fw-bold text-shadow-heavy">Schedule Overview</h2>
+    <main class="content-overlay">
+        <div class="container py-5 mt-5">
+            <div class="row justify-content-center text-center mb-4 mt-4">
+                <div class="col-lg-9 col-xl-8">
+                    <span
+                        class="badge bg-primary bg-opacity-75 rounded-pill px-4 py-2 mb-3 shadow-sm text-uppercase fw-bold animate__animated animate__fadeInDown">
+                        Appointments Management
+                    </span>
+                    <h2 class="text-white fw-bold text-shadow-heavy">Schedule Overview</h2>
+                </div>
+            </div>
+
+            <div class="row justify-content-center mb-4 g-3">
+                <div class="col-md-5">
+                    <div class="search-box">
+                        <i class="bi bi-search search-icon"></i>
+                        <input v-model="searchQuery" type="text" class="form-control glass-input"
+                            placeholder="Search Name or Control No...">
                     </div>
                 </div>
+                <div class="col-md-5 d-flex justify-content-md-end justify-content-center gap-2">
+                    <button v-for="status in ['all', 'pending', 'approved']" :key="status"
+                        @click="filterStatus = status" class="btn btn-action-glass text-capitalize px-4"
+                        :class="{ 'active-filter': filterStatus === status }">
+                        {{ status }}
+                    </button>
+                </div>
+            </div>
 
-                <div class="row justify-content-center mb-4 g-3">
-                    <div class="col-md-5">
-                        <div class="search-box">
-                            <i class="bi bi-search search-icon"></i>
-                            <input v-model="searchQuery" type="text" class="form-control glass-input"
-                                placeholder="Search Name or Control No...">
-                        </div>
-                    </div>
-                    <div class="col-md-5 d-flex justify-content-md-end justify-content-center gap-2">
-                        <button v-for="status in ['all', 'pending', 'approved']" :key="status"
-                            @click="filterStatus = status" class="btn btn-action-glass text-capitalize px-4"
-                            :class="{ 'active-filter': filterStatus === status }">
-                            {{ status }}
-                        </button>
-                    </div>
+            <div class="staff-content animate__animated animate__fadeInUp">
+                <div v-if="loading" class="text-center text-white py-5">
+                    <div class="spinner-border text-info" role="status"></div>
+                    <p class="mt-2 opacity-75">Connecting to server...</p>
                 </div>
 
-                <div class="staff-content animate__animated animate__fadeInUp">
-                    <div v-if="loading" class="text-center text-white py-5">
-                        <div class="spinner-border text-info" role="status"></div>
-                        <p class="mt-2 opacity-75">Connecting to server...</p>
+                <div v-else-if="filteredAppointments && filteredAppointments.length > 0">
+                    <div class="table-responsive d-none d-md-block">
+                        <table class="table glass-table align-middle">
+                            <thead>
+                                <tr class="text-uppercase small opacity-75 ls-1">
+                                    <th class="px-4 py-3 text-white border-0">Control No.</th>
+                                    <th class="py-3 text-white border-0">Client Name</th>
+                                    <th class="py-3 text-white border-0">Type</th>
+                                    <th class="py-3 text-white border-0">Requested Date</th>
+                                    <th class="py-3 text-white border-0">Status</th>
+                                    <th class="py-3 text-center text-white border-0">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="apt in filteredAppointments" :key="apt.id" class="glass-row transition">
+                                    <td class="px-4 fw-bold text-info border-0 rounded-start-4">
+                                        {{ apt.control_number }}
+                                    </td>
+                                    <td class="text-white border-0">
+                                        <div class="fw-bold">{{ formatFullName(apt) }}</div>
+                                        <small class="opacity-50">{{ apt.phone_number }}</small>
+                                    </td>
+                                    <td class="text-white border-0">
+                                        <span class="small opacity-75">{{ apt.appointment_type }}</span>
+                                    </td>
+                                    <td class="text-white opacity-75 border-0">
+                                        {{ formatDate(apt.requested_date) }}
+                                    </td>
+                                    <td class="border-0">
+                                        <span :class="getStatusClass(apt.status)">
+                                            {{ apt.status === 'confirmed' ? 'Approved' : (apt.status || 'pending')
+                                            }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center border-0 rounded-end-4 px-4">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button @click="viewDetails(apt)"
+                                                class="btn btn-action-glass text-info">
+                                                <i class="bi bi-eye-fill"></i>
+                                            </button>
+                                            <button v-if="apt.status === 'pending'"
+                                                @click="approveAppointment(apt.id)"
+                                                class="btn btn-action-glass text-success">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
-                    <div v-else-if="filteredAppointments && filteredAppointments.length > 0">
-                        <div class="table-responsive d-none d-md-block">
-                            <table class="table glass-table align-middle">
-                                <thead>
-                                    <tr class="text-uppercase small opacity-75 ls-1">
-                                        <th class="px-4 py-3 text-white border-0">Control No.</th>
-                                        <th class="py-3 text-white border-0">Client Name</th>
-                                        <th class="py-3 text-white border-0">Type</th>
-                                        <th class="py-3 text-white border-0">Requested Date</th>
-                                        <th class="py-3 text-white border-0">Status</th>
-                                        <th class="py-3 text-center text-white border-0">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="apt in filteredAppointments" :key="apt.id" class="glass-row transition">
-                                        <td class="px-4 fw-bold text-info border-0 rounded-start-4">
-                                            {{ apt.control_number }}
-                                        </td>
-                                        <td class="text-white border-0">
-                                            <div class="fw-bold">{{ formatFullName(apt) }}</div>
-                                            <small class="opacity-50">{{ apt.phone_number }}</small>
-                                        </td>
-                                        <td class="text-white border-0">
-                                            <span class="small opacity-75">{{ apt.appointment_type }}</span>
-                                        </td>
-                                        <td class="text-white opacity-75 border-0">
-                                            {{ formatDate(apt.requested_date) }}
-                                        </td>
-                                        <td class="border-0">
-                                            <span :class="getStatusClass(apt.status)">
-                                                {{ apt.status === 'confirmed' ? 'Approved' : (apt.status || 'pending')
-                                                }}
-                                            </span>
-                                        </td>
-                                        <td class="text-center border-0 rounded-end-4 px-4">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <button @click="viewDetails(apt)"
-                                                    class="btn btn-action-glass text-info">
-                                                    <i class="bi bi-eye-fill"></i>
-                                                </button>
-                                                <button v-if="apt.status === 'pending'"
-                                                    @click="approveAppointment(apt.id)"
-                                                    class="btn btn-action-glass text-success">
-                                                    <i class="bi bi-check-circle-fill"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="d-md-none px-2">
-                            <div v-for="apt in filteredAppointments" :key="'mob-' + apt.id"
-                                class="mobile-staff-card glass-row rounded-4 p-4 mb-3">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <h6 class="text-white fw-bold mb-0">{{ formatFullName(apt) }}</h6>
-                                    <span :class="getStatusClass(apt.status)">{{ apt.status === 'confirmed' ? 'Approved'
-                                        : (apt.status || 'pending') }}</span>
-                                </div>
-                                <p class="small text-info mt-1 mb-3">{{ apt.control_number }}</p>
-                                <div class="d-flex gap-2">
-                                    <button @click="viewDetails(apt)"
-                                        class="btn btn-action-glass text-info flex-grow-1">View</button>
-                                    <button v-if="apt.status === 'pending'" @click="approveAppointment(apt.id)"
-                                        class="btn btn-action-glass text-success flex-grow-1">Approve</button>
-                                </div>
+                    <div class="d-md-none px-2">
+                        <div v-for="apt in filteredAppointments" :key="'mob-' + apt.id"
+                            class="mobile-staff-card glass-row rounded-4 p-4 mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h6 class="text-white fw-bold mb-0">{{ formatFullName(apt) }}</h6>
+                                <span :class="getStatusClass(apt.status)">{{ apt.status === 'confirmed' ? 'Approved'
+                                    : (apt.status || 'pending') }}</span>
+                            </div>
+                            <p class="small text-info mt-1 mb-3">{{ apt.control_number }}</p>
+                            <div class="d-flex gap-2">
+                                <button @click="viewDetails(apt)"
+                                    class="btn btn-action-glass text-info flex-grow-1">View</button>
+                                <button v-if="apt.status === 'pending'" @click="approveAppointment(apt.id)"
+                                    class="btn btn-action-glass text-success flex-grow-1">Approve</button>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div v-else class="text-center text-white opacity-50 py-5">
-                        <i class="bi bi-clipboard-x display-4"></i>
-                        <p class="mt-3">No records found matching your criteria.</p>
-                    </div>
+                <div v-else class="text-center text-white opacity-50 py-5">
+                    <i class="bi bi-clipboard-x display-4"></i>
+                    <p class="mt-3">No records found matching your criteria.</p>
                 </div>
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
 </template>
 
 <script>
@@ -159,10 +157,10 @@ export default {
                 // Using 'Appointments' to match api.php apiResource name
                 const response = await api.get('Appointments');
 
-                // Validate that response.data is JSON and not HTML string
-                if (typeof response.data === 'string' && response.data.includes('<!DOCTYPE html>')) {
-                    throw new Error("Received HTML instead of JSON. Please check login session.");
-                }
+                // // Validate that response.data is JSON and not HTML string
+                // if (typeof response.data === 'string' && response.data.includes('<!DOCTYPE html>')) {
+                //     throw new Error("Received HTML instead of JSON. Please check login session.");
+                // }
 
                 if (Array.isArray(response.data)) {
                     this.appointments = response.data;
@@ -313,7 +311,6 @@ export default {
 
 .content-overlay {
     min-height: 100vh;
-    background: rgba(15, 23, 42, 0.6);
 }
 
 .glass-table {
