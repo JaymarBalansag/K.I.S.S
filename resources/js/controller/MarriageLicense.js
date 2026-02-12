@@ -34,4 +34,24 @@ export async function getApplicants(status = 'all', search = '', page = 1, order
     }
 };
 
+// Actions
+
+export async function ApplicationAction(control_number, application_id, action){
+    try {
+        console.log(control_number, application_id, action)
+
+        const response = await api.post(`/applications/${action}`, null, {
+            params: {
+                control_number: control_number,
+                application_id: application_id,
+            }
+        })
+
+        console.log("response action: ", response)
+        return response;
+    } catch (error) {
+        console.error("Error fetching applicants:", error);
+        throw error;
+    }
+};
 

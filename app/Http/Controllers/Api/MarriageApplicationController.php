@@ -259,23 +259,23 @@ class MarriageApplicationController extends Controller
         }
     }
 
-    public function getApplicationByStatus(Request $request, string $status){
+    public function getApplicationByStatus(Request $request, string $status, string $order) {
         try {
-            // 1. Start the base query
             $query = DB::table("marriage_applications")
-            ->join("applicants", "marriage_applications.id", "=", "applicants.application_id")
-            ->select(
-                "marriage_applications.*",
-                "applicants.first_name",
-                "applicants.last_name"
-            );
+                ->join("applicants", "marriage_applications.id", "=", "applicants.application_id")
+                ->select(
+                    "marriage_applications.id",
+                    "marriage_applications.control_number",
+                    "marriage_applications.status",
+                    "marriage_applications.created_at",
+                    // Combine the names here
+                    DB::raw("GROUP_CONCAT(CONCAT(applicants.first_name, ' ', applicants.last_name) SEPARATOR ' & ') as applicant_names")
+                );
 
-            // 2. Filter by Status (Cleaned up the spaces)
             if ($status !== 'all') {
                 $query->where("marriage_applications.status", "=", trim($status));
             }
 
-            // 3. Add the SEARCH logic for the Search Bar
             if ($request->has('search') && $request->search != '') {
                 $search = $request->search;
                 $query->where(function($q) use ($search) {
@@ -285,13 +285,18 @@ class MarriageApplicationController extends Controller
                 });
             }
 
-            // 4. Group by application ID so you don't get 2 rows (Groom/Bride) for one application
-            // 5. Paginate the result
-            // $data = $query->groupBy('marriage_applications.id')
-            // ->orderBy('marriage_applications.created_at', 'desc')
-            // ->paginate(10);
-            $data = $query->orderBy('marriage_applications.created_at', 'desc')
-            ->paginate(4);
+            $statOrder = $order == "asc" ? "asc" : "desc";
+
+
+            // Add the columns to the GROUP BY as well to satisfy the strict error
+            $data = $query->groupBy(
+                    'marriage_applications.id', 
+                    'marriage_applications.control_number', 
+                    'marriage_applications.status', 
+                    'marriage_applications.created_at'
+                )
+                ->orderBy('marriage_applications.created_at', $statOrder)
+                ->paginate(5);
 
             return response()->json([
                 "message" => "Applicants found",
@@ -300,8 +305,44 @@ class MarriageApplicationController extends Controller
 
         } catch (\Exception $e) {
             return response()->json([
-                "message" => "Something's wrong with the server: " . $e->getMessage(),
+                "message" => "Something's wrong: " . $e->getMessage(),
                 "data" => [],
+            ], 500);
+        }
+    }
+
+    public function ApplicationAction(string $action, Request $request) {
+        try {
+            $control_number = $request->input("control_number");
+            $applicationId = $request->input("application_id");
+
+            // Perform the update directly on the Query Builder
+            $affected = DB::table("marriage_applications")
+                ->where("id", $applicationId)
+                ->where("control_number", $control_number)
+                ->update([
+                    "status" => $action,
+                    "updated_at" => now() // Manually update timestamp for Query Builder
+                ]);
+
+            // If $affected is 0, it means either the record doesn't exist 
+            // OR the status was already set to that action value.
+            if ($affected === 0) {
+                // Optional: Check if it actually exists to give a specific message
+                $exists = DB::table("marriage_applications")->where("id", $applicationId)->exists();
+                
+                return response()->json([
+                    "message" => $exists ? "No changes were made." : "Application not found."
+                ], $exists ? 200 : 404);
+            }
+
+            return response()->json([
+                "message" => "Application has been successfully " . $action
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                "message" => "Something's wrong with the server: " . $e->getMessage(),
             ], 500);
         }
     }

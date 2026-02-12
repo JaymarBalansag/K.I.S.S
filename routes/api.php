@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get("/applications", "getApplications");
             Route::get("/view/applicants/{application_id}/{control_number}", "viewApplication");
             Route::get("/applications/{status}/{order}", "getApplicationByStatus");
+            Route::post("/applications/{action}", "ApplicationAction");
         });
     });
 

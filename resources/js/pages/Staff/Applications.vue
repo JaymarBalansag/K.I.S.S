@@ -35,6 +35,7 @@
                         <option value="all">All Statuses</option>
                         <option value="pending">Pending</option>
                         <option value="approved">Approved</option>
+                        <option value="issued">Issued</option>
                         <option value="rejected">Rejected</option>
                     </select>
                 </div>
@@ -56,23 +57,30 @@
 
 
             <div class="staff-content animate__animated animate__fadeInUp">
-                <div v-if="paginatedApplications.length > 0">
+                <div v-if="applications.length > 0">
                     <div class="table-responsive d-none d-md-block">
                         <table class="table glass-table align-middle">
                             <thead>
                                 <tr class="text-uppercase small opacity-75 ls-1">
-                                    <th class="px-4 py-3 text-white border-0">Couple Names</th>
+                                    <th class="px-4 py-3 text-white border-0">Control Number</th>
+                                    <th class="py-3 text-white border-0">Couple Name</th>
                                     <th class="py-3 text-white border-0">Application Date</th>
                                     <th class="py-3 text-white border-0">Status</th>
                                     <th class="py-3 text-center text-white border-0">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="app in paginatedApplications" :key="app.id" class="glass-row transition">
+                                <tr v-for="app in applications" :key="app.id" class="glass-row transition">
                                     <td class="px-4 fw-bold text-white border-0 rounded-start-4">
                                         <div class="d-flex align-items-center">
+                                            <i class="bi bi-file-earmark-check text-danger me-2 small"></i>
+                                            {{app.control_number}}
+                                        </div>
+                                    </td>
+                                    <td class="px-4 fw-bold text-white border-0 ">
+                                        <div class="d-flex align-items-center">
                                             <i class="bi bi-heart-fill text-danger me-2 small"></i>
-                                            {{ app.groomName }} & {{ app.brideName }}
+                                            {{app.coupleNames}}
                                         </div>
                                     </td>
                                     <td class="text-white opacity-75 border-0">{{ app.dateApplied }}</td>
@@ -84,9 +92,22 @@
                                             <button @click="openViewApplicants(app)" class="btn btn-action-glass text-white">
                                                 <i class="bi bi-eye-fill me-1"></i> View
                                             </button>
-                                            <button v-if="app.status === 'pending'" @click="approveApplication(app.id)" class="btn btn-action-glass text-white">
+
+                                            <button v-if="app.status === 'pending'" @click="validateApproval(app, 'approved')" class="btn btn-action-glass text-success">
                                                 <i class="bi bi-check-circle-fill me-1"></i> Approve
                                             </button>
+                                            <button v-if="app.status === 'pending'" @click="validateApproval(app, 'rejected')" class="btn btn-action-glass text-danger">
+                                                <i class="bi bi-x-circle-fill me-1"></i> Reject
+                                            </button>
+
+                                            <button v-if="app.status === 'approved'" @click="validateApproval(app, 'issued')" class="btn btn-action-glass text-info">
+                                                <i class="bi bi-patch-check-fill me-1"></i> Issue
+                                            </button>
+
+                                            <button v-if="app.status === 'issued'" @click="validateApproval(app, 'issued')" class="btn btn-action-glass text-warning">
+                                                <i class="bi bi-printer-fill me-1"></i> Print
+                                            </button>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -95,19 +116,34 @@
                     </div>
 
                     <div class="d-md-none px-2">
-                        <div v-for="app in paginatedApplications" :key="'mob-' + app.id" class="mobile-staff-card glass-row rounded-4 p-4 mb-3">
+                        <div v-for="app in applications" :key="'mob-' + app.id" class="mobile-staff-card glass-row rounded-4 p-4 mb-3">
                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h6 class="text-white fw-bold mb-0 pe-2">{{ app.groomName }} & {{ app.brideName }}</h6>
+                                <h6 class="text-white fw-bold mb-0 pe-2">{{ app.coupleNames }}</h6>
                                 <span :class="getStatusClass(app.status)">{{ app.status }}</span>
                             </div>
-                            <p class="small text-white opacity-50 mb-4">Applied: {{ app.dateApplied }}</p>
+                            <p class="small text-white opacity-50 mb-1">Applied: {{ app.dateApplied }}</p>
+                            <p class="small text-white opacity-50 mb-4">Ref: {{ app.control_number }}</p>
+
                             <div class="d-flex gap-2">
-                                
-                                <button @click="openViewApplicants(app)" class="btn btn-action-glass text-info">
+                                <button @click="openViewApplicants(app)" class="btn btn-action-glass text-info flex-grow-1">
                                     <i class="bi bi-eye-fill me-1"></i> View
                                 </button>
-                                <button v-if="app.status === 'pending'" @click="" class="btn btn-action-glass text-success flex-grow-1">
-                                    <i class="bi bi-check-circle-fill"></i> Approve
+
+                                <template v-if="app.status === 'pending'">
+                                    <button @click="validateApproval(app, 'approved')" class="btn btn-action-glass text-success">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    </button>
+                                    <button @click="validateApproval(app, 'rejected')" class="btn btn-action-glass text-danger">
+                                        <i class="bi bi-x-circle-fill"></i>
+                                    </button>
+                                </template>
+
+                                <button v-if="app.status === 'approved'" @click="validateApproval(app, 'issued')" class="btn btn-action-glass text-warning flex-grow-1">
+                                    <i class="bi bi-patch-check-fill me-1"></i> Issue
+                                </button>
+                                
+                                <button v-if="app.status === 'issued'" class="btn btn-action-glass text-warning flex-grow-1">
+                                    <i class="bi bi-printer-fill me-1"></i> Print
                                 </button>
                             </div>
                         </div>
@@ -365,7 +401,7 @@
 
 <script>
 import Swal from 'sweetalert2';
-import { getApplicants, viewApplicants } from '../../controller/MarriageLicense';
+import { ApplicationAction, getApplicants, viewApplicants } from '../../controller/MarriageLicense';
 
 export default {
     data() {
@@ -380,8 +416,6 @@ export default {
             order: "desc",
             isLoading: false,
             // Filter end
-            currentPage: 1,
-            itemsPerPage: 5, // Change this to set how many rows per page
             showApplicantsModal: false,
             control_number: "",
             applicant: [],
@@ -395,14 +429,6 @@ export default {
         };
     },
     computed: {
-        totalPages() {
-            return Math.ceil(this.applications.length / this.itemsPerPage);
-        },
-        paginatedApplications() {
-            const start = (this.currentPage - 1) * this.itemsPerPage;
-            const end = start + this.itemsPerPage;
-            return this.applications.slice(start, end);
-        },
         allDocuments() {
             if (!this.selectedApp) return [];
             return [...this.selectedApp.groomDocuments, ...this.selectedApp.brideDocuments];
@@ -451,44 +477,21 @@ export default {
         async fetchApplications() {
             this.isLoading = true;
             try {
-                // We pass this.page to the API
+                // Ensure 'this.order' is passed here
                 const response = await getApplicants(this.status, this.search, this.page, this.order);
                 
-                // Laravel's paginate structure: response.data.data.data
-                const rawData = response.data.data.data || [];
-                
-                // Store pagination metadata
+                // Map data directly to applications
+                this.applications = response.data.data.data.map(app => ({
+                    id: app.id,
+                    control_number: app.control_number,
+                    status: app.status,
+                    dateApplied: app.created_at, 
+                    coupleNames: app.applicant_names 
+                }));
+
+                // Update pagination metadata from Laravel
                 this.totalPages = response.data.data.last_page;
                 this.totalResults = response.data.data.total;
-
-                console.log(this.totalPages)
-
-                // Grouping logic (since backend returns 2 rows per app)
-                const grouped = rawData.reduce((acc, current) => {
-                    const key = current.control_number;
-                    if (!acc[key]) {
-                        acc[key] = {
-                            control_number: key,
-                            status: current.status,
-                            dateApplied: current.submitted_at,
-                            groom: null,
-                            bride: null
-                        };
-                    }
-                    if (!acc[key].groom) {
-                        acc[key].groom = current;
-                    } else {
-                        acc[key].bride = current;
-                    }
-                    return acc;
-                }, {});
-
-                this.applications = Object.values(grouped).map(couple => ({
-                    ...couple,
-                    id: couple.groom.id,
-                    groomName: `${couple.groom.first_name} ${couple.groom.last_name}`,
-                    brideName: couple.bride ? `${couple.bride.first_name} ${couple.bride.last_name}` : 'N/A'
-                }));
 
             } catch (error) {
                 console.error("Fetch error:", error);
@@ -514,8 +517,81 @@ export default {
         getStatusClass(status) {
             const base = "badge glass-pill px-3 py-2 ";
             const s = status ? status.toLowerCase() : '';
-            return s === 'approved' ? base + "status-approved" : base + "status-pending";
+            if (s === 'approved') return base + "status-approved";
+            if (s === 'issued') return base + "status-issued"; // Add a blue/cyan color
+            if (s === 'rejected') return base + "status-rejected"; // Add a red color
+            return base + "status-pending";
         },
+        
+        validateApproval(app, action){
+
+            let userAction ;
+
+            switch (action) {
+                case "approved":
+                    userAction = "Approve"
+                    break;
+                
+                case "rejected":
+                    userAction = "Reject"
+                    break;
+                
+                case "issued":
+                    userAction = "Issue"
+                    break;
+                
+                default:
+                    break;
+            }
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to ${userAction} this marriage application.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0dcaf0', // Matching your info/cyan theme
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: `Yes, ${userAction} it!`,
+                cancelButtonText: 'No, cancel',
+                background: '#1e293b', // Matching your dark glass theme
+                color: '#fff',
+                backdrop: `rgba(15, 23, 42, 0.5) blur(5px)` // Matching your modal backdrop
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // "If yes, do something"
+                    this.validateAction(app, action);
+                }
+                // "If no, just close" (Swal handles this automatically by closing the modal)
+            });
+        },
+
+        async validateAction(app, action){
+            try {
+                const response = await ApplicationAction(app.control_number, app.id, action)
+    
+                // 4. Success Alert
+                await Swal.fire({
+                    title: 'Success!',
+                    text: response.data.message,
+                    icon: 'success',
+                    background: '#1e293b',
+                    color: '#fff'
+                });
+
+                this.fetchApplications();
+                
+            } catch (error) {
+                Swal.fire({
+                    title: 'Request Failed',
+                    text: error.response?.data?.message || "Something went wrong on the server.",
+                    icon: 'error',
+                    background: '#1e293b',
+                    color: '#fff'
+                })
+            }
+            
+
+        }
     },
     mounted() {
         this.fetchApplications();
@@ -524,6 +600,10 @@ export default {
         // Auto-fetch when filters change
         status() {
             this.page = 1; // Reset to page 1
+            this.fetchApplications();
+        },
+        order() {
+            this.page = 1; 
             this.fetchApplications();
         },
         search() {
@@ -584,14 +664,17 @@ export default {
     --bs-table-bg: transparent !important;
     border-collapse: separate !important;
     border-spacing: 0 15px !important;
+    /* Ensure the table itself doesn't trap the menu */
+    position: relative;
+    z-index: 1;
 }
 
 .glass-row {
     background: rgba(255, 255, 255, 0.07) !important;
     backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.15) !important;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    /* Remove position: relative if it's causing the dropdown to go under the next row */
 }
 
 .glass-row:hover {
@@ -630,6 +713,16 @@ export default {
 .status-approved {
     color: #0dfaf0;
     border: 1px solid rgba(13, 250, 240, 0.3);
+}
+
+.status-issued {
+    color: #0d6efd; /* Official Blue */
+    border: 1px solid rgba(13, 110, 253, 0.3);
+}
+
+.status-rejected {
+    color: #ff4d4d; /* Sharp Red */
+    border: 1px solid rgba(255, 77, 77, 0.3);
 }
 
 /* TEXT HELPERS */
@@ -720,5 +813,37 @@ export default {
     border-radius: 10px;
 }
 
+/* Glass Dropdown Styling */
+.glass-dropdown {
+    background: rgba(30, 41, 59, 0.95) !important; /* Slightly more opaque for focus */
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 10000 !important; /* Extremely high to beat any row layering */
+}
+
+.glass-dropdown .dropdown-item {
+    border-radius: 8px;
+    padding: 8px 15px;
+    transition: 0.2s;
+}
+
+.glass-dropdown .dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.table-responsive {
+    overflow: visible !important; 
+    padding-bottom: 60px; /* Buffer for the bottom-most row dropdown */
+}
+
+.glass-table {
+    --bs-table-bg: transparent !important;
+    border-collapse: separate !important;
+    border-spacing: 0 15px !important;
+    /* Ensure the table itself doesn't trap the menu */
+    position: relative;
+    z-index: 1;
+}
 
 </style>
