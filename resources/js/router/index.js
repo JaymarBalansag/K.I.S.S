@@ -53,6 +53,9 @@ const routes = [
         path: "/Pre-Marriage-Counseling-Form", name: "PreMarriageCounselingAppointmentForm", component: () => import("../pages/main/WeddingAppointment/PreMarriageAppointmentForm.vue"),
     },
     {
+        path: "/download", name: "Download", component: () => import("../pages/main/sample.vue"),
+    },
+    {
         path: "/Staff",
         component: () => import("../pages/Staff/Layout.vue"), // The Wrapper
         meta: { requiresAuth: true, roleIsStaff: true },

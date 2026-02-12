@@ -9,12 +9,13 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-
+Route::get('/download', [App\Http\Controllers\PdfController::class, 'generateLicense']);
 Route::post('/login', [App\Http\Controllers\Api\AuthenticationController::class, 'login']);
 
 Route::controller(MarriageApplicationController::class)->group(function () {
     Route::post("/submit/marriage-license-application", "store");
 });
+Route::apiResource('Appointments', App\Http\Controllers\AppointmentController::class)->only(['store']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -24,18 +25,16 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::middleware("is_admin")->group(function () {
-        Route::apiResource('Staffs', \App\Http\Controllers\UserController::class);
+        Route::apiResource('Staffs', App\Http\Controllers\UserController::class);
     });
 
     Route::middleware("is_staff")->group(function () {
-        Route::controller(MarriageApplicationController::class)->group(function() {
+        Route::apiResource('Appointments', App\Http\Controllers\AppointmentController::class)->except(['store']);
+        Route::controller(MarriageApplicationController::class)->group(function () {
             Route::get("/applications", "getApplications");
             Route::get("/view/applicants/{application_id}/{control_number}", "viewApplication");
             Route::get("/applications/{status}/{order}", "getApplicationByStatus");
             Route::post("/applications/{action}", "ApplicationAction");
         });
     });
-
-
 });
-

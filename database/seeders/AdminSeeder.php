@@ -16,12 +16,12 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         DB::table('users')->updateOrInsert(
-            ['email' => 'balansagjm@gmail.com'], // prevent duplicates
+            ['email' => 'admin@gmail.com'], // prevent duplicates
             [
-                'first_name' => 'Jaymar',
-                'last_name'  => 'Balansag',
-                'email'      => 'balansagjm@gmail.com',
-                'password'   => Hash::make('adminadmin'),
+                'first_name' => 'Ruwilson',
+                'last_name'  => 'Hipos',
+                'email'      => 'admin@gmail.com',
+                'password'   => Hash::make('admin123'),
                 'role'       => 'admin',
                 'email_verified_at' => Carbon::now(),
                 'created_at' => now(),
