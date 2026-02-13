@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exports\MarriageExport;
+use App\Exports\MarriageExports;
+use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MarriageApplicationController extends Controller
 {
@@ -346,4 +349,38 @@ class MarriageApplicationController extends Controller
             ], 500);
         }
     }
+
+    // For Downloading the form:
+
+    public function printApplication($application_id, $control_number) {
+        try {
+            $applicants = DB::table("applicants")
+                ->join("marriage_applications", "applicants.application_id", "=", "marriage_applications.id")
+                ->select("applicants.*", "marriage_applications.control_number")
+                ->where("application_id", $application_id)
+                ->where("control_number", $control_number)
+                ->get();
+
+            if ($applicants->isEmpty()) {
+                return response()->json(["message" => "Application not found"], 404);
+            }
+
+            $groom = $applicants->firstWhere('applicant_type', 'groom');
+            $bride = $applicants->firstWhere('applicant_type', 'bride');
+
+            if (!$groom || !$bride) {
+                return response()->json(["message" => "Groom or Bride data incomplete"], 400);
+            }
+
+            return Excel::download(
+                new MarriageExport($groom, $bride), 
+                'Marriage_App_' . $control_number . '.xlsx'
+            );
+
+        } catch (\Exception $e) {
+            return response()->json(["message" => "Server Error: " . $e->getMessage()], 500);
+        }
+    }
+
+
 }

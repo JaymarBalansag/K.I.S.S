@@ -16,6 +16,7 @@ Route::controller(MarriageApplicationController::class)->group(function () {
     Route::post("/submit/marriage-license-application", "store");
 });
 Route::apiResource('Appointments', App\Http\Controllers\AppointmentController::class)->only(['store']);
+Route::get('/applications/print/{id}/{control_number}', [MarriageApplicationController::class, 'printApplication']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
