@@ -104,7 +104,11 @@
                                                 <i class="bi bi-patch-check-fill me-1"></i> Issue
                                             </button>
 
-                                            <button v-if="app.status === 'issued'" @click="validateApproval(app, 'issued')" class="btn btn-action-glass text-warning">
+                                            <button 
+                                                v-if="app.status === 'issued'" 
+                                                @click="downloadMarriageLicense(app)" 
+                                                class="btn btn-action-glass text-warning"
+                                            >
                                                 <i class="bi bi-printer-fill me-1"></i> Print
                                             </button>
 
@@ -142,9 +146,7 @@
                                     <i class="bi bi-patch-check-fill me-1"></i> Issue
                                 </button>
                                 
-                                <button v-if="app.status === 'issued'" class="btn btn-action-glass text-warning flex-grow-1">
-                                    <i class="bi bi-printer-fill me-1"></i> Print
-                                </button>
+                                 
                             </div>
                         </div>
                     </div>
@@ -589,9 +591,42 @@ export default {
                     color: '#fff'
                 })
             }
-            
+        },
 
-        }
+        // In your Vue methods
+        async downloadMarriageLicense(app) {
+            try {
+                // Use your existing axios instance (it should have the bearer token)
+                const response = await axios.get(`/api/applications/print/${app.id}/${app.control_number}`, {
+                    responseType: 'blob', // Crucial for Excel/PDF files
+                });
+
+                // Create a URL for the blob
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                
+                // Set filename
+                link.setAttribute('download', `Marriage_License_${app.control_number}.xlsx`);
+                
+                // Trigger download
+                document.body.appendChild(link);
+                link.click();
+                
+                // Cleanup
+                link.remove();
+                window.URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error("Export failed:", error);
+                Swal.fire({
+                    title: 'Download Failed',
+                    text: 'Please ensure you are still logged in.',
+                    icon: 'error',
+                    background: '#1e293b',
+                    color: '#fff'
+                });
+            }
+        },
     },
     mounted() {
         this.fetchApplications();
