@@ -392,8 +392,8 @@ class MarriageApplicationController extends Controller
             $sheet->setCellValue('B27', $groom->civil_status);
             $sheet->setCellValue('B28', $groom->dissolution_details ?: "NOT APPLICABLE");
             $sheet->setCellValue('B30', $groom->dissolution_place ?: "NOT APPPLICABLE");
-            $sheet->setCellValue('B32', ($groom->dissolution_day . " " . $groom->dissolution_month . " " . $groom->dissolution_year) ?: "NOT APPLICABLE");
-            $sheet->setCellValue('B33', $groom->relationship_degree ?: "NOT APPLICABLE");
+            $dissolutionDate = trim($groom->dissolution_day . " " . $groom->dissolution_month . " " . $groom->dissolution_year);
+            $sheet->setCellValue('M32', !empty($dissolutionDate) ? $dissolutionDate : "NOT APPLICABLE");            $sheet->setCellValue('B33', $groom->relationship_degree ?: "NOT APPLICABLE");
             $sheet->setCellValue('B35', $groom->father_first_name . " " . ($groom->father_middle_name ?? "") . " " . $groom->father_last_name);                
             $sheet->setCellValue('B36', $groom->father_citizenship);
             $sheet->setCellValue('B38', $groom->father_residence);
@@ -421,8 +421,8 @@ class MarriageApplicationController extends Controller
             $sheet->setCellValue('M27', $bride->civil_status);
             $sheet->setCellValue('M28', $bride->dissolution_details ?: "NOT APPLICABLE");
             $sheet->setCellValue('M30', $bride->dissolution_place ?: "NOT APPPLICABLE");
-            $sheet->setCellValue('M32', ($bride->dissolution_day . " " . $bride->dissolution_month . " " . $bride->dissolution_year) ?: "NOT APPLICABLE");
-            $sheet->setCellValue('M33', $bride->relationship_degree);
+            $dissolutionDate = trim($bride->dissolution_day . " " . $bride->dissolution_month . " " . $bride->dissolution_year);
+            $sheet->setCellValue('M32', !empty($dissolutionDate) ? $dissolutionDate : "NOT APPLICABLE");            $sheet->setCellValue('M33', $bride->relationship_degree ?: "NOT APPLICABLE");
             $sheet->setCellValue('M35', $bride->father_first_name . " " . ($bride->father_middle_name ?? "") . " " . $bride->father_last_name);                
             $sheet->setCellValue('M36', $bride->father_citizenship);
             $sheet->setCellValue('M38', $bride->father_residence);
