@@ -393,7 +393,7 @@ class MarriageApplicationController extends Controller
             $sheet->setCellValue('B28', $groom->dissolution_details ?: "NOT APPLICABLE");
             $sheet->setCellValue('B30', $groom->dissolution_place ?: "NOT APPPLICABLE");
             $sheet->setCellValue('B32', ($groom->dissolution_day . " " . $groom->dissolution_month . " " . $groom->dissolution_year) ?: "NOT APPLICABLE");
-            $sheet->setCellValue('B33', $groom->relationship_degree);
+            $sheet->setCellValue('B33', $groom->relationship_degree ?: "NOT APPLICABLE");
             $sheet->setCellValue('B35', $groom->father_first_name . " " . ($groom->father_middle_name ?? "") . " " . $groom->father_last_name);                
             $sheet->setCellValue('B36', $groom->father_citizenship);
             $sheet->setCellValue('B38', $groom->father_residence);
