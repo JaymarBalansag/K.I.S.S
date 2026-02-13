@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class MarriageApplicationController extends Controller
 {
@@ -354,28 +355,91 @@ class MarriageApplicationController extends Controller
 
     public function printApplication($application_id, $control_number) {
         try {
+            // 1. Get the data
             $applicants = DB::table("applicants")
-                ->join("marriage_applications", "applicants.application_id", "=", "marriage_applications.id")
-                ->select("applicants.*", "marriage_applications.control_number")
                 ->where("application_id", $application_id)
-                ->where("control_number", $control_number)
                 ->get();
-
-            if ($applicants->isEmpty()) {
-                return response()->json(["message" => "Application not found"], 404);
-            }
 
             $groom = $applicants->firstWhere('applicant_type', 'groom');
             $bride = $applicants->firstWhere('applicant_type', 'bride');
 
-            if (!$groom || !$bride) {
-                return response()->json(["message" => "Groom or Bride data incomplete"], 400);
+            // 2. Path to your high-fidelity template
+            $templatePath = storage_path('app/private/templates/application.xlsx');
+            
+            if (!file_exists($templatePath)) {
+                return response()->json(["message" => "Template file not found"], 404);
             }
 
-            return Excel::download(
-                new MarriageExport($groom, $bride), 
-                'Marriage_App_' . $control_number . '.xlsx'
-            );
+            // 3. LOAD THE TEMPLATE (This preserves all merges and lines)
+            $spreadsheet = IOFactory::load($templatePath);
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // 4. INJECT DATA INTO RESPECTIVE CELLS
+            // Groom Section
+            $sheet->setCellValue('C12', $groom->first_name . ' ' . $groom->last_name);
+            $sheet->setCellValue('C18', $groom->first_name);
+            $sheet->setCellValue('C19', $groom->middle_name ?: " ");
+            $sheet->setCellValue('C20', $groom->last_name);
+            $sheet->setCellValue('B22', $groom->day);
+            $sheet->setCellValue('D22', $groom->month);
+            $sheet->setCellValue('H22', $groom->year);
+            $sheet->setCellValue('J22', $groom->age);
+            $sheet->setCellValue('B23', $groom->birth_city . " " . $groom->birth_province . " " . $groom->birth_country);
+            $sheet->setCellValue('B24', $groom->sex);
+            $sheet->setCellValue('G24', $groom->citizenship);
+            $sheet->setCellValue('B25', $groom->residence_address);
+            $sheet->setCellValue('B26', $groom->religion);
+            $sheet->setCellValue('B27', $groom->civil_status);
+            $sheet->setCellValue('B28', $groom->dissolution_details ?: "NOT APPLICABLE");
+            $sheet->setCellValue('B30', $groom->dissolution_place ?: "NOT APPPLICABLE");
+            $sheet->setCellValue('B32', ($groom->dissolution_day . " " . $groom->dissolution_month . " " . $groom->dissolution_year) ?: "NOT APPLICABLE");
+            $sheet->setCellValue('B33', $groom->relationship_degree ?: "NOT APPLICABLE");
+            $sheet->setCellValue('B35', $groom->father_first_name . " " . ($groom->father_middle_name ?? "") . " " . $groom->father_last_name);                
+            $sheet->setCellValue('B36', $groom->father_citizenship);
+            $sheet->setCellValue('B38', $groom->father_residence);
+            $sheet->setCellValue('B39', $groom->mother_first_name . " " . ($groom->mother_middle_name ?? "") . " " . $groom->mother_last_name);                
+            $sheet->setCellValue('B40', $groom->mother_citizenship);
+            $sheet->setCellValue('B42', $groom->mother_residence);
+            $sheet->setCellValue('B43', "NOT APPLICABLE");
+            $sheet->setCellValue('B44', "NOT APPLICABLE");
+            $sheet->setCellValue('B45', "NOT APPLICABLE");
+            $sheet->setCellValue('B46', "NOT APPLICABLE");
+
+            $sheet->setCellValue('L12', $bride->first_name . ' ' . $bride->last_name);
+            $sheet->setCellValue('N18', $bride->first_name);
+            $sheet->setCellValue('N19', $bride->middle_name ?: " ");
+            $sheet->setCellValue('N20', $bride->last_name);
+            $sheet->setCellValue('M22', $bride->day);
+            $sheet->setCellValue('O22', $bride->month);
+            $sheet->setCellValue('P22', $bride->year);
+            $sheet->setCellValue('R22', $bride->age);
+            $sheet->setCellValue('M23', $bride->birth_city . " " . $bride->birth_province . " " . $bride->birth_country);
+            $sheet->setCellValue('M24', $bride->sex);
+            $sheet->setCellValue('P24', $bride->citizenship);
+            $sheet->setCellValue('M25', $bride->residence_address);
+            $sheet->setCellValue('M26', $bride->religion);
+            $sheet->setCellValue('M27', $bride->civil_status);
+            $sheet->setCellValue('M28', $bride->dissolution_details ?: "NOT APPLICABLE");
+            $sheet->setCellValue('M30', $bride->dissolution_place ?: "NOT APPPLICABLE");
+            $sheet->setCellValue('M32', ($bride->dissolution_day . " " . $bride->dissolution_month . " " . $bride->dissolution_year) ?: "NOT APPLICABLE");
+            $sheet->setCellValue('M33', $bride->relationship_degree);
+            $sheet->setCellValue('M35', $bride->father_first_name . " " . ($bride->father_middle_name ?? "") . " " . $bride->father_last_name);                
+            $sheet->setCellValue('M36', $bride->father_citizenship);
+            $sheet->setCellValue('M38', $bride->father_residence);
+            $sheet->setCellValue('M39', $bride->mother_first_name . " " . ($bride->mother_middle_name ?? "") . " " . $bride->mother_last_name);                
+            $sheet->setCellValue('M40', $bride->mother_citizenship);
+            $sheet->setCellValue('M42', $bride->mother_residence);
+            $sheet->setCellValue('M43', "NOT APPLICABLE");
+            $sheet->setCellValue('M44', "NOT APPLICABLE");
+            $sheet->setCellValue('M45', "NOT APPLICABLE");
+            $sheet->setCellValue('M46', "NOT APPLICABLE");
+
+            // 5. STREAM THE FILE BACK TO VUE
+            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+            
+            return response()->streamDownload(function () use ($writer) {
+                $writer->save('php://output');
+            }, 'Marriage_App_' . $control_number . '.xlsx');
 
         } catch (\Exception $e) {
             return response()->json(["message" => "Server Error: " . $e->getMessage()], 500);

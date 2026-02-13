@@ -596,37 +596,30 @@ export default {
         // In your Vue methods
         async downloadMarriageLicense(app) {
             try {
-                // Use your existing axios instance (it should have the bearer token)
+                // Axios automatically attaches your Bearer Token if configured
                 const response = await axios.get(`/api/applications/print/${app.id}/${app.control_number}`, {
-                    responseType: 'blob', // Crucial for Excel/PDF files
+                    responseType: 'blob', // Tells browser to treat response as binary file
                 });
 
-                // Create a URL for the blob
-                const url = window.URL.createObjectURL(new Blob([response.data]));
+                // Create a temporary 'virtual' link to the file in browser memory
+                const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                const url = window.URL.createObjectURL(blob);
+                
                 const link = document.createElement('a');
                 link.href = url;
+                link.setAttribute('download', `Marriage_App_${app.control_number}.xlsx`);
                 
-                // Set filename
-                link.setAttribute('download', `Marriage_License_${app.control_number}.xlsx`);
-                
-                // Trigger download
                 document.body.appendChild(link);
                 link.click();
                 
-                // Cleanup
-                link.remove();
+                // Clean up memory and remove the link
+                document.body.removeChild(link);
                 window.URL.revokeObjectURL(url);
             } catch (error) {
-                console.error("Export failed:", error);
-                Swal.fire({
-                    title: 'Download Failed',
-                    text: 'Please ensure you are still logged in.',
-                    icon: 'error',
-                    background: '#1e293b',
-                    color: '#fff'
-                });
+                console.error("Download failed", error);
+                Swal.fire('Error', 'Could not generate the form. Session may have expired.', 'error');
             }
-        },
+        }
     },
     mounted() {
         this.fetchApplications();
