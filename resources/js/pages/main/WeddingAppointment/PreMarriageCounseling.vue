@@ -9,27 +9,49 @@
                 <div class="row justify-content-center text-center mb-4 mt-2">
                     <div class="col-lg-9 col-xl-8">
                         <span class="badge bg-primary rounded-pill px-4 py-2 mb-3 shadow-sm text-uppercase fw-bold">
-                            Step 1: Select Date
+                            {{ selectedProgram ? 'Step 2: Select Date' : 'Step 1: Eligibility Check' }}
                         </span>
                         <h1 class="display-5 display-md-4 fw-bolder text-white mb-2 text-shadow-heavy">
-                            Pre-Marriage Counseling Calendar
+                            {{ selectedProgram ? calendarTitle : 'Pre-Marriage Counseling / Orientation' }}
                         </h1>
                         <p class="text-white fw-medium opacity-75 d-none d-md-block">
-                            Ceremonies are held every 1st and 3rd Thursday of the month.
+                            {{ selectedProgram ? calendarSubtitle : 'Please answer first before selecting your appointment date.' }}
                         </p>
                     </div>
                 </div>
 
-                <div class="row justify-content-center">
+                <div v-if="!selectedProgram" class="row justify-content-center">
+                    <div class="col-xl-8">
+                        <div class="card border-0 shadow-lg glass-card p-4 p-md-5">
+                            <h4 class="fw-bold text-dark mb-3">Is one of your ages currently at 18-25?</h4>
+                            <p class="text-muted mb-4">Select one option to continue.</p>
+
+                            <div class="choice-grid">
+                                <div class="choice-col">
+                                    <div class="choice-box h-100" @click="selectProgram('PMOC')">
+                                        <div class="choice-title">Yes</div>
+                                        <div class="small text-muted">Appointment type: PMOC</div>
+                                    </div>
+                                </div>
+                                <div class="choice-col">
+                                    <div class="choice-box h-100" @click="selectProgram('PMO')">
+                                        <div class="choice-title">No</div>
+                                        <div class="small text-muted">Appointment type: Orientation Only (PMO)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-else class="row justify-content-center">
                     <div class="col-xl-10">
                         <div class="card border-0 shadow-lg glass-card overflow-hidden">
 
                             <div class="calendar-header p-3 p-md-4 border-bottom bg-dark bg-opacity-10">
-                                <div
-                                    class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
                                     <div class="d-flex align-items-center gap-2 order-2 order-md-1">
-                                        <button @click="changeYear(-1)"
-                                            class="btn btn-sm btn-dark shadow-sm rounded-pill px-3">
+                                        <button @click="changeYear(-1)" class="btn btn-sm btn-dark shadow-sm rounded-pill px-3">
                                             <i class="bi bi-chevron-double-left me-1"></i>Year
                                         </button>
                                         <button @click="changeMonth(-1)"
@@ -51,8 +73,7 @@
                                             style="width: 40px; height: 40px;">
                                             <i class="bi bi-chevron-right"></i>
                                         </button>
-                                        <button @click="changeYear(1)"
-                                            class="btn btn-sm btn-dark shadow-sm rounded-pill px-3">
+                                        <button @click="changeYear(1)" class="btn btn-sm btn-dark shadow-sm rounded-pill px-3">
                                             Year<i class="bi bi-chevron-double-right ms-1"></i>
                                         </button>
                                     </div>
@@ -85,8 +106,7 @@
                                 </div>
                             </div>
 
-                            <div
-                                class="p-3 p-md-4 bg-white bg-opacity-75 border-top d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                            <div class="p-3 p-md-4 bg-white bg-opacity-75 border-top d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
                                 <div class="selected-info text-center text-md-start">
                                     <transition name="fade" mode="out-in">
                                         <div v-if="selectedDate" :key="formattedSelectedDate">
@@ -100,6 +120,9 @@
                                 </div>
 
                                 <div class="d-flex w-100 w-md-auto gap-2">
+                                    <button @click="resetProgram" class="btn btn-outline-secondary rounded-pill px-3 px-md-4 fw-bold">
+                                        Change Answer
+                                    </button>
                                     <button v-if="selectedDate" @click="selectedDate = null"
                                         class="btn btn-outline-danger rounded-pill px-3 px-md-4 fw-bold">
                                         Clear
@@ -120,14 +143,13 @@
 </template>
 
 <script>
-
 export default {
     name: 'WeddingCalendar',
     data() {
         return {
-            config: { siteName: "LCRO Abuyog" },
             currentDate: new Date(),
             selectedDate: null,
+            selectedProgram: null,
             weekDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
         };
     },
@@ -146,25 +168,38 @@ export default {
         formattedSelectedDate() {
             if (!this.selectedDate) return '';
             return new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(this.selectedDate);
+        },
+        calendarTitle() {
+            return this.selectedProgram === 'PMO'
+                ? 'Pre-Marriage Orientation Calendar'
+                : 'Pre-Marriage Counseling Calendar';
+        },
+        calendarSubtitle() {
+            return 'Ceremonies are held every 1st and 3rd Thursday of the month.';
         }
     },
     methods: {
+        selectProgram(program) {
+            this.selectedProgram = program;
+            this.selectedDate = null;
+        },
+        resetProgram() {
+            this.selectedProgram = null;
+            this.selectedDate = null;
+        },
         changeMonth(step) {
             this.currentDate = new Date(this.currentYear, this.currentMonth + step, 1);
         },
         changeYear(step) {
             this.currentDate = new Date(this.currentYear + step, this.currentMonth, 1);
         },
-        // ALGORITHM: Updated for 1st and 3rd Thursday
         isAllowedDate(date) {
             const checkDate = new Date(this.currentYear, this.currentMonth, date);
-            // 4 corresponds to Thursday
             if (checkDate.getDay() !== 4) return false;
 
             const dayOfMonth = checkDate.getDate();
             const isFirstThursday = (dayOfMonth >= 1 && dayOfMonth <= 7);
             const isThirdThursday = (dayOfMonth >= 15 && dayOfMonth <= 21);
-
             return isFirstThursday || isThirdThursday;
         },
         isPastBasic(date) {
@@ -200,7 +235,10 @@ export default {
         proceedToStep2() {
             this.$router.push({
                 name: 'PreMarriageCounselingAppointmentForm',
-                query: { date: this.selectedDate.toISOString() }
+                query: {
+                    date: this.selectedDate.toISOString(),
+                    type: this.selectedProgram
+                }
             });
         }
     }
@@ -208,7 +246,6 @@ export default {
 </script>
 
 <style scoped>
-/* (CSS remains consistent, renamed class for clarity) */
 .main-container {
     font-family: 'Inter', sans-serif;
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
@@ -242,7 +279,6 @@ export default {
     transition: all 0.2s ease-in-out;
 }
 
-/* Highlight specifically for Thursday */
 .available-thursday:not(.selected) {
     background: rgb(48, 155, 27);
     border: 1px dashed rgba(13, 110, 253, 0.3);
@@ -287,6 +323,36 @@ export default {
     right: 4px;
 }
 
+.choice-grid {
+    display: flex;
+    gap: 12px;
+}
+
+.choice-col {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.choice-box {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.choice-box:hover {
+    border-color: #0d6efd;
+    box-shadow: 0 6px 16px rgba(13, 110, 253, 0.16);
+}
+
+.choice-title {
+    font-weight: 700;
+    color: #0d6efd;
+    margin-bottom: 4px;
+}
+
 .letter-spacing-2 {
     letter-spacing: 2px;
 }
@@ -298,6 +364,10 @@ export default {
 
     .day-number {
         font-size: 0.9rem;
+    }
+
+    .choice-grid {
+        gap: 10px;
     }
 }
 

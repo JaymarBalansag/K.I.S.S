@@ -15,6 +15,7 @@ Route::post('/login', [App\Http\Controllers\Api\AuthenticationController::class,
 Route::controller(MarriageApplicationController::class)->group(function () {
     Route::post("/submit/marriage-license-application", "store");
 });
+Route::get('/Appointments/availability', [App\Http\Controllers\AppointmentController::class, 'availability']);
 Route::apiResource('Appointments', App\Http\Controllers\AppointmentController::class)->only(['store']);
 Route::get('/applications/print/{id}/{control_number}', [MarriageApplicationController::class, 'printApplication']);
 

@@ -53,7 +53,7 @@
                                                 Number</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-white border-end-0">+63</span>
-                                                <input type="tel" v-model="form.phone_number"
+                                                <input type="tel" v-model="form.phone_number" @input="handlePhoneInput"
                                                     class="form-control custom-input border-start-0"
                                                     placeholder="9XXXXXXXXX" required maxlength="10">
                                             </div>
@@ -93,11 +93,42 @@ export default {
                 extension: '',
                 phone_number: '',
                 application_id: null,
-                requested_date: new Date().toISOString().slice(0, 10)
+                requested_date: '',
+                appointment_type: 'PMOC'
             }
         };
     },
+    mounted() {
+        this.form.requested_date = this.getRequestedDate();
+        this.form.appointment_type = this.getAppointmentType();
+    },
     methods: {
+        getRequestedDate() {
+            const rawDate = this.$route?.query?.date;
+            if (rawDate) {
+                const parsed = new Date(rawDate);
+                if (!Number.isNaN(parsed.getTime())) {
+                    return parsed.toISOString().slice(0, 10);
+                }
+            }
+            return new Date().toISOString().slice(0, 10);
+        },
+        getAppointmentType() {
+            const rawType = String(this.$route?.query?.type || '').toUpperCase();
+            return rawType === 'PMO' ? 'PMO' : 'PMOC';
+        },
+        handlePhoneInput(event) {
+            let value = String(event?.target?.value || this.form.phone_number || '').replace(/\D/g, '');
+
+            if (value.length > 0 && value.charAt(0) !== '9') {
+                value = '';
+            }
+
+            this.form.phone_number = value.slice(0, 10);
+            if (event?.target) {
+                event.target.value = this.form.phone_number;
+            }
+        },
         async handleSubmit() {
             if (this.form.phone_number.length !== 10) {
                 return Swal.fire('Error', 'Please enter a valid 10-digit number.', 'error');
@@ -122,7 +153,8 @@ export default {
                 }
             } catch (error) {
                 console.error("Submission error details:", error);
-                Swal.fire('Error', 'Failed to save appointment. Please check the console (F12) for details.', 'error');
+                const message = error?.response?.data?.message || 'Failed to save appointment. Please check the console (F12) for details.';
+                Swal.fire('Error', message, 'error');
             } finally {
                 this.loading = false;
             }

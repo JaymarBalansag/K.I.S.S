@@ -75,9 +75,14 @@
                                         'selected': isSelected(date),
                                         'today': isToday(date),
                                         'disabled': isPast(date),
-                                        'available-monday': isAllowedDate(date) && !isPastBasic(date)
+                                        'full-day': isDateFull(date) && !isPast(date) && isAllowedDate(date),
+                                        'available-monday': isAllowedDate(date) && !isPastBasic(date) && !isDateFull(date)
                                     }" @click="toggleDate(date)">
                                         <span class="day-number">{{ date }}</span>
+                                        <div v-if="isAllowedDate(date) && !isPastBasic(date)" class="slot-indicator"
+                                            :class="{ 'full': isDateFull(date) }">
+                                            {{ getWeddingCount(date) }}/{{ maxWeddingsPerDay }}
+                                        </div>
                                         <div v-if="isSelected(date)" class="selection-mark animate-pop">
                                             <i class="bi bi-heart-fill"></i>
                                         </div>
@@ -120,6 +125,9 @@
 </template>
 
 <script>
+import api from '../../../controller/api';
+import Swal from 'sweetalert2';
+
 export default {
     name: 'WeddingCalendar',
     data() {
@@ -127,8 +135,13 @@ export default {
             config: { siteName: "LCRO Abuyog" },
             currentDate: new Date(),
             selectedDate: null,
+            maxWeddingsPerDay: 3,
+            weddingCountsByDate: {},
             weekDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
         };
+    },
+    mounted() {
+        this.fetchCivilWeddingCounts();
     },
     computed: {
         currentMonth() { return this.currentDate.getMonth(); },
@@ -148,11 +161,48 @@ export default {
         }
     },
     methods: {
+        async fetchCivilWeddingCounts() {
+            try {
+                const response = await api.get('/Appointments/availability', {
+                    params: {
+                        appointment_type: 'Civil Wedding',
+                        year: this.currentYear,
+                        month: this.currentMonth + 1
+                    }
+                });
+
+                this.weddingCountsByDate = response?.data?.counts || {};
+
+                if (this.selectedDate) {
+                    const selectedDay = this.selectedDate.getDate();
+                    if (this.isDateFull(selectedDay)) {
+                        this.selectedDate = null;
+                    }
+                }
+            } catch (error) {
+                this.weddingCountsByDate = {};
+            }
+        },
+        getDateKey(date) {
+            const target = new Date(this.currentYear, this.currentMonth, date);
+            const year = target.getFullYear();
+            const month = String(target.getMonth() + 1).padStart(2, '0');
+            const day = String(target.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        },
+        getWeddingCount(date) {
+            return this.weddingCountsByDate[this.getDateKey(date)] || 0;
+        },
+        isDateFull(date) {
+            return this.getWeddingCount(date) >= this.maxWeddingsPerDay;
+        },
         changeMonth(step) {
             this.currentDate = new Date(this.currentYear, this.currentMonth + step, 1);
+            this.fetchCivilWeddingCounts();
         },
         changeYear(step) {
             this.currentDate = new Date(this.currentYear + step, this.currentMonth, 1);
+            this.fetchCivilWeddingCounts();
         },
         // ALGORITHM: Checks if the date is the 2nd or 4th Monday
         isAllowedDate(date) {
@@ -178,6 +228,10 @@ export default {
             return this.isPastBasic(date) || !this.isAllowedDate(date);
         },
         toggleDate(date) {
+            if (this.isDateFull(date) && !this.isPast(date) && this.isAllowedDate(date)) {
+                Swal.fire('Slot Full', 'The daily maximum number of appointments (3/3) has been reached for this date.', 'error');
+                return;
+            }
             if (this.isPast(date)) return;
             const targetDate = new Date(this.currentYear, this.currentMonth, date);
             if (this.isSelected(date)) {
@@ -198,10 +252,16 @@ export default {
                 today.getMonth() === this.currentMonth &&
                 today.getFullYear() === this.currentYear;
         },
+        formatLocalDate(dateObj) {
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        },
         proceedToStep2() {
             this.$router.push({
                 name: 'CivilWeddingAppointmentForm',
-                query: { date: this.selectedDate.toISOString() }
+                query: { date: this.formatLocalDate(this.selectedDate) }
             });
         }
     }
@@ -248,7 +308,7 @@ export default {
     border: 1px dashed rgba(13, 110, 253, 0.3);
 }
 
-.calendar-day:hover:not(.disabled) {
+.calendar-day:hover:not(.disabled):not(.full-day) {
     background: rgb(48, 155, 27);
     transform: scale(1.05);
     z-index: 5;
@@ -283,12 +343,40 @@ export default {
     font-weight: 400;
 }
 
+.calendar-day.full-day {
+    background: #f8d7da !important;
+    border: 1px solid #dc3545;
+    cursor: not-allowed;
+    opacity: 1;
+}
+
+.calendar-day.full-day .day-number {
+    color: #842029;
+}
+
 .selection-mark {
     color: #ff3b30;
     font-size: 0.8rem;
     position: absolute;
     top: 4px;
     right: 4px;
+}
+
+.slot-indicator {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #0d6efd;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 1px 6px;
+    line-height: 1.2;
+}
+
+.slot-indicator.full {
+    color: #dc3545;
 }
 
 .letter-spacing-2 {
