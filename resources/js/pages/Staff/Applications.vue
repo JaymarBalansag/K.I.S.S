@@ -335,7 +335,7 @@
                             <div class="text-white small fw-bold">{{ doc.doc_type }}</div>
                             <div class="x-small text-secondary fw-semibold">Uploaded: {{ doc.created_at }}</div>
                         </div>
-                        <button class="btn btn-sm btn-outline-info rounded-pill px-3">View</button>
+                        <button @click="openCurrentDocument(doc.document_url)" class="btn btn-sm btn-outline-info rounded-pill px-3">View</button>
                     </div>
                 </div>
                 

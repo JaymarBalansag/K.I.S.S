@@ -21,7 +21,7 @@ class isAdmin
         }
 
         return response()->json([
-            'status' => 'error',
+            'status' => 'error',    
             'message' => 'Unauthorized. Admin access only.'
         ], 403);
     }
