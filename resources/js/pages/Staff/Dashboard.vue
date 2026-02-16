@@ -11,7 +11,7 @@
         </div>
 
         <div class="row g-4">
-            <div class="col-md-6 col-xl-4">
+            <div class="col-md-6 col-xl-3">
                 <div class="card border-0 shadow-lg glass-card h-100 transition-hover">
                     <div class="card-body p-4 text-white">
                         <div class="d-flex align-items-center mb-3">
@@ -20,22 +20,46 @@
                                 <i class="bi bi-calendar-heart-fill fs-3"></i>
                             </div>
                             <div>
-                                <h6 class="opacity-50 mb-0 fw-bold text-uppercase small ls-1">Wedding Appointments</h6>
-                                <h2 class="fw-bold mb-0">24</h2>
+                                <h6 class="opacity-50 mb-0 fw-bold text-uppercase small ls-1">Pre-Marriage Orientation & Counseling</h6>
+                                <h2 class="fw-bold mb-0">{{ pmocCount }}</h2>
                             </div>
                         </div>
                         <div class="progress bg-white bg-opacity-10" style="height: 6px;">
-                            <div class="progress-bar bg-primary" style="width: 70%"></div>
+                            <div class="progress-bar bg-primary" :style="{ width: pmocProgress + '%' }"></div>
                         </div>
                         <div class="d-flex justify-content-between mt-2">
-                            <small class="opacity-50">8 scheduled for today</small>
-                            <small class="text-primary fw-bold">70%</small>
+                            <small class="opacity-50">{{ pendingPmocCount }} pending</small>
+                            <small class="text-primary fw-bold">{{ pmocProgress }}%</small>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-6 col-xl-4">
+            <div class="col-md-6 col-xl-3">
+                <div class="card border-0 shadow-lg glass-card h-100 transition-hover">
+                    <div class="card-body p-4 text-white">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stats-icon bg-info bg-opacity-20 text-info rounded-3 p-3 me-3 d-flex align-items-center justify-content-center"
+                                style="width: 60px; height: 60px; border: 1px solid rgba(13, 202, 240, 0.2);">
+                                <i class="bi bi-calendar-check-fill fs-3"></i>
+                            </div>
+                            <div>
+                                <h6 class="opacity-50 mb-0 fw-bold text-uppercase small ls-1">Marriage Appointment</h6>
+                                <h2 class="fw-bold mb-0">{{ marriageAppointmentCount }}</h2>
+                            </div>
+                        </div>
+                        <div class="progress bg-white bg-opacity-10" style="height: 6px;">
+                            <div class="progress-bar bg-info" :style="{ width: marriageAppointmentProgress + '%' }"></div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <small class="opacity-50">{{ pendingMarriageAppointmentCount }} pending</small>
+                            <small class="text-info fw-bold">{{ marriageAppointmentProgress }}%</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
                 <div class="card border-0 shadow-lg glass-card h-100 transition-hover">
                     <div class="card-body p-4 text-white">
                         <div class="d-flex align-items-center mb-3">
@@ -44,22 +68,22 @@
                                 <i class="bi bi-file-earmark-text-fill fs-3"></i>
                             </div>
                             <div>
-                                <h6 class="opacity-50 mb-0 fw-bold text-uppercase small ls-1">License Applications</h6>
-                                <h2 class="fw-bold mb-0">142</h2>
+                                <h6 class="opacity-50 mb-0 fw-bold text-uppercase small ls-1">Marriage License Application</h6>
+                                <h2 class="fw-bold mb-0">{{ applicationCount }}</h2>
                             </div>
                         </div>
                         <div class="progress bg-white bg-opacity-10" style="height: 6px;">
-                            <div class="progress-bar bg-warning" style="width: 45%"></div>
+                            <div class="progress-bar bg-warning" :style="{ width: applicationPendingProgress + '%' }"></div>
                         </div>
                         <div class="d-flex justify-content-between mt-2">
-                            <small class="opacity-50">12 pending review</small>
-                            <small class="text-warning fw-bold">45%</small>
+                            <small class="opacity-50">{{ pendingApplications }} pending review</small>
+                            <small class="text-warning fw-bold">{{ applicationPendingProgress }}%</small>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-6 col-xl-4">
+            <div class="col-md-6 col-xl-3">
                 <div class="card border-0 shadow-lg glass-card h-100 transition-hover">
                     <div class="card-body p-4 text-white">
                         <div class="d-flex align-items-center mb-3">
@@ -69,14 +93,14 @@
                             </div>
                             <div>
                                 <h6 class="opacity-50 mb-0 fw-bold text-uppercase small ls-1">Total Users Served</h6>
-                                <h2 class="fw-bold mb-0">1,205</h2>
+                                <h2 class="fw-bold mb-0">{{ totalUsersServed }}</h2>
                             </div>
                         </div>
                         <div class="progress bg-white bg-opacity-10" style="height: 6px;">
                             <div class="progress-bar bg-success" style="width: 100%"></div>
                         </div>
                         <div class="d-flex justify-content-between mt-2">
-                            <small class="text-success small"><i class="bi bi-arrow-up"></i> 5% increase</small>
+                            <small class="text-success small"><i class="bi bi-check-circle"></i> Live from records</small>
                             <small class="text-success fw-bold">100%</small>
                         </div>
                     </div>
@@ -87,8 +111,96 @@
 </template>
 
 <script>
+import api from '../../controller/api';
+
 export default {
-    name: 'StaffDashboard'
+    name: 'StaffDashboard',
+    data() {
+        return {
+            appointments: [],
+            applications: []
+        };
+    },
+    computed: {
+        pmocAppointments() {
+            return this.appointments.filter((apt) => {
+                const type = String(apt?.appointment_type || '').toUpperCase();
+                return type === 'PMOC' || type === 'PMO';
+            });
+        },
+        civilWeddingAppointments() {
+            return this.appointments.filter((apt) => {
+                const type = String(apt?.appointment_type || '').toLowerCase();
+                return type === 'civil wedding' || type === 'civil_wedding' || (type.includes('civil') && type.includes('wedding'));
+            }).length;
+        },
+        pmocCount() {
+            return this.pmocAppointments.length;
+        },
+        pendingPmocCount() {
+            return this.pmocAppointments.filter((apt) => String(apt?.status || 'pending') === 'pending').length;
+        },
+        pmocProgress() {
+            if (!this.pmocCount) return 0;
+            return Math.min(100, Math.round((this.pendingPmocCount / this.pmocCount) * 100));
+        },
+        marriageAppointmentCount() {
+            return this.civilWeddingAppointments;
+        },
+        pendingMarriageAppointmentCount() {
+            return this.appointments.filter((apt) => {
+                const status = String(apt?.status || 'pending');
+                const type = String(apt?.appointment_type || '').toLowerCase();
+                const isCivil = type === 'civil wedding' || type === 'civil_wedding' || (type.includes('civil') && type.includes('wedding'));
+                return isCivil && status === 'pending';
+            }).length;
+        },
+        marriageAppointmentProgress() {
+            if (!this.marriageAppointmentCount) return 0;
+            return Math.min(100, Math.round((this.pendingMarriageAppointmentCount / this.marriageAppointmentCount) * 100));
+        },
+        applicationCount() {
+            return this.applications.length;
+        },
+        pendingApplications() {
+            return this.applications.filter((app) => String(app?.status || 'pending') === 'pending').length;
+        },
+        applicationPendingProgress() {
+            if (!this.applicationCount) return 0;
+            return Math.min(100, Math.round((this.pendingApplications / this.applicationCount) * 100));
+        },
+        totalUsersServed() {
+            return this.pmocCount + this.marriageAppointmentCount + this.applicationCount;
+        }
+    },
+    mounted() {
+        this.fetchStats();
+    },
+    methods: {
+        async fetchStats() {
+            try {
+                const [appointmentsRes, applicationsRes] = await Promise.all([
+                    api.get('Appointments'),
+                    api.get('applications')
+                ]);
+
+                const appointments = Array.isArray(appointmentsRes?.data)
+                    ? appointmentsRes.data
+                    : (Array.isArray(appointmentsRes?.data?.data) ? appointmentsRes.data.data : []);
+
+                const appsPayload = applicationsRes?.data?.data;
+                const applications = Array.isArray(appsPayload?.data)
+                    ? appsPayload.data
+                    : (Array.isArray(appsPayload) ? appsPayload : []);
+
+                this.appointments = appointments;
+                this.applications = applications;
+            } catch (error) {
+                this.appointments = [];
+                this.applications = [];
+            }
+        }
+    }
 };
 </script>
 

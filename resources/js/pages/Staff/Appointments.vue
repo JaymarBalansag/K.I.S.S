@@ -12,19 +12,28 @@
             </div>
 
             <div class="row justify-content-center mb-4 g-3">
-                <div class="col-md-5">
+                <div class="col-md-4">
                     <div class="search-box">
                         <i class="bi bi-search search-icon"></i>
                         <input v-model="searchQuery" type="text" class="form-control glass-input"
                             placeholder="Search Name or Control No...">
                     </div>
                 </div>
-                <div class="col-md-5 d-flex justify-content-md-end justify-content-center gap-2">
-                    <button v-for="status in ['all', 'pending', 'approved']" :key="status"
-                        @click="filterStatus = status" class="btn btn-action-glass text-capitalize px-4"
-                        :class="{ 'active-filter': filterStatus === status }">
-                        {{ status }}
-                    </button>
+                <div class="col-md-3">
+                    <select v-model="filterType" class="form-select glass-input " style="color:black;">
+                        <option value="all">All Application Types</option>
+                        <option v-for="type in applicationTypes" :key="type" :value="type">
+                            {{ type }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <select v-model="filterStatus" class="form-select glass-input">
+                        <option value="all">All Statuses</option>
+                        <option value="approved">Approved</option>
+                        <option value="pending">Pending</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
                 </div>
             </div>
 
@@ -64,20 +73,21 @@
                                     </td>
                                     <td class="border-0">
                                         <span :class="getStatusClass(apt.status)">
-                                            {{ apt.status === 'confirmed' ? 'Approved' : (apt.status || 'pending')
-                                            }}
+                                            {{ getStatusLabel(apt.status) }}
                                         </span>
                                     </td>
                                     <td class="text-center border-0 rounded-end-4 px-4">
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button @click="viewDetails(apt)"
-                                                class="btn btn-action-glass text-info">
-                                                <i class="bi bi-eye-fill"></i>
+                                            <button @click="viewDetails(apt)" class="btn btn-action-glass text-info">
+                                                View
                                             </button>
-                                            <button v-if="apt.status === 'pending'"
-                                                @click="approveAppointment(apt.id)"
+                                            <button v-if="apt.status === 'pending'" @click="approveAppointment(apt.id)"
                                                 class="btn btn-action-glass text-success">
-                                                <i class="bi bi-check-circle-fill"></i>
+                                                Accept
+                                            </button>
+                                            <button v-if="apt.status === 'pending'" @click="rejectAppointment(apt.id)"
+                                                class="btn btn-action-glass text-danger">
+                                                Reject
                                             </button>
                                         </div>
                                     </td>
@@ -91,15 +101,16 @@
                             class="mobile-staff-card glass-row rounded-4 p-4 mb-3">
                             <div class="d-flex justify-content-between align-items-start">
                                 <h6 class="text-white fw-bold mb-0">{{ formatFullName(apt) }}</h6>
-                                <span :class="getStatusClass(apt.status)">{{ apt.status === 'confirmed' ? 'Approved'
-                                    : (apt.status || 'pending') }}</span>
+                                <span :class="getStatusClass(apt.status)">{{ getStatusLabel(apt.status) }}</span>
                             </div>
                             <p class="small text-info mt-1 mb-3">{{ apt.control_number }}</p>
                             <div class="d-flex gap-2">
                                 <button @click="viewDetails(apt)"
                                     class="btn btn-action-glass text-info flex-grow-1">View</button>
                                 <button v-if="apt.status === 'pending'" @click="approveAppointment(apt.id)"
-                                    class="btn btn-action-glass text-success flex-grow-1">Approve</button>
+                                    class="btn btn-action-glass text-success flex-grow-1">Accept</button>
+                                <button v-if="apt.status === 'pending'" @click="rejectAppointment(apt.id)"
+                                    class="btn btn-action-glass text-danger flex-grow-1">Reject</button>
                             </div>
                         </div>
                     </div>
@@ -125,10 +136,18 @@ export default {
             appointments: [],
             loading: true,
             filterStatus: 'all',
-            searchQuery: ''
+            searchQuery: '',
+            filterType: 'all'
         };
     },
     computed: {
+        applicationTypes() {
+            if (!Array.isArray(this.appointments)) return [];
+            const types = this.appointments
+                .map((apt) => String(apt.appointment_type || '').trim())
+                .filter(Boolean);
+            return [...new Set(types)].sort((a, b) => a.localeCompare(b));
+        },
         filteredAppointments() {
             if (!Array.isArray(this.appointments)) return [];
 
@@ -136,14 +155,17 @@ export default {
                 const statusValue = apt.status || 'pending';
                 const matchesStatus = this.filterStatus === 'all' ||
                     (this.filterStatus === 'approved' && statusValue === 'confirmed') ||
-                    (this.filterStatus === 'pending' && statusValue === 'pending');
+                    (this.filterStatus === 'pending' && statusValue === 'pending') ||
+                    (this.filterStatus === 'rejected' && statusValue === 'cancelled');
 
                 const fullName = `${apt.first_name || ''} ${apt.last_name || ''}`.toLowerCase();
                 const controlNo = (apt.control_number || '').toLowerCase();
                 const query = this.searchQuery.toLowerCase();
                 const matchesSearch = fullName.includes(query) || controlNo.includes(query);
+                const typeValue = String(apt.appointment_type || '').trim();
+                const matchesType = this.filterType === 'all' || typeValue === this.filterType;
 
-                return matchesStatus && matchesSearch;
+                return matchesStatus && matchesSearch && matchesType;
             });
         }
     },
@@ -192,7 +214,14 @@ export default {
         },
         getStatusClass(status) {
             const base = "badge glass-pill px-3 py-2 ";
-            return status === 'confirmed' ? base + "status-approved" : base + "status-pending";
+            if (status === 'confirmed') return base + "status-approved";
+            if (status === 'cancelled') return base + "status-rejected";
+            return base + "status-pending";
+        },
+        getStatusLabel(status) {
+            if (status === 'confirmed') return 'Approved';
+            if (status === 'cancelled') return 'Rejected';
+            return status || 'pending';
         },
         async approveAppointment(id) {
             const result = await Swal.fire({
@@ -218,6 +247,40 @@ export default {
                     Swal.fire({
                         icon: 'success',
                         title: 'Approved!',
+                        showConfirmButton: false,
+                        timer: 1500,
+                        background: '#0f172a',
+                        color: '#fff'
+                    });
+                } catch (e) {
+                    Swal.fire('Error', 'Failed to update record.', 'error');
+                }
+            }
+        },
+        async rejectAppointment(id) {
+            const result = await Swal.fire({
+                title: 'Confirm Rejection',
+                text: "Set this appointment to Rejected?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                background: '#0f172a',
+                color: '#fff',
+                customClass: { popup: 'glass-row' }
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await api.patch(`Appointments/${id}`, { status: 'cancelled' });
+
+                    const index = this.appointments.findIndex(a => a.id === id);
+                    if (index !== -1) {
+                        this.appointments[index].status = 'cancelled';
+                    }
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Rejected',
                         showConfirmButton: false,
                         timer: 1500,
                         background: '#0f172a',
@@ -283,7 +346,7 @@ export default {
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 12px;
     padding-left: 45px;
-    color: white;
+    color: #fff !important;
 }
 
 .glass-input::placeholder {
@@ -294,6 +357,26 @@ export default {
     border-color: #0dcaf0 !important;
     box-shadow: 0 0 15px rgba(13, 202, 240, 0.2);
     outline: none;
+    color: #fff !important;
+}
+
+.form-select.glass-input {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: #fff !important;
+    padding-left: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+.form-select.glass-input:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: #fff !important;
+}
+
+.form-select.glass-input option {
+    background: #0f172a;
+    color: #fff;
 }
 
 .active-filter {
@@ -343,7 +426,16 @@ export default {
     border: 1px solid rgba(13, 250, 240, 0.3);
 }
 
+.status-rejected {
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.4);
+}
+
 .text-info {
     color: #0dcaf0 !important;
+}
+
+.content-overlay {
+    color: #fff;
 }
 </style>
