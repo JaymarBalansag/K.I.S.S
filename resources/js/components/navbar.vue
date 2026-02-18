@@ -30,9 +30,13 @@
                         class="btn btn-primary btn-sm rounded-pill px-4 fw-bold text-uppercase tracking-wider shadow-sm">
                         Admin Dashboard
                     </router-link>
-                    <router-link v-if="role === 'staff'" to="/Staff/Dashboard"
+                    <router-link v-else-if="role === 'staff'" to="/Staff/Dashboard"
                         class="btn btn-primary btn-sm rounded-pill px-4 fw-bold text-uppercase tracking-wider shadow-sm">
                         Staff Dashboard
+                    </router-link>
+                    <router-link v-else to="/staff-portal"
+                        class="btn btn-primary btn-sm rounded-pill px-4 fw-bold text-uppercase tracking-wider shadow-sm">
+                        Staff Login
                     </router-link>
                 </div>
             </div>

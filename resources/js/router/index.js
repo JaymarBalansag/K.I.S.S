@@ -23,13 +23,13 @@ const routes = [
         path: '/wedding-appointment', name: 'Wedding Appointment', component: () => import('../pages/main/WeddingAppointment/Services.vue')
     },
     {
-      path: '/isForeigner/Cohab/:isCohabiting', name: 'IsForeigner', component: () => import("../pages/main/MarriageLicense/isForeigner.vue")
+      path: '/isForeigner/Cohab/:isCohabiting', redirect: '/isCohabiting'
     },
     {
         path: '/isCohabiting', name: 'isCohabiting', component: () => import("../pages/main/MarriageLicense/isCohabiting.vue")
     },
     {
-      path: '/ageRange/isForeigner/:isForeigner/:type/Cohab/:isCohabiting', name: 'AgeRange', component: () => import("../pages/main/MarriageLicense/AgeRange.vue")
+      path: '/ageRange/isForeigner/:isForeigner/:type/Cohab/:isCohabiting', redirect: '/isCohabiting'
     },
     {
       path: '/Marriage-Form/requirements/groom/:groomRequirement/bride/:brideRequirement/isForeigner/:isForeigner/:type/Cohab/:isCohabiting', name: 'MarriageForm', component: () => import("../pages/main/MarriageLicense/MarriageForm.vue")
@@ -91,6 +91,12 @@ const routes = [
             },
             {
                 path: "Staffs", name: "AdminStaffs", component: () => import("../pages/admin/Staffs.vue")
+            },
+            {
+                path: "Appointments", name: "AdminAppointments", component: () => import("../pages/Staff/Appointments.vue")
+            },
+            {
+                path: "Applications", name: "AdminApplications", component: () => import("../pages/Staff/Applications.vue")
             },
             {
                 path: "Staffs/Add", name: "AddStaff", component: () => import("../pages/admin/AddStaffForm.vue")

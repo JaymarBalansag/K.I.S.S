@@ -59,7 +59,6 @@ export default {
       services: [
         { title: "Yes", emoji: "🤵", description: "He is a foreigner.", gradient: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)", value: true, type: "groom" },
         { title: "Yes", emoji: "👰", description: "She is a foreigner.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", value: true, type: "bride" },
-        { title: "Yes", emoji: "✔", description: "Both of us are foreigners.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", value: true, type: "both" },
         { title: "No", emoji: "❌", description: "Neither of us is a foreigner.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", value: false, type: "filipino" },
       ]
     };

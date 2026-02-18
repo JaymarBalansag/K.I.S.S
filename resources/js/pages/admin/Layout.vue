@@ -26,6 +26,7 @@
 
             <nav class="nav flex-column p-3 gap-2 flex-grow-1">
                 <router-link to="/Admin/Dashboard"
+                    @click="closeMobile"
                     class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
                     <i class="bi bi-grid-1x2-fill fs-5"></i>
                     <span v-if="!isCollapsed || mobileShow"
@@ -33,10 +34,27 @@
                 </router-link>
 
                 <router-link to="/Admin/Staffs"
+                    @click="closeMobile"
                     class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
                     <i class="bi bi-people-fill fs-5"></i>
                     <span v-if="!isCollapsed || mobileShow"
                         class="ms-3 animate__animated animate__fadeIn text-nowrap">Staff Management</span>
+                </router-link>
+
+                <router-link to="/Admin/Appointments"
+                    @click="closeMobile"
+                    class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
+                    <i class="bi bi-calendar-check fs-5"></i>
+                    <span v-if="!isCollapsed || mobileShow"
+                        class="ms-3 animate__animated animate__fadeIn text-nowrap">Appointments</span>
+                </router-link>
+
+                <router-link to="/Admin/Applications"
+                    @click="closeMobile"
+                    class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
+                    <i class="bi bi-file-earmark-text fs-5"></i>
+                    <span v-if="!isCollapsed || mobileShow"
+                        class="ms-3 animate__animated animate__fadeIn text-nowrap">Applications</span>
                 </router-link>
                 <!-- <router-link to="/Admin/Position"
                     class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
@@ -127,6 +145,9 @@ export default {
         checkScreen() {
             this.isMobile = window.innerWidth < 992;
             if (!this.isMobile) this.mobileShow = false;
+        },
+        closeMobile() {
+            if (this.isMobile) this.mobileShow = false;
         },
         async handleLogout() {
             if (confirm("Logout from LCRO Admin?")) {

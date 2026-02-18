@@ -15,14 +15,14 @@ class isStaff
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Assuming your User model has a 'role' column
-        if ($request->user() && $request->user()->role === 'staff') {
+        // Shared operational endpoints are accessible to both staff and admin.
+        if ($request->user() && in_array($request->user()->role, ['staff', 'admin'], true)) {
             return $next($request);
         }
 
         return response()->json([
             'status' => 'error',
-            'message' => 'Unauthorized. Staff access only.'
+            'message' => 'Unauthorized. Staff or Admin access only.'
         ], 403);
     }
 }

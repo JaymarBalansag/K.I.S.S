@@ -57,7 +57,7 @@
 
                             <div class="text-center mt-4">
                                 <a href="#" class="text-decoration-none small text-white-50 hover-white">
-                                    Forgot details? Contact LCRO Support
+                                    Forgot details? Contact the Administrator
                                 </a>
                             </div>
                         </div>

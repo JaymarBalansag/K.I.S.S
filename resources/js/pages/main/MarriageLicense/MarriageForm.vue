@@ -1293,6 +1293,47 @@ export default {
   },
 
   methods: {
+    getAgeLimits(requirement) {
+      switch (requirement) {
+        case 'parental-consent':
+          return { min: 18, max: 21 };
+        case 'parental-advise':
+          return { min: 21, max: 25 };
+        case 'no-need':
+          return { min: 25, max: 120 };
+        default:
+          return { min: 18, max: 120 };
+      }
+    },
+    getRequirementLabel(requirement) {
+      switch (requirement) {
+        case 'parental-consent':
+          return '18-21';
+        case 'parental-advise':
+          return '21-25';
+        case 'no-need':
+          return '25+';
+        default:
+          return 'valid age';
+      }
+    },
+    isAgeWithinRequirement(age, requirement) {
+      const parsedAge = Number(age);
+      if (!Number.isFinite(parsedAge)) return false;
+      const { min, max } = this.getAgeLimits(requirement);
+      return parsedAge >= min && parsedAge <= max;
+    },
+    getAgeRangeValidationError(age, requirement, personLabel) {
+      if (this.isAgeWithinRequirement(age, requirement)) {
+        return null;
+      }
+
+      if (requirement === 'no-need') {
+        return `The ${personLabel} age must be at least 25 based on the selected age bracket.`;
+      }
+
+      return `The ${personLabel} age must be within ${this.getRequirementLabel(requirement)} based on the selected age bracket.`;
+    },
     handleFileUpload(event, person, docType) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1459,6 +1500,12 @@ export default {
             this.scrollToError();
             return;
           }
+          const groomAgeRangeError = this.getAgeRangeValidationError(this.form.groom.age, this.groomRequirement, 'groom');
+          if (groomAgeRangeError) {
+            this.message.push(groomAgeRangeError);
+            this.scrollToError();
+            return;
+          }
           break;
 
         case 9: // Groom Birth Place
@@ -1576,6 +1623,12 @@ export default {
           }
           if (this.form.bride.age < 18) {
             this.message.push("The bride must be at least 18 years old.");
+            this.scrollToError();
+            return;
+          }
+          const brideAgeRangeError = this.getAgeRangeValidationError(this.form.bride.age, this.brideRequirement, 'bride');
+          if (brideAgeRangeError) {
+            this.message.push(brideAgeRangeError);
             this.scrollToError();
             return;
           }
@@ -1710,6 +1763,8 @@ export default {
     handlePersonValidation(person, type) {
       const today = new Date();
       const currentYear = today.getFullYear();
+      const selectedRequirement = type === 'groom' ? this.groomRequirement : this.brideRequirement;
+      const { min: minAllowedAge, max: maxAllowedAge } = this.getAgeLimits(selectedRequirement);
       
       // 1. Force Basic Bounds (Day/Month)
       if (person.day > 31) person.day = 31;
@@ -1727,16 +1782,20 @@ export default {
 
         // Only validate once they've finished typing all 4 digits
         if (yearStr.length === 4) {
-          const minAgeYear = currentYear - 18;   // 2008
-          const maxAgeYear = currentYear - 120;  // 1906
+          const minAgeYear = currentYear - minAllowedAge;
+          const maxAgeYear = currentYear - maxAllowedAge;
 
           // Correct out-of-bounds years
           if (person.year > minAgeYear) {
             person.year = minAgeYear;
-            alert("Contracting parties must be at least 18 years old.");
+            if (selectedRequirement === 'no-need') {
+              alert("Selected age bracket is 25+, so year was adjusted to keep age at least 25.");
+            } else {
+              alert(`Selected age bracket is ${this.getRequirementLabel(selectedRequirement)}, so year was adjusted.`);
+            }
           } else if (person.year < maxAgeYear) {
             person.year = maxAgeYear;
-            alert("Please enter a valid year (Max 120 years old).");
+            alert(`Selected age bracket is ${this.getRequirementLabel(selectedRequirement)}, so year was adjusted.`);
           }
 
           // 3. Auto-Calculate Age

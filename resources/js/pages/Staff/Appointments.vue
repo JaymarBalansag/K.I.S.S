@@ -195,7 +195,7 @@ export default {
                 console.error("Fetch Error:", error);
                 this.appointments = [];
                 if (error.response?.status === 401 || error.response?.status === 403) {
-                    Swal.fire('Access Denied', 'Please log in as Staff to view records.', 'warning');
+                    Swal.fire('Access Denied', 'Please log in as Staff or Admin to view records.', 'warning');
                 } else {
                     Swal.fire('Error', 'Could not load data from server.', 'error');
                 }
