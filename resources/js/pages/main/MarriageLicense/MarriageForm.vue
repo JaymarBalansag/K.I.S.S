@@ -7,7 +7,7 @@
 
             <div class="text-start mb-4">
               <a @click.prevent="$router.back()" class="text-white text-decoration-none opacity-75 hover-opacity-100" style="cursor: pointer;">
-                <span class="fs-5">←</span> Back
+                <span class="fs-5">&larr;</span> Back
               </a>
             </div>
             
@@ -814,8 +814,57 @@
                   </div>
                 </div>
 
-                <!-- STEP 19 – GROOM REVIEW -->
-                <div v-if="step === 19">
+                <!-- STEP 19 – GROOM CONSENT/ADVICE SOURCE INFO -->
+                <div v-if="step === 19 && groomRequirement !== 'no-need'">
+                  <h4 class="section-title">Groom - Person Who Gave {{ groomRequirement === 'parental-consent' ? 'Consent' : 'Advice' }} (Info)</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <label class="form-label">First Name</label>
+                      <input class="form-control" v-model="form.consentSource.groom.firstName">
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Middle Name</label>
+                      <input class="form-control" v-model="form.consentSource.groom.middleName">
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Last Name</label>
+                      <input class="form-control" v-model="form.consentSource.groom.lastName">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Citizenship</label>
+                      <select class="form-control" v-model="form.consentSource.groom.citizenship">
+                        <option value="" disabled>Select Citizenship</option>
+                        <option value="Filipino">Filipino</option>
+                        <option value="Foreign National">Foreign National</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Relationship</label>
+                      <input class="form-control" v-model="form.consentSource.groom.relationship" placeholder="e.g. Father / Mother / Guardian">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- STEP 20 – GROOM CONSENT/ADVICE SOURCE RESIDENCE -->
+                <div v-if="step === 20 && groomRequirement !== 'no-need'">
+                  <h4 class="section-title">Groom - Person Who Gave {{ groomRequirement === 'parental-consent' ? 'Consent' : 'Advice' }} (Residence)</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
+                  <div class="row g-3">
+                    <div class="col-md-12">
+                      <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
+                      <input class="form-control" v-model="form.consentSource.groom.residence">
+                      <small class=" text-primary">Tips: Enter the full address including house number, street name, city/municipality, province, and country.</small>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- STEP 21 – GROOM REVIEW -->
+                <div v-if="step === 21">
                   <div class="d-flex align-items-center mb-4">
                     <div class="bg-primary p-2 rounded-3 me-3">
                       <i class="bi bi-person-check-fill fs-4 text-white"></i>
@@ -859,8 +908,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 20 – BRIDE NAME -->
-                <div v-if="step === 20">
+                <!-- STEP 22 – BRIDE NAME -->
+                <div v-if="step === 22">
                   <h4 class="section-title">Bride – Name</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -881,8 +930,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 21 – BRIDE BIRTH DATE -->
-                <div v-if="step === 21">
+                <!-- STEP 23 – BRIDE BIRTH DATE -->
+                <div v-if="step === 23">
                   <h4 class="section-title">Bride – Birth Date Details</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -903,8 +952,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 22 – BRIDE PLACE OF BIRTH -->
-                <div v-if="step === 22">
+                <!-- STEP 24 – BRIDE PLACE OF BIRTH -->
+                <div v-if="step === 24">
                   <h4 class="section-title">Bride – Place of Birth</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -925,8 +974,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 23 – BRIDE INFO -->
-                <div v-if="step === 23">
+                <!-- STEP 25 – BRIDE INFO -->
+                <div v-if="step === 25">
                   <h4 class="section-title">Bride – Personal Info</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -951,8 +1000,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 24 – BRIDE RESIDENCE -->
-                <div v-if="step === 24">
+                <!-- STEP 26 – BRIDE RESIDENCE -->
+                <div v-if="step === 26">
                   <h4 class="section-title">Bride – Residence</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -966,8 +1015,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 25 – BRIDE RELIGION -->
-                <div v-if="step === 25">
+                <!-- STEP 27 – BRIDE RELIGION -->
+                <div v-if="step === 27">
                   <h4 class="section-title">Bride – Religion / Religion Sect</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -980,8 +1029,8 @@
                   </div>
                 </div>
                 
-                <!-- STEP 26 – BRIDE CIVIL STATUS -->
-                <div v-if="step === 26">
+                <!-- STEP 28 – BRIDE CIVIL STATUS -->
+                <div v-if="step === 28">
                   <h4 class="section-title">Bride – Civil Status</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -1037,8 +1086,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 27 – BRIDE DEGREE -->
-                <div v-if="step === 27">
+                <!-- STEP 29 – BRIDE DEGREE -->
+                <div v-if="step === 29">
                   <h4 class="section-title">Brides - Degree of relationship contracting parties</h4>
                   <div class="row g-3">
                     <div class="col-md-12">
@@ -1049,8 +1098,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 28 – BRIDE FATHER'S INFO -->
-                <div v-if="step === 28">
+                <!-- STEP 30 – BRIDE FATHER'S INFO -->
+                <div v-if="step === 30">
                   <h4 class="section-title">Bride – Father's Info</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -1079,8 +1128,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 29 – BRIDE FATHER'S RESIDENCE -->
-                <div v-if="step === 29">
+                <!-- STEP 31 – BRIDE FATHER'S RESIDENCE -->
+                <div v-if="step === 31">
                   <h4 class="section-title">Bride – Father's Residence</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -1094,8 +1143,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 30 – BRIDE MOTHER'S MAIDEN INFO -->
-                <div v-if="step === 30">
+                <!-- STEP 32 – BRIDE MOTHER'S MAIDEN INFO -->
+                <div v-if="step === 32">
                   <h4 class="section-title">Bride – Mother's Maiden Info</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -1124,8 +1173,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 31 – BRIDE MOTHER'S MAIDEN RESIDENCE -->
-                <div v-if="step === 31">
+                <!-- STEP 33 – BRIDE MOTHER'S MAIDEN RESIDENCE -->
+                <div v-if="step === 33">
                   <h4 class="section-title">Bride – Mother's Maiden Residence</h4>
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
@@ -1139,8 +1188,57 @@
                   </div>
                 </div>
 
-                <!-- STEP 32 – BRIDE REVIEW -->
-                <div v-if="step === 32">
+                <!-- STEP 34 – BRIDE CONSENT/ADVICE SOURCE INFO -->
+                <div v-if="step === 34 && brideRequirement !== 'no-need'">
+                  <h4 class="section-title">Bride - Person Who Gave {{ brideRequirement === 'parental-consent' ? 'Consent' : 'Advice' }} (Info)</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <label class="form-label">First Name</label>
+                      <input class="form-control" v-model="form.consentSource.bride.firstName">
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Middle Name</label>
+                      <input class="form-control" v-model="form.consentSource.bride.middleName">
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Last Name</label>
+                      <input class="form-control" v-model="form.consentSource.bride.lastName">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Citizenship</label>
+                      <select class="form-control" v-model="form.consentSource.bride.citizenship">
+                        <option value="" disabled>Select Citizenship</option>
+                        <option value="Filipino">Filipino</option>
+                        <option value="Foreign National">Foreign National</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Relationship</label>
+                      <input class="form-control" v-model="form.consentSource.bride.relationship" placeholder="e.g. Father / Mother / Guardian">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- STEP 35 – BRIDE CONSENT/ADVICE SOURCE RESIDENCE -->
+                <div v-if="step === 35 && brideRequirement !== 'no-need'">
+                  <h4 class="section-title">Bride - Person Who Gave {{ brideRequirement === 'parental-consent' ? 'Consent' : 'Advice' }} (Residence)</h4>
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
+                  <div class="row g-3">
+                    <div class="col-md-12">
+                      <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
+                      <input class="form-control" v-model="form.consentSource.bride.residence">
+                      <small class=" text-primary">Tips: Enter the full address including house number, street name, city/municipality, province, and country.</small>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- STEP 36 – BRIDE REVIEW -->
+                <div v-if="step === 36">
                   <div class="d-flex align-items-center mb-4">
                     <div class="bg-danger p-2 rounded-3 me-3">
                       <i class="bi bi-person-check-fill fs-4 text-white"></i>
@@ -1184,8 +1282,8 @@
                   </div>
                 </div>
 
-                <!-- STEP 33 – REVIEW -->
-                <div v-if="step === 33">
+                <!-- STEP 37 – REVIEW -->
+                <div v-if="step === 37">
                   <h4 class="section-title mb-4 text-center border-0">Final Verification</h4>
                   <div class="row g-3">
                     <div class="col-md-6">
@@ -1221,7 +1319,7 @@
                     Back
                   </button>
 
-                  <button v-if="step < totalSteps && step != 33"
+                  <button v-if="step < totalSteps && step != 37"
                           class="btn btn-primary glow-button"
                           @click="goNext()">
                     Next
@@ -1263,7 +1361,7 @@ export default {
       ageRequirements : null,
       message: [],
       step: 1,
-      totalSteps: 33,
+      totalSteps: 37,
       ageError: '',
       isPreviouslyMarried: false,
       previews: {
@@ -1276,7 +1374,11 @@ export default {
       },
       form: {
         groom: { documents: {}, sex: "Male" },
-        bride: { documents: {}, sex: "Female" }
+        bride: { documents: {}, sex: "Female" },
+        consentSource: {
+          groom: {},
+          bride: {}
+        }
       }
     }
   },
@@ -1359,6 +1461,16 @@ export default {
     },
     goBack() {
       let prevStep = this.step - 1;
+
+      // If groom does not require consent/advice source, skip steps 19-20.
+      if ((prevStep === 20 || prevStep === 19) && this.groomRequirement === "no-need") {
+        prevStep = 18;
+      }
+
+      // If bride does not require consent/advice source, skip steps 34-35.
+      if ((prevStep === 35 || prevStep === 34) && this.brideRequirement === "no-need") {
+        prevStep = 33;
+      }
 
       // If going back to Step 6, but it was skipped (no-need for parental docs)
       if (prevStep === 6 && this.brideRequirement === "no-need" && this.groomRequirement === "no-need") {
@@ -1446,17 +1558,17 @@ export default {
           let missingBrideAge = false;
 
           // Validation for Groom based on his specific age selection
-          if (this.groomRequirements === "parental-consent") {
-            if (!this.form.groom.documents['parental-consent']) missingGroomAge = true;
-          } else if (this.groomRequirements === "parental-advise") {
-            if (!this.form.groom.documents['parental-advise']) missingGroomAge = true;
+          if (this.groomRequirement === "parental-consent") {
+            if (!this.form.groom.documents.parentalConsent) missingGroomAge = true;
+          } else if (this.groomRequirement === "parental-advise") {
+            if (!this.form.groom.documents.parentalAdvise) missingGroomAge = true;
           }
 
           // Validation for Bride based on her specific age selection
-          if (this.brideRequirements === "parental-consent") {
-            if (!this.form.bride.documents['parental-consent']) missingBrideAge = true;
-          } else if (this.brideRequirements === "parental-advise") {
-            if (!this.form.bride.documents['parental-advise']) missingBrideAge = true;
+          if (this.brideRequirement === "parental-consent") {
+            if (!this.form.bride.documents.parentalConsent) missingBrideAge = true;
+          } else if (this.brideRequirement === "parental-advise") {
+            if (!this.form.bride.documents.parentalAdvise) missingBrideAge = true;
           }
 
           if (missingGroomAge || missingBrideAge) {
@@ -1593,8 +1705,26 @@ export default {
           }
           break;
 
+        case 19: // Groom consent/advice source info
+          if (this.groomRequirement !== "no-need") {
+            if (!this.form.consentSource.groom.citizenship || !this.form.consentSource.groom.relationship) {
+              this.message.push("Please fill in groom consent/advice source citizenship and relationship.");
+              this.scrollToError();
+              return;
+            }
+          }
+          break;
+
+        case 20: // Groom consent/advice source residence
+          if (this.groomRequirement !== "no-need" && !this.form.consentSource.groom.residence) {
+            this.message.push("Please fill in groom consent/advice source residence.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
         /* --- BRIDE VALIDATION --- */
-        case 20: // Bride Name
+        case 22: // Bride Name
           if (!this.form.bride.firstName || !this.form.bride.lastName) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1603,7 +1733,7 @@ export default {
           // if (!this.form.bride.middleName) this.form.bride.middleName = "N/A";
           break;
 
-        case 21: // Bride Birth Date
+        case 23: // Bride Birth Date
           if (!this.form.bride.day || !this.form.bride.month || !this.form.bride.year) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1634,7 +1764,7 @@ export default {
           }
           break;
 
-        case 22: // Bride Birth Place
+        case 24: // Bride Birth Place
           if (!this.form.bride.cityMunicipality || !this.form.bride.province || !this.form.bride.country) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1642,7 +1772,7 @@ export default {
           }
           break;
 
-        case 23: // Bride Personal Info
+        case 25: // Bride Personal Info
           if (!this.form.bride.age || !this.form.bride.sex || !this.form.bride.citizenship) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1650,7 +1780,7 @@ export default {
           }
           break;
 
-        case 24: // Bride Residence
+        case 26: // Bride Residence
           if (!this.form.bride.residence) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1658,7 +1788,7 @@ export default {
           }
           break;
 
-        case 25: // Bride Religion
+        case 27: // Bride Religion
           if (!this.form.bride.religion) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1666,7 +1796,7 @@ export default {
           }
           break;
 
-        case 26: // Bride Civil Status
+        case 28: // Bride Civil Status
           if (!this.form.bride.civilStatus) {
             this.message.push("Please fill in Civil Status.");
             this.scrollToError();
@@ -1681,11 +1811,11 @@ export default {
           // if (!this.form.bride.dissolvedYear) this.form.bride.dissolvedYear = "N/A";
           break;
 
-        case 27: // Bride Degree
+        case 29: // Bride Degree
           // if (!this.form.bride.degree) this.form.bride.degree = "N/A";
           break;
 
-        case 28: // Bride Father Info
+        case 30: // Bride Father Info
           if (!this.form.bride.fatherFirstName || !this.form.bride.fatherLastName || !this.form.bride.fatherCitizenship) {
             this.message.push("Please fill in all required fields excluding Middle Name.");
             this.scrollToError();
@@ -1694,7 +1824,7 @@ export default {
           // if (!this.form.bride.fatherMiddleName) this.form.bride.fatherMiddleName = "N/A";
           break;
 
-        case 29: // Bride Father Residence
+        case 31: // Bride Father Residence
           if (!this.form.bride.fatherResidence) {
             this.message.push("Please fill in all required fields.");
             this.scrollToError();
@@ -1702,7 +1832,7 @@ export default {
           }
           break;
 
-        case 30: // Bride Mother Info
+        case 32: // Bride Mother Info
           if (!this.form.bride.motherMaidenFirstName || !this.form.bride.motherMaidenLastName || !this.form.bride.motherMaidenCitizenship) {
             this.message.push("Please fill in all required fields excluding Middle Name.");
             this.scrollToError();
@@ -1711,9 +1841,27 @@ export default {
           // if (!this.form.bride.motherMaidenMiddleName) this.form.bride.motherMaidenMiddleName = "N/A";
           break;
 
-        case 31: // Bride Mother Residence
+        case 33: // Bride Mother Residence
           if (!this.form.bride.motherMaidenResidence) {
             this.message.push("Please fill in all required fields.");
+            this.scrollToError();
+            return;
+          }
+          break;
+
+        case 34: // Bride consent/advice source info
+          if (this.brideRequirement !== "no-need") {
+            if (!this.form.consentSource.bride.citizenship || !this.form.consentSource.bride.relationship) {
+              this.message.push("Please fill in bride consent/advice source citizenship and relationship.");
+              this.scrollToError();
+              return;
+            }
+          }
+          break;
+
+        case 35: // Bride consent/advice source residence
+          if (this.brideRequirement !== "no-need" && !this.form.consentSource.bride.residence) {
+            this.message.push("Please fill in bride consent/advice source residence.");
             this.scrollToError();
             return;
           }
@@ -1743,11 +1891,22 @@ export default {
         nextStep++;
       }
 
+      // If groom does not require consent/advice source, skip steps 19-20.
+      if ((nextStep === 19 || nextStep === 20) && this.groomRequirement === "no-need") {
+        nextStep = 21;
+      }
+
+      // If bride does not require consent/advice source, skip steps 34-35.
+      if ((nextStep === 34 || nextStep === 35) && this.brideRequirement === "no-need") {
+        nextStep = 36;
+      }
+
       // We only save the text data. Browsers cannot save "File" objects in localStorage.
       const progressData = {
           step: nextStep,
           groom: { ...this.form.groom, documents: {} }, // Strip documents
           bride: { ...this.form.bride, documents: {} }, // Strip documents
+          consentSource: { ...this.form.consentSource },
           isForeigner: this.isForeigner,  
           type: this.type,
           groomRequirement: this.groomRequirement,
@@ -1843,8 +2002,11 @@ export default {
 
         const formData = new FormData();
         formData.append('type', this.type);
+        formData.append('groomRequirement', this.groomRequirement);
+        formData.append('brideRequirement', this.brideRequirement);
         formData.append('groom', JSON.stringify(this.form.groom));
         formData.append('bride', JSON.stringify(this.form.bride));
+        formData.append('consentSource', JSON.stringify(this.form.consentSource));
 
         // Append all documents from the "Bucket" logic we built earlier
         Object.keys(this.form.groom.documents).forEach(key => {
@@ -1870,7 +2032,7 @@ export default {
               </h2>
               
               <div class="alert alert-warning border-0 shadow-sm py-3 px-2 mb-3">
-                <h6 class="fw-bold mb-1">📸 ACTION REQUIRED:</h6>
+                <h6 class="fw-bold mb-1">ACTION REQUIRED:</h6>
                 <p class="small mb-0">
                   Please <b>SCREENSHOT</b> this screen. Present this at the <b>Abuyog LCRO Office</b> to verify your application.
                 </p>
@@ -1943,6 +2105,7 @@ export default {
         // Only load if the user actually wants to continue
         this.form.groom = { ...this.form.groom, ...parsed.groom };
         this.form.bride = { ...this.form.bride, ...parsed.bride };
+        this.form.consentSource = { ...this.form.consentSource, ...parsed.consentSource };
         // this.step = parsed.step;
 
         Swal.fire({
@@ -2228,3 +2391,4 @@ small.text-white-50 {
   font-style: italic;
 }
 </style>
+

@@ -17,6 +17,12 @@ class MarriageApplicationController extends Controller
     public function store(Request $request)
     {
         return DB::transaction(function () use ($request) {
+            $consentSource = json_decode($request->input('consentSource', '{}'), true) ?? [];
+            $requirements = [
+                'groom' => $request->input('groomRequirement'),
+                'bride' => $request->input('brideRequirement'),
+            ];
+
             // 1. Generate Control Number
             $controlNumber = 'LCROML-' . strtoupper(Str::random(8));
 
@@ -32,6 +38,7 @@ class MarriageApplicationController extends Controller
             // 3. Process Groom and Bride Data
             foreach (['groom', 'bride'] as $role) {
                 $data = json_decode($request->input($role), true);
+                $source = $consentSource[$role] ?? [];
 
                 // Insert Applicant Info using Query Builder
                 DB::table('applicants')->insert([
@@ -72,6 +79,16 @@ class MarriageApplicationController extends Controller
                     'mother_last_name'   => $data['motherMaidenLastName'] ?? null,
                     'mother_citizenship' => $data['motherMaidenCitizenship'] ?? null,
                     'mother_residence'   => $data['motherMaidenResidence'] ?? null,
+
+                    // Consent/Advice source info per applicant (if required by age bracket)
+                    'parental_requirement' => $requirements[$role] ?? null,
+                    'source_first_name'    => $source['firstName'] ?? null,
+                    'source_middle_name'   => $source['middleName'] ?? null,
+                    'source_last_name'     => $source['lastName'] ?? null,
+                    'source_citizenship'   => $source['citizenship'] ?? null,
+                    'source_relationship'  => $source['relationship'] ?? null,
+                    'source_residence'     => $source['residence'] ?? null,
+
                     'created_at'         => Carbon::now(),
                     'updated_at'         => Carbon::now(),
                 ]);
@@ -400,10 +417,17 @@ class MarriageApplicationController extends Controller
             $sheet->setCellValue('B39', $groom->mother_first_name . " " . ($groom->mother_middle_name ?? "") . " " . $groom->mother_last_name);                
             $sheet->setCellValue('B40', $groom->mother_citizenship);
             $sheet->setCellValue('B42', $groom->mother_residence);
-            $sheet->setCellValue('B43', "NOT APPLICABLE");
-            $sheet->setCellValue('B44', "NOT APPLICABLE");
-            $sheet->setCellValue('B45', "NOT APPLICABLE");
-            $sheet->setCellValue('B46', "NOT APPLICABLE");
+            if (($groom->parental_requirement ?? 'no-need') !== 'no-need') {
+                $sheet->setCellValue('B43', trim(($groom->source_first_name ?? '') . " " . ($groom->source_middle_name ?? '') . " " . ($groom->source_last_name ?? '')));
+                $sheet->setCellValue('B44', trim(($groom->source_relationship ?? 'N/A')));
+                $sheet->setCellValue('B45', trim(($groom->source_citizenship ?? 'N/A')));
+                $sheet->setCellValue('B46', $groom->source_residence ?? "N/A");
+            } else {
+                $sheet->setCellValue('B43', "NOT APPLICABLE");
+                $sheet->setCellValue('B44', "NOT APPLICABLE");
+                $sheet->setCellValue('B45', "NOT APPLICABLE");
+                $sheet->setCellValue('B46', "NOT APPLICABLE");
+            }
 
             $sheet->setCellValue('L12', $bride->first_name . ' ' . $bride->last_name);
             $sheet->setCellValue('N18', $bride->first_name);
@@ -429,10 +453,17 @@ class MarriageApplicationController extends Controller
             $sheet->setCellValue('M39', $bride->mother_first_name . " " . ($bride->mother_middle_name ?? "") . " " . $bride->mother_last_name);                
             $sheet->setCellValue('M40', $bride->mother_citizenship);
             $sheet->setCellValue('M42', $bride->mother_residence);
-            $sheet->setCellValue('M43', "NOT APPLICABLE");
-            $sheet->setCellValue('M44', "NOT APPLICABLE");
-            $sheet->setCellValue('M45', "NOT APPLICABLE");
-            $sheet->setCellValue('M46', "NOT APPLICABLE");
+            if (($bride->parental_requirement ?? 'no-need') !== 'no-need') {
+                $sheet->setCellValue('M43', trim(($bride->source_first_name ?? '') . " " . ($bride->source_middle_name ?? '') . " " . ($bride->source_last_name ?? '')));
+                $sheet->setCellValue('M44', trim(($bride->source_relationship ?? 'N/A')));
+                $sheet->setCellValue('M45', trim(($bride->source_citizenship ?? 'N/A')));
+                $sheet->setCellValue('M46', $bride->source_residence ?? "N/A");
+            } else {
+                $sheet->setCellValue('M43', "NOT APPLICABLE");
+                $sheet->setCellValue('M44', "NOT APPLICABLE");
+                $sheet->setCellValue('M45', "NOT APPLICABLE");
+                $sheet->setCellValue('M46', "NOT APPLICABLE");
+            }
 
             // 5. STREAM THE FILE BACK TO VUE
             $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');

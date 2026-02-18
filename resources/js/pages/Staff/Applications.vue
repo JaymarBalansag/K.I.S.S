@@ -258,6 +258,32 @@
                                 </div>
                             </div>
 
+                            <div v-if="person.parental_requirement && person.parental_requirement !== 'no-need'" class="p-3 rounded-4 bg-secondary bg-opacity-5 border border-white border-opacity-5 mb-3">
+                                <h6 class="x-small text-white opacity-30 text-uppercase fw-bold mb-3 ls-1">Consent/Advice Source</h6>
+                                <div class="mb-2">
+                                    <label class="x-small text-white opacity-40 d-block">Requirement</label>
+                                    <span class="small fw-semibold text-capitalize">
+                                        {{ person.parental_requirement === 'parental-consent' ? 'Parental Consent' : 'Parental Advice' }}
+                                    </span>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="x-small text-white opacity-40 d-block">Name</label>
+                                    <span class="small d-block fw-semibold">
+                                        {{ person.source_first_name || 'N/A' }} {{ person.source_middle_name || '' }} {{ person.source_last_name || '' }}
+                                    </span>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="x-small text-white opacity-40 d-block">Citizenship / Relationship</label>
+                                    <span class="small d-block">
+                                        {{ person.source_citizenship || 'N/A' }} | {{ person.source_relationship || 'N/A' }}
+                                    </span>
+                                </div>
+                                <div class="mb-0">
+                                    <label class="x-small text-white opacity-40 d-block">Residence</label>
+                                    <span class="x-small opacity-75">{{ person.source_residence || 'N/A' }}</span>
+                                </div>
+                            </div>
+
                             <div v-if="person.civil_status !== 'Single'" class="p-2 rounded-3 border border-warning border-opacity-20 bg-secondary bg-opacity-5 mt-2">
                                 <label class="x-small text-white opacity-75 d-block text-uppercase fw-bold">Previous Marriage Details</label>
                                 <div class="x-small text-white">{{ person.dissolution_details !== "N/A" ? person.dissolution_details : "Not applicable" }} — {{ person.dissolution_place }}</div>
