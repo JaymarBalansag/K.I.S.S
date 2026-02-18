@@ -86,20 +86,28 @@
         },
         faqs: [
             {
-            question: "How long does it take to process a marriage license?",
-            answer: "By law, there is a mandatory 10-day publication period before a marriage license can be issued. This period begins once your application is fully submitted and verified at our office."
+                question: "How long does it take to process a marriage license?",
+                answer: "By law, there is a mandatory 10-day publication period before a marriage license can be issued. This period begins once your application is fully submitted and verified at our office."
             },
             {
-            question: "What are the basic requirements for a marriage license?",
-            answer: "Basic requirements typically include PSA Birth Certificates, Certificate of No Marriage (CENOMAR), valid IDs, and Attendance in Pre-Marriage Orientation and Counseling. Additional documents may be required based on age or previous marital status."
+                question: "What are the basic requirements for a marriage license?",
+                answer: "Basic requirements typically include PSA Birth Certificates, Certificate of No Marriage (CENOMAR), valid IDs, and Attendance in Pre-Marriage Orientation and Counseling. Additional documents may be required based on age or previous marital status."
             },
             {
-            question: "What is the validity period of a marriage license?",
-            answer: "A marriage license is valid for 120 days from the date of issuance and can be used anywhere in the Philippines. If the 120-day period expires without being used, you must apply for a new license."
+                question: "What are the requirements if we have been living together for 5 years or more?",
+                answer: "Couples who have lived together as husband and wife for at least 5 years without legal impediment to marry may apply under Article 34 of the Family Code. Instead of a marriage license, you must submit a notarized 'Affidavit of Cohabitation.' You will still need to provide PSA Birth Certificates and CENOMARs to verify your eligibility."
             },
             {
-            question: "Can I request a certified copy of my marriage certificate through this portal?",
-            answer: "Currently, you can initiate the application and submit requirements via the portal. For the final certified copy, you may need to visit the office for verification or choose our courier delivery option if available in your area."
+                question: "What are the additional requirements if one of the applicants is a foreigner?",
+                answer: "Foreigners must submit a 'Certificate of Legal Capacity to Contract Marriage' issued by their respective embassy or consulate in the Philippines. A valid Passport (showing the bio-page and latest arrival stamp) is also required. If the foreigner is divorced or widowed, the original Divorce Decree or Death Certificate of the previous spouse (duly authenticated or apostilled) must be presented."
+            },
+            {
+                question: "What is the validity period of a marriage license?",
+                answer: "A marriage license is valid for 120 days from the date of issuance and can be used anywhere in the Philippines. If the 120-day period expires without being used, you must apply for a new license."
+            },
+            {
+                question: "Can I request a certified copy of my marriage certificate through this portal?",
+                answer: "Currently, you can initiate the application and submit requirements via the portal. For the final certified copy, you may need to visit the office for verification or choose our courier delivery option if available in your area."
             }
         ]
         };

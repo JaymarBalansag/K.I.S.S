@@ -125,11 +125,35 @@ export default {
             if (this.isMobile) this.mobileShow = false;
         },
         async handleLogout() {
-            if (confirm("Logout from LCRO Staff?")) {
+            const result = await Swal.fire({
+                title: 'Logout from LCRO Staff?',
+                text: "You will need to login again to access your dashboard.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, logout!'
+            });
+
+            if (result.isConfirmed) {
+                try {
                 const res = await logout();
+                
+                // Optional: Show a quick success message before redirecting
+                await Swal.fire({
+                    title: 'Logged Out!',
+                    text: 'You have been successfully logged out.',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
                 this.$router.push('/staff-portal');
+                } catch (error) {
+                Swal.fire('Error', 'Something went wrong during logout.', 'error');
+                }
             }
-        }
+        },
     }
 };
 </script>
