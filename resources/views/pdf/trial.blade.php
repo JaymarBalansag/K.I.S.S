@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html;" />
+    <title>Marriage License Application</title>
 
     <style>
         @page {
@@ -26,348 +28,357 @@
             height: 14in;
         }
 
-        /* BACKGROUND IMAGE WITH OPACITY */
+        /* BACKGROUND IMAGE */
         .bg-image {
             position: absolute;
             top: 0;
             left: 0;
             width: 8.5in;
             height: 14in;
-            opacity: 0;
-            /* ← ADJUST OPACITY HERE */
-            z-index: 0;
+            opacity: 1;
+            z-index: 1;
         }
 
         /* TEXT LAYER */
         .data {
             position: absolute;
             white-space: nowrap;
-            z-index: 1;
+            z-index: 2;
+            /* Increased to ensure text is above image */
         }
 
         /* ---------------- POSITIONS ---------------- */
 
-        /* Top Section */
+        /* Top Header Section */
         .province {
-            top: 118px;
+            top: 115px;
             left: 175px;
         }
 
         .municipality {
-            top: 138px;
+            top: 135px;
             left: 230px;
         }
 
         .received-by {
-            top: 163px;
+            top: 160px;
             left: 185px;
         }
 
         .date {
-            top: 179px;
+            top: 176px;
             left: 195px;
         }
 
-        /* Groom Column */
+        /* Row 1: Full Names */
         .b-fullname {
             top: 270px;
             left: 130px;
             font-weight: bold;
         }
 
-        .g-name-first {
-            top: 353px;
-            left: 155px;
-        }
-
-        .g-name-middle {
-            top: 370px;
-            left: 155px;
-        }
-
-        .g-name-last {
-            top: 385px;
-            left: 155px;
-        }
-
-        .g-bday {
-            top: 422px;
-            left: 130px;
-        }
-
-        .g-age {
-            top: 422px;
-            left: 350px;
-        }
-
-        .g-birthplace {
-            top: 460px;
-            left: 155px;
-            width: 300px;
-            font-size: 9pt;
-            white-space: normal;
-        }
-
-        .g-sex {
-            top: 495px;
-            left: 145px;
-        }
-
-        .g-citizenship {
-            top: 495px;
-            left: 270px;
-        }
-
-        .g-residence {
-            top: 525px;
-            left: 115px;
-            width: 250px;
-            font-size: 9pt;
-            white-space: normal;
-            text-align: center;
-        }
-
-        .g-religion {
-            top: 570px;
-            left: 180px;
-        }
-
-        .g-civil-status {
-            top: 600px;
-            left: 230px;
-        }
-
-        .g-if-married {
-            top: 638px;
-            left: 230px;
-        }
-
-        .g-place-dissolved {
-            top: 678px;
-            left: 140px;
-        }
-
-        .g-date-dissolved {
-            top: 710px;
-            left: 160px;
-        }
-
-        .g-relationship {
-            top: 745px;
-            left: 170px;
-        }
-
-        .g-fathername {
-            top: 780px;
-            left: 145px;
-        }
-
-        .g-father-citizenship {
-            top: 805px;
-            left: 200px;
-        }
-
-        .g-father-residence {
-            top: 844px;
-            left: 135px;
-            width: 250px;
-            font-size: 9pt;
-            white-space: normal;
-            text-align: center;
-        }
-
-        .g-mothername {
-            top: 885px;
-            left: 145px;
-        }
-
-        .g-mother-citizenship {
-            top: 913px;
-            left: 200px;
-        }
-
-        .g-mother-residence {
-            top: 939px;
-            left: 135px;
-            width: 250px;
-            font-size: 9pt;
-            white-space: normal;
-            text-align: center;
-        }
-
-        .g-give-consent {
-            top: 980px;
-            left: 200px;
-        }
-
-        .g-give-consent-relationship {
-            top: 1003px;
-            left: 200px;
-        }
-
-        .g-give-consent-citizenship {
-            top: 1027px;
-            left: 200px;
-        }
-
-        .g-give-consent-residence {
-            top: 1060px;
-            left: 135px;
-            width: 250px;
-            font-size: 9pt;
-            white-space: normal;
-            text-align: center;
-        }
-
-        /* Bride Column */
         .g-fullname {
-            top: 272px;
+            top: 270px;
             left: 450px;
             font-weight: bold;
         }
 
+        /* Row 2: First, Middle, Last Names */
+        .g-name-first,
         .b-name-first {
-            top: 355px;
-            left: 550px;
+            top: 353px;
         }
 
+        .g-name-middle,
         .b-name-middle {
             top: 370px;
-            left: 550px;
         }
 
+        .g-name-last,
         .b-name-last {
             top: 385px;
-            left: 550px;
         }
 
+        /* Row 3: Birthday & Age */
+        .g-bday,
         .b-bday {
             top: 422px;
-            left: 530px;
         }
 
+        .g-age,
         .b-age {
             top: 422px;
-            left: 720px;
         }
 
+        /* Row 4: Birthplace */
+        .g-birthplace,
         .b-birthplace {
             top: 460px;
-            left: 535px;
             width: 300px;
             font-size: 9pt;
             white-space: normal;
         }
 
+        /* Row 5: Sex & Citizenship */
+        .g-sex,
         .b-sex {
             top: 495px;
+        }
+
+        .g-citizenship,
+        .b-citizenship {
+            top: 495px;
+        }
+
+        /* Row 6: Residence */
+        .g-residence,
+        .b-residence {
+            top: 530px;
+            width: 250px;
+            font-size: 9pt;
+            white-space: normal;
+            text-align: center;
+        }
+
+        /* Row 7: Religion, Civil Status, Marriage Info */
+        .g-religion,
+        .b-religion {
+            top: 570px;
+        }
+
+        .g-civil-status,
+        .b-civil-status {
+            top: 600px;
+        }
+
+        .g-if-married,
+        .b-if-married {
+            top: 638px;
+        }
+
+        /* Row 8: Dissolution Info */
+        .g-place-dissolved,
+        .b-place-dissolved {
+            top: 680px;
+        }
+
+        .g-date-dissolved,
+        .b-date-dissolved {
+            top: 723px;
+        }
+
+        .g-relationship,
+        .b-relationship {
+            top: 755px;
+        }
+
+        /* Row 9: Father's Info */
+        .g-fathername,
+        .b-fathername {
+            top: 795px;
+        }
+
+        .g-father-citizenship,
+        .b-father-citizenship {
+            top: 825px;
+        }
+
+        .g-father-residence,
+        .b-father-residence {
+            top: 865px;
+            width: 250px;
+            font-size: 9pt;
+            white-space: normal;
+            text-align: center;
+        }
+
+        /* Row 10: Mother's Info */
+        .g-mothername,
+        .b-mothername {
+            top: 910px;
+        }
+
+        .g-mother-citizenship,
+        .b-mother-citizenship {
+            top: 935px;
+        }
+
+        .g-mother-residence,
+        .b-mother-residence {
+            top: 965px;
+            width: 250px;
+            font-size: 9pt;
+            white-space: normal;
+            text-align: center;
+        }
+
+        /* Row 11: Consent Section */
+        .g-give-consent,
+        .b-give-consent {
+            top: 1000px;
+        }
+
+        .g-give-consent-relationship,
+        .b-give-consent-relationship {
+            top: 1025px;
+        }
+
+        .g-give-consent-citizenship,
+        .b-give-consent-citizenship {
+            top: 1050px;
+        }
+
+        .g-give-consent-residence,
+        .b-give-consent-residence {
+            top: 1090px;
+            width: 250px;
+            font-size: 9pt;
+            white-space: normal;
+            text-align: center;
+        }
+
+        /* ---------------- LEFT OFFSETS (COLUMN ALIGNMENT) ---------------- */
+
+        /* Groom Left Offsets */
+        .g-name-first,
+        .g-name-middle,
+        .g-name-last,
+        .g-birthplace {
+            left: 155px;
+        }
+
+        .g-bday {
+            left: 130px;
+        }
+
+        .g-age {
+            left: 350px;
+        }
+
+        .g-sex {
+            left: 145px;
+        }
+
+        .g-citizenship {
+            left: 270px;
+        }
+
+        .g-residence {
+            left: 115px;
+        }
+
+        .g-religion {
+            left: 180px;
+        }
+
+        .g-civil-status,
+        .g-if-married {
+            left: 230px;
+        }
+
+        .g-place-dissolved {
+            left: 140px;
+        }
+
+        .g-date-dissolved {
+            left: 160px;
+        }
+
+        .g-relationship {
+            left: 170px;
+        }
+
+        .g-fathername,
+        .g-mothername {
+            left: 145px;
+        }
+
+        .g-father-citizenship,
+        .g-mother-citizenship,
+        .g-give-consent,
+        .g-give-consent-relationship,
+        .g-give-consent-citizenship {
+            left: 200px;
+        }
+
+        .g-father-residence,
+        .g-mother-residence,
+        .g-give-consent-residence {
+            left: 135px;
+        }
+
+        /* Bride Left Offsets */
+        .b-name-first,
+        .b-name-middle,
+        .b-name-last,
+        .b-birthplace {
+            left: 550px;
+        }
+
+        .b-bday {
+            left: 530px;
+        }
+
+        .b-age {
+            left: 720px;
+        }
+
+        .b-sex {
             left: 530px;
         }
 
         .b-citizenship {
-            top: 495px;
             left: 650px;
         }
 
         .b-residence {
-            top: 525px;
             left: 500px;
-            width: 250px;
-            font-size: 9pt;
-            white-space: normal;
-            text-align: center;
         }
 
-        .b-religion {
-            top: 570px;
-            left: 580px;
-        }
-
-        .b-civil-status {
-            top: 600px;
-            left: 580px;
-        }
-
+        .b-religion,
+        .b-civil-status,
         .b-if-married {
-            top: 638px;
             left: 580px;
         }
 
         .b-place-dissolved {
-            top: 678px;
             left: 500px;
         }
 
         .b-date-dissolved {
-            top: 710px;
             left: 560px;
         }
 
         .b-relationship {
-            top: 745px;
             left: 570px;
         }
 
-        .b-fathername {
-            top: 780px;
+        .b-fathername,
+        .b-mothername {
             left: 525px;
         }
 
-        .b-father-citizenship {
-            top: 805px;
+        .b-father-citizenship,
+        .b-mother-citizenship {
             left: 600px;
         }
 
         .b-father-residence {
-            top: 844px;
             left: 485px;
-            width: 250px;
-            font-size: 9pt;
-            white-space: normal;
-            text-align: center;
-        }
-
-        .b-mothername {
-            top: 885px;
-            left: 525px;
-        }
-
-        .b-mother-citizenship {
-            top: 913px;
-            left: 600px;
         }
 
         .b-mother-residence {
-            top: 939px;
             left: 500px;
-            width: 250px;
-            font-size: 9pt;
-            white-space: normal;
-            text-align: center;
         }
 
-        .b-give-consent {
-            top: 980px;
-            left: 550px;
-        }
-
-        .b-give-consent-relationship {
-            top: 1003px;
-            left: 550px;
-        }
-
+        .b-give-consent,
+        .b-give-consent-relationship,
         .b-give-consent-citizenship {
-            top: 1027px;
             left: 550px;
         }
 
         .b-give-consent-residence {
-            top: 1060px;
             left: 490px;
-            width: 250px;
-            font-size: 9pt;
-            white-space: normal;
-            text-align: center;
         }
     </style>
 </head>
@@ -376,10 +387,8 @@
 
     <div class="print-container">
 
-        <!-- BACKGROUND IMAGE -->
-        <img src="license2.jpg" class="bg-image">
+        <img src="license.jpg" class="bg-image" alt="Background">
 
-        <!-- DATA -->
         <div class="data province">LEYTE</div>
         <div class="data municipality">ABUYOG</div>
         <div class="data received-by">MUNICIPAL CIVIL REGISTRAR</div>
@@ -389,7 +398,6 @@
         <div class="data g-name-first">Ruwilson</div>
         <div class="data g-name-middle">Taburada</div>
         <div class="data g-name-last">Hipos</div>
-
         <div class="data g-bday">26 November, 2003</div>
         <div class="data g-age">22</div>
         <div class="data g-birthplace">Abuyog Leyte, Philippines</div>
@@ -412,6 +420,7 @@
         <div class="data g-give-consent-relationship">NOT APPLICABLE</div>
         <div class="data g-give-consent-citizenship">NOT APPLICABLE</div>
         <div class="data g-give-consent-residence">NOT APPLICABLE</div>
+
 
         <div class="data g-fullname">Ruwilson Taburada Hipos</div>
         <div class="data b-name-first">Ruwilson</div>

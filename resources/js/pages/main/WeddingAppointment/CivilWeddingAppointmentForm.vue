@@ -62,12 +62,8 @@
                                         <div class="col-md-3">
                                             <label
                                                 class="form-label small fw-bold text-uppercase tracking-wider">Extension</label>
-                                            <select v-model="form.extension" class="form-select custom-input">
-                                                <option value="">None</option>
-                                                <option value="Jr">Jr.</option>
-                                                <option value="Sr">Sr.</option>
-                                                <option value="III">III</option>
-                                            </select>
+                                            <input type="text" v-model="form.extension"
+                                                class="form-control custom-input" placeholder="Jr., Sr., III, etc.">
                                         </div>
 
                                         <div class="col-md-6 mt-4">
@@ -87,13 +83,6 @@
                                                 <small v-else class="text-muted mt-1">10 digits starting with 9</small>
                                                 <small class="text-muted mt-1">{{ form.phone.length }}/10</small>
                                             </div>
-                                        </div>
-
-                                        <div class="col-md-6 mt-4">
-                                            <label class="form-label small fw-bold text-uppercase tracking-wider">Email
-                                                Address</label>
-                                            <input type="email" v-model="form.email" class="form-control custom-input"
-                                                placeholder="example@mail.com" required>
                                         </div>
                                     </div>
 

@@ -41,12 +41,8 @@
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label small fw-bold text-uppercase">Extension</label>
-                                            <select v-model="form.extension" class="form-select custom-input">
-                                                <option value="">None</option>
-                                                <option value="Jr">Jr.</option>
-                                                <option value="Sr">Sr.</option>
-                                                <option value="III">III</option>
-                                            </select>
+                                            <input type="text" v-model="form.extension"
+                                                class="form-control custom-input">
                                         </div>
                                         <div class="col-md-6 mt-4">
                                             <label class="form-label small fw-bold text-uppercase">Cellphone
@@ -171,7 +167,7 @@ export default {
                 </div>
 
                 <h2 style="color: #444; font-weight: 700; font-size: 1.4rem; margin-bottom: 10px;">Appointment Submitted!</h2>
-                
+
                 <p style="color: #666; margin-bottom: 2px; font-size: 0.9rem;">Your Control Number:</p>
                 <h1 style="color: #007bff; font-weight: 800; font-size: 1.8rem; letter-spacing: 1px; margin-bottom: 15px;">${code}</h1>
 
