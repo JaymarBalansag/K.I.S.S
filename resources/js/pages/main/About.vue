@@ -19,25 +19,10 @@
             </p>
           </div>
         </div>
-
+        
         <div class="row g-4 justify-content-center">
-          <div class="col-lg-6">
-            <div class="card h-100 border-0 shadow-lg glass-card p-4">
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-                  <div class="service-icon-box rounded-4 d-flex align-items-center justify-content-center text-white shadow me-3" 
-                       style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 50px; height: 50px;">
-                    <i class="bi bi-flag-fill fs-4"></i>
-                  </div>
-                  <h3 class="fw-bold text-dark mb-0">Our Mission</h3>
-                </div>
-                <p class="text-muted lh-lg">
-                  To provide the people of Abuyog with a highly efficient and reliable civil registration system. We aim to ensure that every birth, marriage, and death is recorded accurately, providing the legal foundation for our citizens' identities and rights.
-                </p>
-              </div>
-            </div>
-          </div>
 
+          <!-- Vision -->
           <div class="col-lg-6">
             <div class="card h-100 border-0 shadow-lg glass-card p-4">
               <div class="card-body">
@@ -49,12 +34,49 @@
                   <h3 class="fw-bold text-dark mb-0">Our Vision</h3>
                 </div>
                 <p class="text-muted lh-lg">
-                  A fully digitalized Local Civil Registry Office that serves as a model of excellence in public service. We envision a future where all registration processes are seamless, paperless, and accessible to every Abuyognon, anywhere in the world.
+                  Peaceful, agro-industrialized and seld-reliant Abuyog with disaster and climate resilient, healthy and empowered citizenry living in a sustainably-managed lands, developed eco-tourist destination and environment-friendly community.
                 </p>
               </div>
             </div>
           </div>
 
+          <!-- Mission -->
+          <div class="col-lg-6">
+            <div class="card h-100 border-0 shadow-lg glass-card p-4">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="service-icon-box rounded-4 d-flex align-items-center justify-content-center text-white shadow me-3" 
+                       style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 50px; height: 50px;">
+                    <i class="bi bi-flag-fill fs-4"></i>
+                  </div>
+                  <h3 class="fw-bold text-dark mb-0">Our Mission</h3>
+                </div>
+                <p class="text-muted lh-lg">
+                  To provide accurate, reliable and timely civil registration services through responsive governance and innovative digital solutions that strive to uphold the integrity of vital records while ensuring accessible, people centered, and technology-driven services that meet the evolving needs of the clients.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Goal -->
+          <div class="col-lg-6">
+            <div class="card h-100 border-0 shadow-lg glass-card p-4">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="service-icon-box rounded-4 d-flex align-items-center justify-content-center text-white shadow me-3" 
+                       style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 50px; height: 50px;">
+                    <i class="bi bi-flag fs-4"></i>
+                  </div>
+                  <h3 class="fw-bold text-dark mb-0">Our Goal</h3>
+                </div>
+                <p class="text-muted lh-lg">
+                  Deliver inclusive, accessible, and timely civil registration services through digital transformation, strengthened inter-agency collaboration, increased public awareness, and enchanced institutional capacity.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          
           <div class="col-12">
             <div class="card border-0 shadow-lg glass-card p-4">
               <div class="card-body">

@@ -63,22 +63,22 @@ export default {
     data() {
         return {
             config: {
-                servicesHeading: "Marriage license & Civil Wedding",
+                servicesHeading: "Marriage License & Civil Wedding",
                 servicesSubtext: "Apply for marriage license documents and schedule appointments with ease through our secure digital gateway."
             },
 
             services: [
-                { title: "Marriage License", emoji: "🆔", description: "Apply for certified true copies of marriage license online.", gradient: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)", link: '/isCohabiting' },
-                { title: "Wedding Appointment", emoji: "📅", description: "Book an available slot for your civil ceremony and coordinate with our officials.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", link: '/wedding-appointment' }
+                { title: "Marriage License", emoji: "🆔", description: "Apply for marriage license online.", gradient: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)", link: '/isCohabiting' },
+                { title: "Wedding Appointment", emoji: "📅", description: "Book an available slot for your civil ceremony before the Municipal Mayor and coordinate with our officials.", gradient: "linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)", link: '/wedding-appointment' }
             ]
         };
     },
     methods: {
       isCohabitingMessage() {
         Swal.fire({
-            title: "Is Cohabiting?",
-            text: "Couples or Partner do not need marriage license",
-            icon: "question"
+            title: "Cohabitation",
+            text: "Couples or Partner do not need marriage license who is cohabiting 5 years above",
+            icon: "warning"
         });
       }  
     },
