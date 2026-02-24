@@ -138,17 +138,17 @@
                                                         </div>
                                                     </div>
 
-                                                    <div v-if="groomRequirement == 'parental-advice'" class="mb-3">
+                                                    <div v-if="groomRequirement == 'parental-advise'" class="mb-3">
                                                         <label
                                                             class="form-label fw-bold small text-info text-uppercase">Parental
                                                             Advice (Groom)</label>
                                                         <div class="glass-upload-container position-relative">
                                                             <input type="file" class="file-input-overlay"
-                                                                @change="handleFileUpload($event, 'groom', 'parentalAdvice')"
+                                                                @change="handleFileUpload($event, 'groom', 'parentalAdvise')"
                                                                 accept="image/*,.pdf" />
                                                             <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
-                                                                :class="{ 'has-file': previews.groom.parentalAdvice }">
-                                                                <div v-if="!previews.groom.parentalAdvice">
+                                                                :class="{ 'has-file': previews.groom.parentalAdvise }">
+                                                                <div v-if="!previews.groom.parentalAdvise">
                                                                     <i
                                                                         class="bi bi-file-earmark-arrow-up text-white-50"></i>
                                                                     <p class="smallest text-white-50">Upload Advice</p>
@@ -181,17 +181,17 @@
                                                         </div>
                                                     </div>
 
-                                                    <div v-if="brideRequirement == 'parental-advice'" class="mb-3">
+                                                    <div v-if="brideRequirement == 'parental-advise'" class="mb-3">
                                                         <label
                                                             class="form-label fw-bold small text-info text-uppercase">Parental
                                                             Advice (Bride)</label>
                                                         <div class="glass-upload-container position-relative">
                                                             <input type="file" class="file-input-overlay"
-                                                                @change="handleFileUpload($event, 'bride', 'parentalAdvice')"
+                                                                @change="handleFileUpload($event, 'bride', 'parentalAdvise')"
                                                                 accept="image/*,.pdf" />
                                                             <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
-                                                                :class="{ 'has-file': previews.bride.parentalAdvice }">
-                                                                <div v-if="!previews.bride.parentalAdvice">
+                                                                :class="{ 'has-file': previews.bride.parentalAdvise }">
+                                                                <div v-if="!previews.bride.parentalAdvise">
                                                                     <i
                                                                         class="bi bi-file-earmark-arrow-up text-white-50"></i>
                                                                     <p class="smallest text-white-50">Upload Advice</p>
@@ -506,11 +506,11 @@
                                                         key="upload-widowed"
                                                         class="glass-upload-container position-relative">
                                                         <input type="file" class="file-input-overlay"
-                                                            @change="handleFileUpload($event, 'groom', 'appostilled')"
+                                                            @change="handleFileUpload($event, 'groom', 'apostilled')"
                                                             accept="image/*,.pdf" />
                                                         <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
-                                                            :class="{ 'has-file': previews.groom.appostilled }">
-                                                            <div v-if="!previews.groom.appostilled">
+                                                            :class="{ 'has-file': previews.groom.apostilled }">
+                                                            <div v-if="!previews.groom.apostilled">
                                                                 <i
                                                                     class="bi bi-file-earmark-arrow-up text-white-50"></i>
                                                                 <p class="smallest text-white-50">Upload Death
@@ -2733,8 +2733,12 @@ export default {
                     }
 
                     if (this.type === "groom" || this.type === "both") {
-                        const missingGroomForeign = ['legalCapacity', 'validPassport', 'apostilledOrDecree']
+                        const missingGroomForeignBase = ['legalCapacity', 'validPassport']
                             .some((doc) => !this.form.groom.documents[doc]);
+                        const groomStatus = (this.form.groom.civilStatus || '').toLowerCase();
+                        const needsApostilled = groomStatus === 'widowed' && !this.form.groom.documents.apostilled;
+                        const needsDivorceDecree = ['divorced', 'annulled'].includes(groomStatus) && !this.form.groom.documents.divorceDecree;
+                        const missingGroomForeign = missingGroomForeignBase || needsApostilled || needsDivorceDecree;
                         if (missingGroomForeign) {
                             this.message.push("Please upload all required foreigner documents for Groom.");
                             this.scrollToError();
@@ -3037,11 +3041,18 @@ export default {
                     case 5: // Foreigner Documents
                         let missingGroomForeign = false;
                         let missingBrideForeign = false;
-                        const foreignDocs = ['legalCapacity', 'validPassport', 'apostilledOrDecree'];
+                        const foreignDocs = ['legalCapacity', 'validPassport'];
 
                         // Logic: Only validate these if the person is flagged as a foreigner
                         if (this.type === "groom" || this.type === "both") {
                             missingGroomForeign = foreignDocs.some(doc => !this.form.groom.documents[doc]);
+                            const groomStatus = (this.form.groom.civilStatus || '').toLowerCase();
+                            if (groomStatus === 'widowed' && !this.form.groom.documents.apostilled) {
+                                missingGroomForeign = true;
+                            }
+                            if (['divorced', 'annulled'].includes(groomStatus) && !this.form.groom.documents.divorceDecree) {
+                                missingGroomForeign = true;
+                            }
                         }
 
                         if (this.type === "bride" || this.type === "both") {
