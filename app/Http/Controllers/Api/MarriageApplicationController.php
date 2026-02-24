@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Exports\MarriageExport;
 use App\Exports\MarriageExports;
 use App\Http\Controllers\Controller;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -24,7 +25,9 @@ class MarriageApplicationController extends Controller
             ];
 
             // 1. Generate Control Number
-            $controlNumber = 'LCROML-' . strtoupper(Str::random(8));
+            do {
+                $controlNumber = strtoupper(Str::random(5));
+            } while (DB::table('marriage_applications')->where('control_number', $controlNumber)->exists());
 
             // 2. Insert Main Application using Query Builder
             $applicationId = DB::table('marriage_applications')->insertGetId([
@@ -60,8 +63,8 @@ class MarriageApplicationController extends Controller
                     'civil_status'       => $data['civilStatus'] ?? null,
                     'residence_address'  => $data['residence'] ?? null,
                     // Dissolution Info (If not Single)
-                    'dissolution_details' => $data["previousMarriageDissolve"] ?? null, 
-                    'dissolution_place' => $data["previousMarriageDissolve"] ?? null, 
+                    'dissolution_details' => $data["previousMarriageDissolve"] ?? null,
+                    'dissolution_place' => $data["previousMarriageDissolve"] ?? null,
                     'dissolution_day' => $data['dissolvedDay'] ?? null,
                     'dissolution_month' => $data['dissolvedMonth'] ?? null,
                     'dissolution_year' => $data['dissolvedYear'] ?? null,
@@ -107,12 +110,12 @@ class MarriageApplicationController extends Controller
     private function uploadDocumentsWithQueryBuilder($request, $appId, $role, $controlNo)
     {
         $fileKey = "documents_{$role}";
-        
+
         if ($request->hasFile($fileKey)) {
             foreach ($request->file($fileKey) as $docType => $file) {
                 // Store physical file
                 $path = $file->store("applications/{$controlNo}/{$role}", 'public');
-                
+
                 // Insert Record using Query Builder
                 DB::table('documents')->insert([
                     'application_id' => $appId,
@@ -127,19 +130,21 @@ class MarriageApplicationController extends Controller
     }
 
 
-    public function getApplications () {
+    public function getApplications()
+    {
         try {
-            
+
             $applications = DB::table("marriage_applications")
-            ->join("applicants", "marriage_applications.id", "=", "applicants.application_id")
-            ->select("marriage_applications.*",
-            "applicants.first_name",
-            "applicants.last_name"
-            )->paginate(10);
+                ->join("applicants", "marriage_applications.id", "=", "applicants.application_id")
+                ->select(
+                    "marriage_applications.*",
+                    "applicants.first_name",
+                    "applicants.last_name"
+                )->paginate(10);
 
             // return response()->json("i got past db qery");
 
-            if($applications->isEmpty()){
+            if ($applications->isEmpty()) {
                 return response()->json([
                     "message" => "No marriage applications available",
                     "data" => $applications
@@ -150,7 +155,6 @@ class MarriageApplicationController extends Controller
                 "message" => "Marriage applications found",
                 "data" => $applications
             ]);
-        
         } catch (\Exception $e) {
             return response()->json([
                 "message" => "Somethings wrong with the server" . $e->getMessage(),
@@ -159,19 +163,21 @@ class MarriageApplicationController extends Controller
         }
     }
 
-    public function viewApplication(int $application_id, string $control_number) {
+    public function viewApplication(int $application_id, string $control_number)
+    {
         try {
-            
+
             $applicants = DB::table("applicants")
-            ->join("marriage_applications", "applicants.application_id", "=", "marriage_applications.id")
-            ->select("applicants.*",
-            "marriage_applications.control_number",
-            "marriage_applications.status",
-            "marriage_applications.submitted_at",
-            )
-            ->where("application_id", "=", $application_id)
-            ->where("control_number", "=", $control_number)
-            ->get();
+                ->join("marriage_applications", "applicants.application_id", "=", "marriage_applications.id")
+                ->select(
+                    "applicants.*",
+                    "marriage_applications.control_number",
+                    "marriage_applications.status",
+                    "marriage_applications.submitted_at",
+                )
+                ->where("application_id", "=", $application_id)
+                ->where("control_number", "=", $control_number)
+                ->get();
 
             $groom = null;
             $bride = null;
@@ -186,32 +192,36 @@ class MarriageApplicationController extends Controller
             }
 
             $groomDocuments = DB::table("documents")
-            ->select("documents.*",
-            DB::raw("
-                CASE 
-                    WHEN documents.file_path IS NOT NULL 
-                    THEN CONCAT('" . asset('storage') . "/', documents.file_path) 
-                    ELSE NULL 
+                ->select(
+                    "documents.*",
+                    DB::raw("
+                CASE
+                    WHEN documents.file_path IS NOT NULL
+                    THEN CONCAT('" . asset('storage') . "/', documents.file_path)
+                    ELSE NULL
                 END as document_url
-            "))
-            ->where("application_id", "=", $groom->application_id)
-            ->where("owner_type", "=", $groom->applicant_type)
-            ->get();
-            
-            $brideDocuments = DB::table("documents")
-            ->select("documents.*",
-            DB::raw("
-                CASE 
-                    WHEN documents.file_path IS NOT NULL 
-                    THEN CONCAT('" . asset('storage') . "/', documents.file_path) 
-                    ELSE NULL 
-                END as document_url
-            "))
-            ->where("application_id", "=", $bride->application_id)
-            ->where("owner_type", "=", $bride->applicant_type)
-            ->get();
+            ")
+                )
+                ->where("application_id", "=", $groom->application_id)
+                ->where("owner_type", "=", $groom->applicant_type)
+                ->get();
 
-            if($applicants->isEmpty()){
+            $brideDocuments = DB::table("documents")
+                ->select(
+                    "documents.*",
+                    DB::raw("
+                CASE
+                    WHEN documents.file_path IS NOT NULL
+                    THEN CONCAT('" . asset('storage') . "/', documents.file_path)
+                    ELSE NULL
+                END as document_url
+            ")
+                )
+                ->where("application_id", "=", $bride->application_id)
+                ->where("owner_type", "=", $bride->applicant_type)
+                ->get();
+
+            if ($applicants->isEmpty()) {
                 return response()->json([
                     "message" => "No applicants found",
                     "applicants" => [],
@@ -226,8 +236,6 @@ class MarriageApplicationController extends Controller
                 "groomDocuments" => $groomDocuments,
                 "brideDocuments" => $brideDocuments,
             ]);
-
-
         } catch (\Exception $e) {
             return response()->json([
                 "message" => "Somethings wrong with server" . $e->getMessage(),
@@ -238,9 +246,10 @@ class MarriageApplicationController extends Controller
         }
     }
 
-    public function searchApplicants(Request $request){
+    public function searchApplicants(Request $request)
+    {
         try {
-            
+
             $searchTerm = $request->query('search'); // Get the search input from Vue
 
             $applications = DB::table("marriage_applications")
@@ -250,28 +259,26 @@ class MarriageApplicationController extends Controller
                     "applicants.first_name",
                     "applicants.last_name"
                 )
-                ->where(function($query) use ($searchTerm) {
+                ->where(function ($query) use ($searchTerm) {
                     $query->where('applicants.first_name', 'LIKE', "%{$searchTerm}%")
                         ->orWhere('applicants.last_name', 'LIKE', "%{$searchTerm}%")
                         ->orWhere('marriage_applications.control_number', 'LIKE', "%{$searchTerm}%");
                 })
                 // Group by ID to avoid duplicate rows for Groom/Bride in the main list
-                ->groupBy('marriage_applications.id') 
+                ->groupBy('marriage_applications.id')
                 ->paginate(10);
 
-                if($applications->isEmpty()){
-                    return response()->json([
-                        "message" => "No application found",
-                        "data" => [],
-                    ]);
-                }
-
+            if ($applications->isEmpty()) {
                 return response()->json([
-                    "message" => "Application Found",
-                    "data" => $applications
+                    "message" => "No application found",
+                    "data" => [],
                 ]);
-            
+            }
 
+            return response()->json([
+                "message" => "Application Found",
+                "data" => $applications
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 "message" => "Something's wrong with the server" . $e->getMessage(),
@@ -280,7 +287,8 @@ class MarriageApplicationController extends Controller
         }
     }
 
-    public function getApplicationByStatus(Request $request, string $status, string $order) {
+    public function getApplicationByStatus(Request $request, string $status, string $order)
+    {
         try {
             $query = DB::table("marriage_applications")
                 ->join("applicants", "marriage_applications.id", "=", "applicants.application_id")
@@ -299,10 +307,10 @@ class MarriageApplicationController extends Controller
 
             if ($request->has('search') && $request->search != '') {
                 $search = $request->search;
-                $query->where(function($q) use ($search) {
+                $query->where(function ($q) use ($search) {
                     $q->where('applicants.first_name', 'LIKE', "%$search%")
-                    ->orWhere('applicants.last_name', 'LIKE', "%$search%")
-                    ->orWhere('marriage_applications.control_number', 'LIKE', "%$search%");
+                        ->orWhere('applicants.last_name', 'LIKE', "%$search%")
+                        ->orWhere('marriage_applications.control_number', 'LIKE', "%$search%");
                 });
             }
 
@@ -311,11 +319,11 @@ class MarriageApplicationController extends Controller
 
             // Add the columns to the GROUP BY as well to satisfy the strict error
             $data = $query->groupBy(
-                    'marriage_applications.id', 
-                    'marriage_applications.control_number', 
-                    'marriage_applications.status', 
-                    'marriage_applications.created_at'
-                )
+                'marriage_applications.id',
+                'marriage_applications.control_number',
+                'marriage_applications.status',
+                'marriage_applications.created_at'
+            )
                 ->orderBy('marriage_applications.created_at', $statOrder)
                 ->paginate(5);
 
@@ -323,7 +331,6 @@ class MarriageApplicationController extends Controller
                 "message" => "Applicants found",
                 "data" => $data,
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 "message" => "Something's wrong: " . $e->getMessage(),
@@ -332,7 +339,8 @@ class MarriageApplicationController extends Controller
         }
     }
 
-    public function ApplicationAction(string $action, Request $request) {
+    public function ApplicationAction(string $action, Request $request)
+    {
         try {
             $control_number = $request->input("control_number");
             $applicationId = $request->input("application_id");
@@ -346,12 +354,12 @@ class MarriageApplicationController extends Controller
                     "updated_at" => now() // Manually update timestamp for Query Builder
                 ]);
 
-            // If $affected is 0, it means either the record doesn't exist 
+            // If $affected is 0, it means either the record doesn't exist
             // OR the status was already set to that action value.
             if ($affected === 0) {
                 // Optional: Check if it actually exists to give a specific message
                 $exists = DB::table("marriage_applications")->where("id", $applicationId)->exists();
-                
+
                 return response()->json([
                     "message" => $exists ? "No changes were made." : "Application not found."
                 ], $exists ? 200 : 404);
@@ -360,7 +368,6 @@ class MarriageApplicationController extends Controller
             return response()->json([
                 "message" => "Application has been successfully " . $action
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 "message" => "Something's wrong with the server: " . $e->getMessage(),
@@ -368,114 +375,264 @@ class MarriageApplicationController extends Controller
         }
     }
 
-    // For Downloading the form:
+    public function trialPreview(Request $request)
+    {
+        $applicationId = $request->query('application_id');
+        $controlNumber = $request->query('control_number');
 
-    public function printApplication($application_id, $control_number) {
+        if ($applicationId && $controlNumber) {
+            $data = $this->buildApplicationFormData($applicationId, $controlNumber);
+            if ($data !== null) {
+                return view('pdf.MarriageLicenseApplicationForm', $data);
+            }
+        }
+
+        return view('pdf.MarriageLicenseApplicationForm', $this->buildPreviewData());
+    }
+
+    public function trialPreviewPdf(Request $request)
+    {
+        $applicationId = $request->query('application_id');
+        $controlNumber = $request->query('control_number');
+
+        if ($applicationId && $controlNumber) {
+            $data = $this->buildApplicationFormData($applicationId, $controlNumber);
+            if ($data !== null) {
+                $pdf = Pdf::loadView('pdf.MarriageLicenseApplicationForm', $data)
+                    ->setPaper([0, 0, 612, 936], 'portrait');
+
+                return $pdf->stream('Marriage_Trial.pdf');
+            }
+        }
+
+        $pdf = Pdf::loadView('pdf.MarriageLicenseApplicationForm', $this->buildPreviewData())
+            ->setPaper([0, 0, 612, 936], 'portrait');
+
+        return $pdf->stream('Marriage_Trial.pdf');
+    }
+
+    private function buildPreviewData()
+    {
+        return [
+            'meta' => [
+                'province' => 'LEYTE',
+                'municipality' => 'ABUYOG',
+                'received_by' => 'MUNICIPAL CIVIL REGISTRAR',
+                'date' => Carbon::now()->format('M d, Y'),
+            ],
+            'groom' => [
+                'full_name' => 'Groom Full Name',
+                'name_first' => 'Groom',
+                'name_middle' => 'Middle',
+                'name_last' => 'Last',
+                'birth_date' => '01 January, 2000',
+                'age' => '26',
+                'birthplace' => 'Abuyog Leyte, Philippines',
+                'sex' => 'Male',
+                'citizenship' => 'Filipino',
+                'residence' => 'Sample Address, Abuyog Leyte, Philippines',
+                'religion' => 'Roman Catholic',
+                'civil_status' => 'Single',
+                'if_married' => 'NOT APPLICABLE',
+                'place_dissolved' => 'NOT APPLICABLE',
+                'date_dissolved' => 'NOT APPLICABLE',
+                'relationship' => 'NOT APPLICABLE',
+                'father_name' => 'Father Full Name',
+                'father_citizenship' => 'Filipino',
+                'father_residence' => 'Sample Address, Abuyog Leyte, Philippines',
+                'mother_name' => 'Mother Full Name',
+                'mother_citizenship' => 'Filipino',
+                'mother_residence' => 'Sample Address, Abuyog Leyte, Philippines',
+                'give_consent' => 'NOT APPLICABLE',
+                'give_consent_relationship' => 'NOT APPLICABLE',
+                'give_consent_citizenship' => 'NOT APPLICABLE',
+                'give_consent_residence' => 'NOT APPLICABLE',
+                'fullname_signature' => 'Groom Full Name',
+                'place' => 'ABUYOG, LEYTE',
+                'civil_registrar' => 'Madilyn Madolin-Merano',
+            ],
+            'bride' => [
+                'full_name' => 'Bride Full Name',
+                'name_first' => 'Bride',
+                'name_middle' => 'Middle',
+                'name_last' => 'Last',
+                'birth_date' => '01 January, 2000',
+                'age' => '26',
+                'birthplace' => 'Abuyog Leyte, Philippines',
+                'sex' => 'Female',
+                'citizenship' => 'Filipino',
+                'residence' => 'Sample Address, Abuyog Leyte, Philippines',
+                'religion' => 'Roman Catholic',
+                'civil_status' => 'Single',
+                'if_married' => 'NOT APPLICABLE',
+                'place_dissolved' => 'NOT APPLICABLE',
+                'date_dissolved' => 'NOT APPLICABLE',
+                'relationship' => 'NOT APPLICABLE',
+                'father_name' => 'Father Full Name',
+                'father_citizenship' => 'Filipino',
+                'father_residence' => 'Sample Address, Abuyog Leyte, Philippines',
+                'mother_name' => 'Mother Full Name',
+                'mother_citizenship' => 'Filipino',
+                'mother_residence' => 'Sample Address, Abuyog Leyte, Philippines',
+                'give_consent' => 'NOT APPLICABLE',
+                'give_consent_relationship' => 'NOT APPLICABLE',
+                'give_consent_citizenship' => 'NOT APPLICABLE',
+                'give_consent_residence' => 'NOT APPLICABLE',
+                'fullname_signature' => 'Bride Full Name',
+                'place' => 'ABUYOG, LEYTE',
+                'civil_registrar' => 'Madilyn C. Madolin-Merano',
+            ],
+        ];
+    }
+
+    private function buildApplicationFormData($application_id, $control_number)
+    {
+        $applicants = DB::table("applicants")
+            ->join("marriage_applications", "applicants.application_id", "=", "marriage_applications.id")
+            ->select(
+                "applicants.*",
+                "marriage_applications.control_number",
+                "marriage_applications.submitted_at"
+            )
+            ->where("applicants.application_id", "=", $application_id)
+            ->where("marriage_applications.control_number", "=", $control_number)
+            ->get();
+
+        if ($applicants->isEmpty()) {
+            return null;
+        }
+
+        $groom = $applicants->firstWhere('applicant_type', 'groom');
+        $bride = $applicants->firstWhere('applicant_type', 'bride');
+
+        if (!$groom || !$bride) {
+            return null;
+        }
+
+        $formatName = function ($first, $middle, $last) {
+            return trim(implode(' ', array_filter([$first, $middle, $last], function ($v) {
+                return $v !== null && $v !== '';
+            })));
+        };
+
+        $formatBirthplace = function ($city, $province, $country) {
+            return trim(implode(' ', array_filter([$city, $province, $country], function ($v) {
+                return $v !== null && $v !== '';
+            })));
+        };
+
+        $formatDate = function ($day, $month, $year, $withComma = false) {
+            if ($day === null && $month === null && $year === null) {
+                return null;
+            }
+            if ($withComma && $day && $month && $year) {
+                return trim($day . ' ' . $month . ', ' . $year);
+            }
+            return trim(implode(' ', array_filter([$day, $month, $year], function ($v) {
+                return $v !== null && $v !== '';
+            })));
+        };
+
+        $consentValue = function ($applicant, $field, $fallback = 'NOT APPLICABLE') {
+            if (($applicant->parental_requirement ?? 'no-need') === 'no-need') {
+                return $fallback;
+            }
+            return $field ?: $fallback;
+        };
+
+        $metaDate = $applicants->first()->submitted_at ?: Carbon::now();
+        $meta = [
+            'province' => 'LEYTE',
+            'municipality' => 'ABUYOG',
+            'received_by' => 'MUNICIPAL CIVIL REGISTRAR',
+            'date' => Carbon::parse($metaDate)->format('M d, Y'),
+        ];
+
+        $groomData = [
+            'full_name' => $formatName($groom->first_name, $groom->middle_name, $groom->last_name),
+            'name_first' => $groom->first_name,
+            'name_middle' => $groom->middle_name,
+            'name_last' => $groom->last_name,
+            'birth_date' => $formatDate($groom->day, $groom->month, $groom->year, true),
+            'age' => $groom->age,
+            'birthplace' => $formatBirthplace($groom->birth_city, $groom->birth_province, $groom->birth_country),
+            'sex' => $groom->sex,
+            'citizenship' => $groom->citizenship,
+            'residence' => $groom->residence_address,
+            'religion' => $groom->religion,
+            'civil_status' => $groom->civil_status,
+            'if_married' => $groom->dissolution_details ?: 'NOT APPLICABLE',
+            'place_dissolved' => $groom->dissolution_place ?: 'NOT APPLICABLE',
+            'date_dissolved' => $formatDate($groom->dissolution_day, $groom->dissolution_month, $groom->dissolution_year, true) ?: 'NOT APPLICABLE',
+            'relationship' => $groom->relationship_degree ?: 'NOT APPLICABLE',
+            'father_name' => $formatName($groom->father_first_name, $groom->father_middle_name, $groom->father_last_name),
+            'father_citizenship' => $groom->father_citizenship,
+            'father_residence' => $groom->father_residence,
+            'mother_name' => $formatName($groom->mother_first_name, $groom->mother_middle_name, $groom->mother_last_name),
+            'mother_citizenship' => $groom->mother_citizenship,
+            'mother_residence' => $groom->mother_residence,
+            'give_consent' => $consentValue($groom, trim(($groom->source_first_name ?? '') . ' ' . ($groom->source_middle_name ?? '') . ' ' . ($groom->source_last_name ?? ''))),
+            'give_consent_relationship' => $consentValue($groom, $groom->source_relationship ?? null),
+            'give_consent_citizenship' => $consentValue($groom, $groom->source_citizenship ?? null),
+            'give_consent_residence' => $consentValue($groom, $groom->source_residence ?? null),
+            'fullname_signature' => $formatName($groom->first_name, $groom->middle_name, $groom->last_name),
+            'place' => 'ABUYOG, LEYTE',
+            'civil_registrar' => 'Atty. Madilyn C. Madolin-Merano',
+        ];
+
+        $brideData = [
+            'full_name' => $formatName($bride->first_name, $bride->middle_name, $bride->last_name),
+            'name_first' => $bride->first_name,
+            'name_middle' => $bride->middle_name,
+            'name_last' => $bride->last_name,
+            'birth_date' => $formatDate($bride->day, $bride->month, $bride->year, true),
+            'age' => $bride->age,
+            'birthplace' => $formatBirthplace($bride->birth_city, $bride->birth_province, $bride->birth_country),
+            'sex' => $bride->sex,
+            'citizenship' => $bride->citizenship,
+            'residence' => $bride->residence_address,
+            'religion' => $bride->religion,
+            'civil_status' => $bride->civil_status,
+            'if_married' => $bride->dissolution_details ?: 'NOT APPLICABLE',
+            'place_dissolved' => $bride->dissolution_place ?: 'NOT APPLICABLE',
+            'date_dissolved' => $formatDate($bride->dissolution_day, $bride->dissolution_month, $bride->dissolution_year, true) ?: 'NOT APPLICABLE',
+            'relationship' => $bride->relationship_degree ?: 'NOT APPLICABLE',
+            'father_name' => $formatName($bride->father_first_name, $bride->father_middle_name, $bride->father_last_name),
+            'father_citizenship' => $bride->father_citizenship,
+            'father_residence' => $bride->father_residence,
+            'mother_name' => $formatName($bride->mother_first_name, $bride->mother_middle_name, $bride->mother_last_name),
+            'mother_citizenship' => $bride->mother_citizenship,
+            'mother_residence' => $bride->mother_residence,
+            'give_consent' => $consentValue($bride, trim(($bride->source_first_name ?? '') . ' ' . ($bride->source_middle_name ?? '') . ' ' . ($bride->source_last_name ?? ''))),
+            'give_consent_relationship' => $consentValue($bride, $bride->source_relationship ?? null),
+            'give_consent_citizenship' => $consentValue($bride, $bride->source_citizenship ?? null),
+            'give_consent_residence' => $consentValue($bride, $bride->source_residence ?? null),
+            'fullname_signature' => $formatName($bride->first_name, $bride->middle_name, $bride->last_name),
+            'place' => 'ABUYOG, LEYTE',
+            'civil_registrar' => 'Atty. Madilyn C. Madolin-Merano',
+        ];
+
+        return [
+            'meta' => $meta,
+            'groom' => $groomData,
+            'bride' => $brideData,
+        ];
+    }
+
+    public function printApplicationPdf($application_id, $control_number)
+    {
         try {
-            // 1. Get the data
-            $applicants = DB::table("applicants")
-                ->where("application_id", $application_id)
-                ->get();
-
-            $groom = $applicants->firstWhere('applicant_type', 'groom');
-            $bride = $applicants->firstWhere('applicant_type', 'bride');
-
-            // 2. Path to your high-fidelity template
-            $templatePath = storage_path('app/private/templates/application.xlsx');
-            
-            if (!file_exists($templatePath)) {
-                return response()->json(["message" => "Template file not found"], 404);
+            $data = $this->buildApplicationFormData($application_id, $control_number);
+            if ($data === null) {
+                return response()->json(["message" => "Application not found"], 404);
             }
 
-            // 3. LOAD THE TEMPLATE (This preserves all merges and lines)
-            $spreadsheet = IOFactory::load($templatePath);
-            $sheet = $spreadsheet->getActiveSheet();
+            $pdf = Pdf::loadView('pdf.MarriageLicenseApplicationForm', $data)
+                ->setPaper([0, 0, 612, 936], 'portrait');
 
-            // 4. INJECT DATA INTO RESPECTIVE CELLS
-            // Groom Section
-            $sheet->setCellValue('C12', $groom->first_name . ' ' . $groom->last_name);
-            $sheet->setCellValue('C18', $groom->first_name);
-            $sheet->setCellValue('C19', $groom->middle_name ?: " ");
-            $sheet->setCellValue('C20', $groom->last_name);
-            $sheet->setCellValue('B22', $groom->day);
-            $sheet->setCellValue('D22', $groom->month);
-            $sheet->setCellValue('H22', $groom->year);
-            $sheet->setCellValue('J22', $groom->age);
-            $sheet->setCellValue('B23', $groom->birth_city . " " . $groom->birth_province . " " . $groom->birth_country);
-            $sheet->setCellValue('B24', $groom->sex);
-            $sheet->setCellValue('G24', $groom->citizenship);
-            $sheet->setCellValue('B25', $groom->residence_address);
-            $sheet->setCellValue('B26', $groom->religion);
-            $sheet->setCellValue('B27', $groom->civil_status);
-            $sheet->setCellValue('B28', $groom->dissolution_details ?: "NOT APPLICABLE");
-            $sheet->setCellValue('B30', $groom->dissolution_place ?: "NOT APPPLICABLE");
-            $dissolutionDate = trim($groom->dissolution_day . " " . $groom->dissolution_month . " " . $groom->dissolution_year);
-            $sheet->setCellValue('M32', !empty($dissolutionDate) ? $dissolutionDate : "NOT APPLICABLE");            $sheet->setCellValue('B33', $groom->relationship_degree ?: "NOT APPLICABLE");
-            $sheet->setCellValue('B35', $groom->father_first_name . " " . ($groom->father_middle_name ?? "") . " " . $groom->father_last_name);                
-            $sheet->setCellValue('B36', $groom->father_citizenship);
-            $sheet->setCellValue('B38', $groom->father_residence);
-            $sheet->setCellValue('B39', $groom->mother_first_name . " " . ($groom->mother_middle_name ?? "") . " " . $groom->mother_last_name);                
-            $sheet->setCellValue('B40', $groom->mother_citizenship);
-            $sheet->setCellValue('B42', $groom->mother_residence);
-            if (($groom->parental_requirement ?? 'no-need') !== 'no-need') {
-                $sheet->setCellValue('B43', trim(($groom->source_first_name ?? '') . " " . ($groom->source_middle_name ?? '') . " " . ($groom->source_last_name ?? '')));
-                $sheet->setCellValue('B44', trim(($groom->source_relationship ?? 'N/A')));
-                $sheet->setCellValue('B45', trim(($groom->source_citizenship ?? 'N/A')));
-                $sheet->setCellValue('B46', $groom->source_residence ?? "N/A");
-            } else {
-                $sheet->setCellValue('B43', "NOT APPLICABLE");
-                $sheet->setCellValue('B44', "NOT APPLICABLE");
-                $sheet->setCellValue('B45', "NOT APPLICABLE");
-                $sheet->setCellValue('B46', "NOT APPLICABLE");
-            }
-
-            $sheet->setCellValue('L12', $bride->first_name . ' ' . $bride->last_name);
-            $sheet->setCellValue('N18', $bride->first_name);
-            $sheet->setCellValue('N19', $bride->middle_name ?: " ");
-            $sheet->setCellValue('N20', $bride->last_name);
-            $sheet->setCellValue('M22', $bride->day);
-            $sheet->setCellValue('O22', $bride->month);
-            $sheet->setCellValue('P22', $bride->year);
-            $sheet->setCellValue('R22', $bride->age);
-            $sheet->setCellValue('M23', $bride->birth_city . " " . $bride->birth_province . " " . $bride->birth_country);
-            $sheet->setCellValue('M24', $bride->sex);
-            $sheet->setCellValue('P24', $bride->citizenship);
-            $sheet->setCellValue('M25', $bride->residence_address);
-            $sheet->setCellValue('M26', $bride->religion);
-            $sheet->setCellValue('M27', $bride->civil_status);
-            $sheet->setCellValue('M28', $bride->dissolution_details ?: "NOT APPLICABLE");
-            $sheet->setCellValue('M30', $bride->dissolution_place ?: "NOT APPPLICABLE");
-            $dissolutionDate = trim($bride->dissolution_day . " " . $bride->dissolution_month . " " . $bride->dissolution_year);
-            $sheet->setCellValue('M32', !empty($dissolutionDate) ? $dissolutionDate : "NOT APPLICABLE");            $sheet->setCellValue('M33', $bride->relationship_degree ?: "NOT APPLICABLE");
-            $sheet->setCellValue('M35', $bride->father_first_name . " " . ($bride->father_middle_name ?? "") . " " . $bride->father_last_name);                
-            $sheet->setCellValue('M36', $bride->father_citizenship);
-            $sheet->setCellValue('M38', $bride->father_residence);
-            $sheet->setCellValue('M39', $bride->mother_first_name . " " . ($bride->mother_middle_name ?? "") . " " . $bride->mother_last_name);                
-            $sheet->setCellValue('M40', $bride->mother_citizenship);
-            $sheet->setCellValue('M42', $bride->mother_residence);
-            if (($bride->parental_requirement ?? 'no-need') !== 'no-need') {
-                $sheet->setCellValue('M43', trim(($bride->source_first_name ?? '') . " " . ($bride->source_middle_name ?? '') . " " . ($bride->source_last_name ?? '')));
-                $sheet->setCellValue('M44', trim(($bride->source_relationship ?? 'N/A')));
-                $sheet->setCellValue('M45', trim(($bride->source_citizenship ?? 'N/A')));
-                $sheet->setCellValue('M46', $bride->source_residence ?? "N/A");
-            } else {
-                $sheet->setCellValue('M43', "NOT APPLICABLE");
-                $sheet->setCellValue('M44', "NOT APPLICABLE");
-                $sheet->setCellValue('M45', "NOT APPLICABLE");
-                $sheet->setCellValue('M46', "NOT APPLICABLE");
-            }
-
-            // 5. STREAM THE FILE BACK TO VUE
-            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-            
-            return response()->streamDownload(function () use ($writer) {
-                $writer->save('php://output');
-            }, 'Marriage_App_' . $control_number . '.xlsx');
-
+            return $pdf->stream('Marriage_License_Application.pdf');
         } catch (\Exception $e) {
             return response()->json(["message" => "Server Error: " . $e->getMessage()], 500);
         }
     }
-
-
 }

@@ -404,7 +404,7 @@ export default {
                     </div>
                 `,
                 showConfirmButton: true,
-                confirmButtonText: 'I have screenshotted my code',
+                confirmButtonText: 'Done',
                 confirmButtonColor: '#1f8e4d',
                 width: '90%',
                 maxWidth: '430px',

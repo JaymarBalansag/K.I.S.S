@@ -18,6 +18,8 @@ Route::controller(MarriageApplicationController::class)->group(function () {
 Route::get('/Appointments/availability', [App\Http\Controllers\AppointmentController::class, 'availability']);
 Route::apiResource('Appointments', App\Http\Controllers\AppointmentController::class)->only(['store']);
 Route::get('/applications/print/{id}/{control_number}', [MarriageApplicationController::class, 'printApplication']);
+Route::get('/pdf/trial-preview', [MarriageApplicationController::class, 'trialPreview'])->name('pdf.trial.preview');
+Route::get('/pdf/trial-preview-pdf', [MarriageApplicationController::class, 'trialPreviewPdf'])->name('pdf.trial.preview.pdf');
 
 Route::middleware('auth:sanctum')->group(function () {
 
