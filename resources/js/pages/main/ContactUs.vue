@@ -60,11 +60,23 @@
                     </p>
                   </div>
                 </div>
+
+                <div class="d-none d-md-flex mb-4">
+                  <div class="icon-box bg-primary bg-opacity-10 text-primary rounded-3 p-3 me-3">
+                    <i class="bi bi-envelope-paper-fill fs-4"></i>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold mb-1">Email us through</h6>
+                    <p class="text-muted small mb-0">
+                      <a href="https://mail.google.com/mail/u/0/#inbox?compose=HrrBHlndnSdWHCGqZnCpfRXhxBqkQLtCQDwPdNskcfHfnZWXGzDGGFHjprmNcShPjqJpRNtmpRtVdXqShvTHgCwGwjzMClsgbGMNdkcjKjqWPFGKk" target="_blank" class="text-decoration-none text-primary fw-bold">mcrabuyog@gmail.com</a>
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="col-lg-5">
+          <div class="d-md-none d-flex col-lg-5">
             <div class="card border-0 shadow-lg glass-card p-4 h-100 d-flex flex-column justify-content-center text-center">
               <div class="card-body py-5">
                 <div class="mb-4">
