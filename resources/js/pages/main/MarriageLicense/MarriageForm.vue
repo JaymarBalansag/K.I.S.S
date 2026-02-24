@@ -23,1291 +23,1314 @@
 
               <div class="card-body p-4 p-md-5">
 
-                <div v-if="step > 6" class="alert alert-light bg-white bg-opacity-10 border-0 mb-4 py-2">
+                <div v-if="step > 1" class="alert alert-light bg-white bg-opacity-10 border-0 mb-4 py-2">
                   <small class="text-white-50"><i class="bi bi-save me-1"></i> Your progress is being automatically saved as you go to next step.</small>
                 </div>
 
                 <!-- STEP 1 – Marriage Required Documents -->
-                <div v-if="step === 1" class="glass-panel">
-                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
-                    <div class="d-flex align-items-center">
-                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
-                      <div>
-                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
-                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
-                      </div>
-                    </div>
-                  </div>
+                <div v-if="step === 1" class="glass-panel p-4">
                   <h4 class="section-title text-white mb-4">Required Documents</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>  
-                  <div class="row g-4">
-                    <!-- For Groom -->
-                    <div class="col-md-6 border-end border-white-10">
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
-                      
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">CENOMAR <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'cenomar')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.groom.cenomar">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Groom CENOMAR</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('groom', 'cenomar')" :src="previews.groom.cenomar" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <!-- For Bride -->
-                    <div class="col-md-6">
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i> Bride's Documents</h5>
-                      
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">CENOMAR <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'cenomar')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.bride.cenomar">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Bride CENOMAR</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('bride', 'cenomar')" :src="previews.bride.cenomar" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 2 – Marriage Required Documents -->
-                <div v-if="step === 2" class="glass-panel">
-                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
-                    <div class="d-flex align-items-center">
-                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
-                      <div>
-                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
-                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
-                      </div>
-                    </div>
-                  </div>
-                  <h4 class="section-title text-white mb-4">Required Documents</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>  
-                  <div class="row g-4">
-                    <!-- For Groom -->
-                    <div class="col-md-6 border-end border-white-10">
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
-                      
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">PSA Birth Certificate <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'psa')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.groom.psa">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Groom PSA</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('groom', 'psa')" :src="previews.groom.psa" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <!-- For Bride -->
-                    <div class="col-md-6">
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i> Bride's Documents</h5>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">PSA Birth Certificate <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'psa')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.bride.psa">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Bride PSA</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('bride', 'psa')" :src="previews.bride.psa" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 3 – Marriage Required Documents -->
-                <div v-if="step === 3" class="glass-panel">
-                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
-                    <div class="d-flex align-items-center">
-                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
-                      <div>
-                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
-                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
-                      </div>
-                    </div>
-                  </div>
-                  <h4 class="section-title text-white mb-4">Required Documents</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>  
-                  <div class="row g-4">
-                    <!-- For Groom -->
-                    <div class="col-md-6 border-end border-white-10">
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">National ID or any govt-issued ID <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'govtIssuedId')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.groom.govtIssuedId">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Groom Government Issued ID</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('groom', 'govtIssuedId')" :src="previews.groom.govtIssuedId" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <!-- For Bride -->
-                    <div class="col-md-6">
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i> Bride's Documents</h5>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">National ID or any govt-issued ID <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'govtIssuedId')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.bride.govtIssuedId">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Bride Government Issued ID</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('bride', 'govtIssuedId')" :src="previews.bride.govtIssuedId" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 4 – Marriage Required Documents -->
-                <div v-if="step === 4" class="glass-panel">
-                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
-                    <div class="d-flex align-items-center">
-                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
-                      <div>
-                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
-                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
-                      </div>
-                    </div>
-                  </div>
-                  <h4 class="section-title text-white mb-4">Required Documents</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>  
-                  <div class="row g-4">
-                    <!-- For Groom -->
-                    <div class="col-md-6 border-end border-white-10">
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">PMOC Certificate <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'pmocCertificate')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.groom.pmocCertificate">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Groom PMOC Certificate</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('groom', 'pmocCertificate')" :src="previews.groom.pmocCertificate" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <!-- For Bride -->
-                    <div class="col-md-6">
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i> Bride's Documents</h5>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">PMOC Certificate <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'pmocCertificate')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.bride.pmocCertificate">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Bride PMOC Certificate</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('bride', 'pmocCertificate')" :src="previews.bride.pmocCertificate" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 5 – Foreigner Required Documents  -->
-                <div v-if="step === 5 && this.type !== 'filipino'" class="glass-panel">
-                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
-                    <div class="d-flex align-items-center">
-                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
-                      <div>
-                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
-                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
-                      </div>
-                    </div>
-                  </div>
-                  <h4 class="section-title text-white mb-4">Foreigner Required Documents</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>  
-                  <div class="row g-4">
-                    <!-- For Groom -->
-                    <div v-if="this.type === 'groom' || this.type === 'both' " :class="this.type === 'groom' ? 'col-12' : 'col-md-6'" class="border-end border-white-10 " > 
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">Certification of Legal Capacity to Contract<span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'legalCapacity')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.groom.legalCapacity">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Groom Certificate of Legal Capacity to Contract</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('groom', 'legalCapacity')" :src="previews.groom.legalCapacity" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">Valid passport / BI Clearance Cert / ACR i-card<span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'validPassport')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.groom.validPassport">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Valid passport / BI Clearance Cert / ACR i-card</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('groom', 'validPassport')" :src="previews.groom.validPassport" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">Apostilled Foreign Death Cert of dead spouse / Divorce Decree, if previously married<span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'apostilledOrDecree')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.groom.apostilledOrDecree">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Apostilled Foreign Death Cert of dead spouse / Divorce Decree, if previously married</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('groom', 'apostilledOrDecree')" :src="previews.groom.apostilledOrDecree" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <!-- For Bride -->
-                    <div v-if="this.type === 'bride' || this.type === 'both'" :class="this.type === 'bride' ? 'col-12' : 'col-md-6'">
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i>Foreigner Bride's Documents</h5>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">Certification of Legal Capacity to Contract<span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'legalCapacity')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.bride.legalCapacity">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Bride Certificate of Legal Capacity to Contract</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('bride', 'legalCapacity')" :src="previews.bride.legalCapacity" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">Valid passport / BI Clearance Cert / ACR i-card<span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'validPassport')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.bride.validPassport">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Valid passport / BI Clearance Cert / ACR i-card</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('bride', 'validPassport')" :src="previews.bride.validPassport" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-4">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">Apostilled Foreign Death Cert of dead spouse / Divorce Decree, if previously married<span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'apostilledOrDecree')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.bride.apostilledOrDecree">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Apostilled Foreign Death Cert of dead spouse / Divorce Decree, if previously married</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('bride', 'apostilledOrDecree')" :src="previews.bride.apostilledOrDecree" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 6 – Age Required Documents -->
-                <div v-if="step === 6 && (this.groomRequirement !== 'no-need' || this.brideRequirement !== 'no-need')" class="glass-panel">
-                  <div class="alert alert-info bg-primary bg-opacity-10 border-info border-start border-4 mb-4 animate-fade-in">
-                    <div class="d-flex align-items-center">
-                      <i class="bi bi-camera me-3 fs-4 text-info"></i>
-                      <div>
-                        <h6 class="mb-0 fw-bold text-white">Document Quality Tip:</h6>
-                        <p class="small mb-0 text-white opacity-75">Please ensure photos are <b>not blurred</b>, well-lit, and all text is readable. Blurry documents will cause application delays.</p>
-                      </div>
-                    </div>
-                  </div>
-                  <h4 class="section-title text-white mb-4">Age Required Documents</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>  
-                  <div class="row g-4">
-                    <!-- For Groom -->
-                    <div class="col-md-6 border-end border-white-10">
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-male"></i> Groom's Documents</h5>
-
-                      <div class="mb-4" v-if="this.groomRequirement === 'parental-consent'">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">Parental Consent <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'parentalConsent')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.groom.parentalConsent">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Parental Consent</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('groom', 'parentalConsent')" :src="previews.groom.parentalConsent" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-4" v-if="this.groomRequirement === 'parental-advise'">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">Parental Advise <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'parentalAdvise')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.groom.parentalAdvise">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Parental Advise</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('groom', 'parentalAdvise')" :src="previews.groom.parentalAdvise" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <!-- For Bride -->
-                    <div class="col-md-6">
-                      <h5 class="text-white small fw-bold text-uppercase mb-3"><i class="bi bi-gender-female"></i> Bride's Documents</h5>
-
-                      <div class="mb-4" v-if="this.brideRequirement === 'parental-consent'">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">Parental Consent <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'parentalConsent')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.bride.parentalConsent">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Parental Consent</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('bride', 'parentalConsent')" :src="previews.bride.parentalConsent" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-4" v-if="this.brideRequirement === 'parental-advise'">
-                        <label class="form-label fw-semibold small text-uppercase text-white-50">Parental Advise <span class="text-info">*</span></label>
-                        <div class="glass-upload-container position-relative">
-                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'parentalAdvise')" accept="image/*,.pdf" />
-                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center">
-                            <div v-if="!previews.bride.parentalAdvise">
-                              <i class="bi bi-cloud-arrow-up fs-3 text-white"></i>
-                              <p class="mb-0 smallest text-white">Upload Parental Advise</p>
-                            </div>
-                            <div v-else class="animate-fade-in">
-                              <img v-if="isImage('bride', 'parentalAdvise')" :src="previews.bride.parentalAdvise" class="img-fluid rounded-2 glass-preview-img-sm" />
-                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
-                              <div class="glass-badge-sm">Selected</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 7 – GROOM NAME -->
-                <div v-if="step === 7">
-                  <h4 class="section-title">Groom – Name</h4>
+                  
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
                   </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">First Name</label>
-                      <input class="form-control" v-model="form.groom.firstName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Middle Name</label>
-                      <input class="form-control" v-model="form.groom.middleName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Last Name</label>
-                      <input class="form-control" v-model="form.groom.lastName">
-                    </div>
-                  </div>
-                </div>
 
-                <!-- STEP 8 – GROOM BIRTH DATE -->
-                <div v-if="step === 8">
-                  <h4 class="section-title">Groom – Birth Date Details</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">Day</label>
-                      <input type="number" class="form-control" v-model="form.groom.day">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Month</label>
-                      <input type="number" class="form-control" v-model="form.groom.month">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Year</label>
-                      <input type="number" class="form-control" v-model="form.groom.year">
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 9 – GROOM PLACE OF BIRTH -->
-                <div v-if="step === 9">
-                  <h4 class="section-title">Groom – Place of Birth</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">City / Municipality</label>
-                      <input class="form-control" v-model="form.groom.cityMunicipality">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Province</label>
-                      <input class="form-control" v-model="form.groom.province">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Country</label>
-                      <input class="form-control" v-model="form.groom.country">
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 10 – GROOM INFO -->
-                <div v-if="step === 10">
-                  <h4 class="section-title">Groom – Personal Info</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">Age</label>
-                      <input class="form-control bg-light" v-model="form.groom.age" readonly placeholder="Auto-calculated">
-                      <small v-if="ageError" class="text-danger fw-bold">{{ ageError }}</small>
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Sex</label>
-                      <input class="form-control bg-light" v-model="form.groom.sex" readonly placeholder="Auto-calculated">
+                  <div class="document-grid-container">
+                    <div class="row mb-3 d-none d-md-flex">
+                      <div class="col-md-6 text-center"><span class="badge bg-primary text-uppercase px-3 py-2">Groom's Files</span></div>
+                      <div class="col-md-6 text-center"><span class="badge bg-info text-dark text-uppercase px-3 py-2">Bride's Files</span></div>
                     </div>
 
-                    <div class="col-md-4">
-                      <label class="form-label">Citizenship</label>
-                      <select class="form-control" v-model="form.groom.citizenship">
-                        <option value="" disabled>Select Citizenship</option>
-                        <option value="Filipino">Filipino</option>
-                        <option value="Foreign National">Foreign National</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 11 – GROOM RESIDENCE -->
-                <div v-if="step === 11">
-                  <h4 class="section-title">Groom – Residence</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
-                      <input class="form-control" v-model="form.groom.residence">
-                      <small class=" text-primary">Tips: Enter the full address including house number, street name, city/municipality, province, and country.</small>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 12 – GROOM RELIGION -->
-                <div v-if="step === 12">
-                  <h4 class="section-title">Groom – Religion / Religion Sect</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">Religion / Religion Sect</label>
-                      <input class="form-control" v-model="form.groom.religion">
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- STEP 13 – GROOM CIVIL STATUS -->
-                <div v-if="step === 13">
-                  <h4 class="section-title">Groom – Civil Status</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">Civil Status</label>
-                      <select class="form-control" v-model="form.groom.civilStatus">
-                        <option value="Single">Single</option>
-                        <option value="Widowed">Widowed</option>
-                        <option value="Annulled">Annulled</option>
-                        <option value="Divorced">Divorced (for Foreigners/Legal cases)</option>
-                      </select>
-                    </div>
-                    <div v-if="isPreviouslyMarried" class="col-md-12">
-                      <label class="form-label">IF PREVIOUSLY MARRIED: How was it dissolved?</label>
-                      <textarea class="form-control" cols="2" row="2" v-model="form.groom.previousMarriageDissolve"></textarea>
-                    </div>
-                    <div v-if="isPreviouslyMarried" class="col-md-12">
-                      <h4 class="section-title">Place where dissolved</h4>
-                      <div class="row g-3">
-                        <div class="col-md-4">
-                          <label class="form-label">City / Municipality</label>
-                          <input class="form-control" v-model="form.groom.dissolvedCityMunicipality">
-                        </div>
-                        <div class="col-md-4">
-                          <label class="form-label">Province</label>
-                          <input class="form-control" v-model="form.groom.dissolvedProvince">
-                        </div>
-                        <div class="col-md-4">
-                          <label class="form-label">Country</label>
-                          <input class="form-control" v-model="form.groom.dissolvedCountry">
-                        </div>
-                      </div>
-                    </div>
-                    <div v-if="isPreviouslyMarried" class="col-md-12">
-                      <h4 class="section-title">Date when dissolved</h4>
-                      <div class="row g-3">
-                        <div class="col-md-4">
-                          <label class="form-label">Day</label>
-                          <input type="number" class="form-control" v-model="form.groom.dissolvedDay">
-                        </div>
-                        <div class="col-md-4">
-                          <label class="form-label">Month</label>
-                          <input type="number" class="form-control" v-model="form.groom.dissolvedMonth">
-                        </div>
-                        <div class="col-md-4">
-                          <label class="form-label">Year</label>
-                          <input type="number" class="form-control" v-model="form.groom.dissolvedYear">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 14 – GROOM DEGREE -->
-                <div v-if="step === 14">
-                  <h4 class="section-title">Groom - Degree of relationship contracting parties</h4>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">Degree</label>
-                      <input class="form-control" v-model="form.groom.degree">
-                      <small class=" text-primary">Tips: you can leave this blank if not applicable.</small>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 15 – GROOM FATHER'S INFO -->
-                <div v-if="step === 15">
-                  <h4 class="section-title">Groom – Father's Info</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">First Name</label>
-                      <input class="form-control" v-model="form.groom.fatherFirstName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Middle Name</label>
-                      <input class="form-control" v-model="form.groom.fatherMiddleName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Last Name</label>
-                      <input class="form-control" v-model="form.groom.fatherLastName">
-                    </div>
-                    <div class="col">
-                      <label class="form-label">Citizenship</label>
-                      <select class="form-control" v-model="form.groom.fatherCitizenship">
-                        <option value="" disabled>Select Citizenship</option>
-                        <option value="Filipino">Filipino</option>
-                        <option value="Foreign National">Foreign National</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 16 – GROOM FATHER'S RESIDENCE -->
-                <div v-if="step === 16">
-                  <h4 class="section-title">Groom – Father's Residence</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
-                      <input class="form-control" v-model="form.groom.fatherResidence">
-                      <small class=" text-primary">Tips: Enter the full address including house number, street name, city/municipality, province, and country.</small>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 17 – GROOM MOTHER'S MAIDEN INFO -->
-                <div v-if="step === 17">
-                  <h4 class="section-title">Groom – Mother's Maiden Info</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">First Name</label>
-                      <input class="form-control" v-model="form.groom.motherMaidenFirstName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Middle Name</label>
-                      <input class="form-control" v-model="form.groom.motherMaidenMiddleName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Last Name</label>
-                      <input class="form-control" v-model="form.groom.motherMaidenLastName">
-                    </div>
-                    <div class="col">
-                      <label class="form-label">Citizenship</label>
-                      <select class="form-control" v-model="form.groom.motherMaidenCitizenship">
-                        <option value="" disabled>Select Citizenship</option>
-                        <option value="Filipino">Filipino</option>
-                        <option value="Foreign National">Foreign National</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 18 – GROOM MOTHER'S MAIDEN RESIDENCE -->
-                <div v-if="step === 18">
-                  <h4 class="section-title">Groom – Mother's Maiden Residence</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
-                      <input class="form-control" v-model="form.groom.motherMaidenResidence">
-                      <small class=" text-primary">Tips: Enter the full address including house number, street name, city/municipality, province, and country.</small>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 19 – GROOM CONSENT/ADVICE SOURCE INFO -->
-                <div v-if="step === 19 && groomRequirement !== 'no-need'">
-                  <h4 class="section-title">Groom - Person Who Gave {{ groomRequirement === 'parental-consent' ? 'Consent' : 'Advice' }} (Info)</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">First Name</label>
-                      <input class="form-control" v-model="form.consentSource.groom.firstName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Middle Name</label>
-                      <input class="form-control" v-model="form.consentSource.groom.middleName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Last Name</label>
-                      <input class="form-control" v-model="form.consentSource.groom.lastName">
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-label">Citizenship</label>
-                      <select class="form-control" v-model="form.consentSource.groom.citizenship">
-                        <option value="" disabled>Select Citizenship</option>
-                        <option value="Filipino">Filipino</option>
-                        <option value="Foreign National">Foreign National</option>
-                      </select>
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-label">Relationship</label>
-                      <input class="form-control" v-model="form.consentSource.groom.relationship" placeholder="e.g. Father / Mother / Guardian">
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 20 – GROOM CONSENT/ADVICE SOURCE RESIDENCE -->
-                <div v-if="step === 20 && groomRequirement !== 'no-need'">
-                  <h4 class="section-title">Groom - Person Who Gave {{ groomRequirement === 'parental-consent' ? 'Consent' : 'Advice' }} (Residence)</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
-                      <input class="form-control" v-model="form.consentSource.groom.residence">
-                      <small class=" text-primary">Tips: Enter the full address including house number, street name, city/municipality, province, and country.</small>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 21 – GROOM REVIEW -->
-                <div v-if="step === 21">
-                  <div class="d-flex align-items-center mb-4">
-                    <div class="bg-primary p-2 rounded-3 me-3">
-                      <i class="bi bi-person-check-fill fs-4 text-white"></i>
-                    </div>
-                    <h4 class="section-title mb-0 border-0 p-0">Review Groom's Information</h4>
-                  </div>
-
-                  <div class="review-scroll-area glass-inner p-4">
-                    <div class="row g-4">
+                    <div v-for="doc in ['cenomar', 'psa', 'govtIssuedId', 'pmocCertificate']" :key="doc" class="row g-4 mb-5 border-bottom border-white-10 pb-4">
                       <div class="col-12">
-                        <h6 class="text-info small fw-bold text-uppercase mb-3" style="letter-spacing: 1px;">
-                          <i class="bi bi-info-circle me-2"></i>Personal Details
-                        </h6>
-                        <div class="row row-cols-1 row-cols-md-2 g-3">
-                          <div class="col"><small class="text-white-50 d-block">Full Name</small><span class="text-white fw-bold">{{ form.groom.firstName }} {{ form.groom.middleName }} {{ form.groom.lastName }}</span></div>
-                          <div class="col"><small class="text-white-50 d-block">Birth Date</small><span class="text-white">{{ form.groom.month }}/{{ form.groom.day }}/{{ form.groom.year }} (Age: {{ form.groom.age }})</span></div>
-                          <div class="col"><small class="text-white-50 d-block">Civil Status</small><span class="badge bg-primary glow-badge mt-1">{{ form.groom.civilStatus }}</span></div>
-                          <div class="col"><small class="text-white-50 d-block">Citizenship | Religion</small><span class="text-white">{{ form.groom.citizenship }} | {{ form.groom.religion }}</span></div>
-                          <div class="col-12"><small class="text-white-50 d-block">Residence</small><span class="text-white small">{{ form.groom.residence }}</span></div>
-                        </div>
+                        <label class="form-label fw-bold small text-uppercase text-info tracking-wider">
+                          {{ doc === 'govtIssuedId' ? 'Government Issued ID' : doc === 'pmocCertificate' ? 'PMOC Certificate' : doc.toUpperCase() }}
+                          <span class="text-danger">*</span>
+                        </label>
                       </div>
-
-                      <div class="col-12 border-top border-white-10 pt-4">
-                        <h6 class="text-info small fw-bold text-uppercase mb-3" style="letter-spacing: 1px;">
-                          <i class="bi bi-people me-2"></i>Family Background
-                        </h6>
-                        <div class="row g-3">
-                          <div class="col-md-6 border-end border-white-10">
-                            <small class="text-white-50 d-block">Father's Name</small>
-                            <span class="text-white d-block">{{ form.groom.fatherFirstName }} {{ form.groom.fatherLastName }}</span>
-                            <span class="smallest text-white-50 italic">({{ form.groom.fatherCitizenship }})</span>
-                          </div>
-                          <div class="col-md-6">
-                            <small class="text-white-50 d-block">Mother's Maiden Name</small>
-                            <span class="text-white d-block">{{ form.groom.motherMaidenFirstName }} {{ form.groom.motherMaidenLastName }}</span>
-                            <span class="smallest text-white-50 italic">({{ form.groom.motherMaidenCitizenship }})</span>
+                      
+                      <div class="col-md-6 border-md-end border-white-10">
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', doc)" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center" :class="{'has-file': previews.groom[doc]}">
+                            <div v-if="!previews.groom[doc]">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white-50"></i>
+                              <p class="mb-0 smallest text-white-50">Upload Groom {{ doc.toUpperCase() }}</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('groom', doc)" :src="previews.groom[doc]" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 22 – BRIDE NAME -->
-                <div v-if="step === 22">
-                  <h4 class="section-title">Bride – Name</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">First Name</label>
-                      <input class="form-control" v-model="form.bride.firstName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Middle Name</label>
-                      <input class="form-control" v-model="form.bride.middleName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Last Name</label>
-                      <input class="form-control" v-model="form.bride.lastName">
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 23 – BRIDE BIRTH DATE -->
-                <div v-if="step === 23">
-                  <h4 class="section-title">Bride – Birth Date Details</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">Day</label>
-                      <input type="number" class="form-control" v-model="form.bride.day">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Month</label>
-                      <input type="number" class="form-control" v-model="form.bride.month">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Year</label>
-                      <input type="number" class="form-control" v-model="form.bride.year">
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 24 – BRIDE PLACE OF BIRTH -->
-                <div v-if="step === 24">
-                  <h4 class="section-title">Bride – Place of Birth</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">City / Municipality</label>
-                      <input class="form-control" v-model="form.bride.cityMunicipality">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Province</label>
-                      <input class="form-control" v-model="form.bride.province">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Country</label>
-                      <input class="form-control" v-model="form.bride.country">
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 25 – BRIDE INFO -->
-                <div v-if="step === 25">
-                  <h4 class="section-title">Bride – Personal Info</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">Age</label>
-                      <input class="form-control" v-model="form.bride.age">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Sex</label>
-                      <input class="form-control bg-light" v-model="form.bride.sex" readonly placeholder="Auto-calculated">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Citizenship</label>
-                      <select class="form-control" v-model="form.bride.citizenship">
-                        <option value="" disabled>Select Citizenship</option>
-                        <option value="Filipino">Filipino</option>
-                        <option value="Foreign National">Foreign National</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 26 – BRIDE RESIDENCE -->
-                <div v-if="step === 26">
-                  <h4 class="section-title">Bride – Residence</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
-                      <input class="form-control" v-model="form.bride.residence">
-                      <small class=" text-primary">Tips: Enter the full address including house number, street name, city/municipality, province, and country.</small>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 27 – BRIDE RELIGION -->
-                <div v-if="step === 27">
-                  <h4 class="section-title">Bride – Religion / Religion Sect</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">Religion / Religion Sect</label>
-                      <input class="form-control" v-model="form.bride.religion">
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- STEP 28 – BRIDE CIVIL STATUS -->
-                <div v-if="step === 28">
-                  <h4 class="section-title">Bride – Civil Status</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">Civil Status</label>
-                      <select class="form-control" v-model="form.bride.civilStatus">
-                        <option value="Single">Single</option>
-                        <option value="Widowed">Widowed</option>
-                        <option value="Annulled">Annulled</option>
-                        <option value="Divorced">Divorced (for Foreigners/Legal cases)</option>
-                      </select>
-                    </div>
-                    <div v-if="isPreviouslyMarried" class="col-md-12">
-                      <label class="form-label">IF PREVIOUSLY MARRIED: How was it dissolved?</label>
-                      <textarea class="form-control" cols="2" row="2" v-model="form.bride.previousMarriageDissolve"></textarea>
-                    </div>
-                    <div v-if="isPreviouslyMarried" class="col-md-12">
-                      <h4 class="section-title">Place where dissolved</h4>
-                      <div class="row g-3">
-                        <div class="col-md-4">
-                          <label class="form-label">City / Municipality</label>
-                          <input class="form-control" v-model="form.bride.dissolvedCityMunicipality">
-                        </div>
-                        <div class="col-md-4">
-                          <label class="form-label">Province</label>
-                          <input class="form-control" v-model="form.bride.dissolvedProvince">
-                        </div>
-                        <div class="col-md-4">
-                          <label class="form-label">Country</label>
-                          <input class="form-control" v-model="form.bride.dissolvedCountry">
+                      <div class="col-md-6">
+                        <div class="glass-upload-container position-relative">
+                          <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', doc)" accept="image/*,.pdf" />
+                          <div class="glass-placeholder border-glass rounded-3 p-3 text-center" :class="{'has-file': previews.bride[doc]}">
+                            <div v-if="!previews.bride[doc]">
+                              <i class="bi bi-cloud-arrow-up fs-3 text-white-50"></i>
+                              <p class="mb-0 smallest text-white-50">Upload Bride {{ doc.toUpperCase() }}</p>
+                            </div>
+                            <div v-else class="animate-fade-in">
+                              <img v-if="isImage('bride', doc)" :src="previews.bride[doc]" class="img-fluid rounded-2 glass-preview-img-sm" />
+                              <div v-else class="py-2"><i class="bi bi-file-earmark-pdf fs-2 text-info"></i></div>
+                              <div class="glass-badge-sm">Selected</div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div v-if="isPreviouslyMarried" class="col-md-12">
-                      <h4 class="section-title">Date when dissolved</h4>
-                      <div class="row g-3">
-                        <div class="col-md-4">
-                          <label class="form-label">Day</label>
-                          <input type="number" class="form-control" v-model="form.bride.dissolvedDay">
+
+                    <div v-if="!(brideRequirement == 'no-need' && groomRequirement == 'no-need')" class="mt-5 animate-fade-in">
+                      <h5 class="text-info small fw-bold text-uppercase mb-4"><i class="bi bi-people me-2"></i> Parental Requirements (By Age)</h5>
+                      <div class="row g-4 border-bottom border-white-10 pb-4">
+  
+                      <div :class="brideRequirement === 'no-need' ? 'col-12' : 'col-md-6 border-md-end border-white-10'">
+                        
+                        <div v-if="groomRequirement == 'parental-consent'" class="mb-3">
+                          <label class="form-label fw-bold small text-info text-uppercase">Parental Consent (Groom)</label>
+                          <div class="glass-upload-container position-relative">
+                            <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'parentalConsent')" accept="image/*,.pdf" />
+                            <div class="glass-placeholder border-glass rounded-3 p-3 text-center" :class="{'has-file': previews.groom.parentalConsent}">
+                              <div v-if="!previews.groom.parentalConsent">
+                                <i class="bi bi-file-earmark-arrow-up text-white-50"></i>
+                                <p class="smallest text-white-50">Upload Consent</p>
+                              </div>
+                              <div v-else class="text-info small">Consent Loaded</div>
+                            </div>
+                          </div>
                         </div>
-                        <div class="col-md-4">
-                          <label class="form-label">Month</label>
-                          <input type="number" class="form-control" v-model="form.bride.dissolvedMonth">
+
+                        <div v-if="groomRequirement == 'parental-advice'" class="mb-3">
+                          <label class="form-label fw-bold small text-info text-uppercase">Parental Advice (Groom)</label>
+                          <div class="glass-upload-container position-relative">
+                            <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'parentalAdvice')" accept="image/*,.pdf" />
+                            <div class="glass-placeholder border-glass rounded-3 p-3 text-center" :class="{'has-file': previews.groom.parentalAdvice}">
+                              <div v-if="!previews.groom.parentalAdvice">
+                                <i class="bi bi-file-earmark-arrow-up text-white-50"></i>
+                                <p class="smallest text-white-50">Upload Advice</p>
+                              </div>
+                              <div v-else class="text-info small">Advice Loaded</div>
+                            </div>
+                          </div>
                         </div>
-                        <div class="col-md-4">
-                          <label class="form-label">Year</label>
-                          <input type="number" class="form-control" v-model="form.bride.dissolvedYear">
+                      </div>
+
+                      <div :class="groomRequirement === 'no-need' ? 'col-12' : 'col-md-6'">
+                        
+                        <div v-if="brideRequirement == 'parental-consent'" class="mb-3">
+                          <label class="form-label fw-bold small text-info text-uppercase">Parental Consent (Bride)</label>
+                          <div class="glass-upload-container position-relative">
+                            <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'parentalConsent')" accept="image/*,.pdf" />
+                            <div class="glass-placeholder border-glass rounded-3 p-3 text-center" :class="{'has-file': previews.bride.parentalConsent}">
+                              <div v-if="!previews.bride.parentalConsent">
+                                <i class="bi bi-file-earmark-arrow-up text-white-50"></i>
+                                <p class="smallest text-white-50">Upload Consent</p>
+                              </div>
+                              <div v-else class="text-info small">Consent Loaded</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div v-if="brideRequirement == 'parental-advice'" class="mb-3">
+                          <label class="form-label fw-bold small text-info text-uppercase">Parental Advice (Bride)</label>
+                          <div class="glass-upload-container position-relative">
+                            <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', 'parentalAdvice')" accept="image/*,.pdf" />
+                            <div class="glass-placeholder border-glass rounded-3 p-3 text-center" :class="{'has-file': previews.bride.parentalAdvice}">
+                              <div v-if="!previews.bride.parentalAdvice">
+                                <i class="bi bi-file-earmark-arrow-up text-white-50"></i>
+                                <p class="smallest text-white-50">Upload Advice</p>
+                              </div>
+                              <div v-else class="text-info small">Advice Loaded</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    </div>
+
+                      <div v-if="type !== 'filipino'" class="mt-4 animate-fade-in">
+                        <h5 class="text-warning small fw-bold text-uppercase mb-4"><i class="bi bi-globe me-2"></i> Foreigner Requirements</h5>
+                        <div class="row g-4">
+                          <div v-if="type === 'groom' || type === 'both'" class="col-md-6 border-md-end border-white-10">
+                            <div v-for="fDoc in [{k:'legalCapacity', l:'Legal Capacity'}, {k:'validPassport', l:'Passport / ACR Card'}]" :key="fDoc.k" class="mb-4">
+                              <label class="form-label fw-bold small text-uppercase text-info">{{ fDoc.l }}</label>
+                              <div class="glass-upload-container position-relative">
+                                <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', fDoc.k)" accept="image/*,.pdf" />
+                                <div class="glass-placeholder border-glass rounded-3 p-3 text-center" :class="{'has-file': previews.groom[fDoc.k]}">
+                                  <div v-if="!previews.groom[fDoc.k]">
+                                    <i class="bi bi-cloud-arrow-up text-white-50"></i>
+                                    <p class="mb-0 smallest text-white-50">Upload {{ fDoc.l }}</p>
+                                  </div>
+                                  <div v-else class="text-info small">Selected</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div v-if="type === 'bride' || type === 'both'" class="col-md-6">
+                            <div v-for="fDoc in [{k:'legalCapacity', l:'Legal Capacity'}, {k:'validPassport', l:'Passport / ACR Card'}]" :key="fDoc.k" class="mb-4">
+                              <label class="form-label fw-bold small text-uppercase text-info">{{ fDoc.l }}</label>
+                              <div class="glass-upload-container position-relative">
+                                <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'bride', fDoc.k)" accept="image/*,.pdf" />
+                                <div class="glass-placeholder border-glass rounded-3 p-3 text-center" :class="{'has-file': previews.bride[fDoc.k]}">
+                                  <div v-if="!previews.bride[fDoc.k]">
+                                    <i class="bi bi-cloud-arrow-up text-white-50"></i>
+                                    <p class="mb-0 smallest text-white-50">Upload {{ fDoc.l }}</p>
+                                  </div>
+                                  <div v-else class="text-info small">Selected</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+              </div>
 
-                <!-- STEP 29 – BRIDE DEGREE -->
-                <div v-if="step === 29">
-                  <h4 class="section-title">Brides - Degree of relationship contracting parties</h4>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">Degree</label>
-                      <input class="form-control" v-model="form.bride.degree">
-                      <small class=" text-primary">Tips: you can leave this blank if not applicable.</small>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 30 – BRIDE FATHER'S INFO -->
-                <div v-if="step === 30">
-                  <h4 class="section-title">Bride – Father's Info</h4>
+                <!-- STEP 2 - GROOM INFO -->
+                <div v-if="step === 2">
                   <div ref="errorContainer">
                     <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
                   </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">First Name</label>
-                      <input class="form-control" v-model="form.bride.fatherFirstName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Middle Name</label>
-                      <input class="form-control" v-model="form.bride.fatherMiddleName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Last Name</label>
-                      <input class="form-control" v-model="form.bride.fatherLastName">
-                    </div>
-                    <div class="col">
-                      <label class="form-label">Citizenship</label>
-                      <select class="form-control" v-model="form.bride.fatherCitizenship">
-                        <option value="" disabled>Select Citizenship</option>
-                        <option value="Filipino">Filipino</option>
-                        <option value="Foreign National">Foreign National</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
 
-                <!-- STEP 31 – BRIDE FATHER'S RESIDENCE -->
-                <div v-if="step === 31">
-                  <h4 class="section-title">Bride – Father's Residence</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
-                      <input class="form-control" v-model="form.bride.fatherResidence">
-                      <small class=" text-primary">Tips: Enter the full address including house number, street name, city/municipality, province, and country.</small>
+                  <!-- Name -->
+                  <div class="glass-inner p-4 mb-4">
+                    <h4 class="section-title mb-4">Groom's Primary Information</h4>
+                    
+                    <div class="row g-3 mb-4">
+                      <div class="col-md-4">
+                        <label class="form-label">First Name</label>
+                        <input class="form-control" v-model="form.groom.firstName" placeholder="Enter first name">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Middle Name</label>
+                        <input class="form-control" v-model="form.groom.middleName" placeholder="Enter middle name">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Last Name</label>
+                        <input class="form-control" v-model="form.groom.lastName" placeholder="Enter last name">
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <!-- STEP 32 – BRIDE MOTHER'S MAIDEN INFO -->
-                <div v-if="step === 32">
-                  <h4 class="section-title">Bride – Mother's Maiden Info</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">First Name</label>
-                      <input class="form-control" v-model="form.bride.motherMaidenFirstName">
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label class="form-label">Birth Date</label>
+                        <div class="row g-2">
+                          <div class="col-4">
+                            <select class="form-control" v-model="form.groom.month">
+                              <option value="" disabled>Month</option>
+                              <option v-for="month in monthOptions" :key="month.value" :value="month.value">
+                                {{ month.label }}
+                              </option>
+                            </select>
+                          </div>
+                          <div class="col-4">
+                            <select class="form-control" v-model="form.groom.day">
+                              <option value="" disabled>Day</option>
+                              <option v-for="day in groomDayOptions" :key="`g-day-${day}`" :value="day">
+                                {{ day }}
+                              </option>
+                            </select>
+                          </div>
+                          <div class="col-4">
+                            <select class="form-control" v-model="form.groom.year">
+                              <option value="" disabled>Year</option>
+                              <option v-for="year in groomYearOptions" :key="`g-year-${year}`" :value="year">
+                                {{ year }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <small class="text-info fw-semibold smallest d-block mt-2">
+                          Allowed age bracket: {{ getRequirementLabel(groomRequirement) }}
+                        </small>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Age</label>
+                        <input class="form-control bg-light text-dark" v-model="form.groom.age" readonly placeholder="Auto">
+                        <small v-if="groomAgeError" class="text-danger fw-bold smallest">{{ groomAgeError }}</small>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Sex</label>
+                        <input class="form-control bg-light text-dark" v-model="form.groom.sex" readonly placeholder="Auto">
+                      </div>
                     </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Middle Name</label>
-                      <input class="form-control" v-model="form.bride.motherMaidenMiddleName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Last Name</label>
-                      <input class="form-control" v-model="form.bride.motherMaidenLastName">
-                    </div>
-                    <div class="col">
-                      <label class="form-label">Citizenship</label>
-                      <select class="form-control" v-model="form.bride.motherMaidenCitizenship">
-                        <option value="" disabled>Select Citizenship</option>
-                        <option value="Filipino">Filipino</option>
-                        <option value="Foreign National">Foreign National</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 33 – BRIDE MOTHER'S MAIDEN RESIDENCE -->
-                <div v-if="step === 33">
-                  <h4 class="section-title">Bride – Mother's Maiden Residence</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
-                      <input class="form-control" v-model="form.bride.motherMaidenResidence">
-                      <small class=" text-primary">Tips: Enter the full address including house number, street name, city/municipality, province, and country.</small>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 34 – BRIDE CONSENT/ADVICE SOURCE INFO -->
-                <div v-if="step === 34 && brideRequirement !== 'no-need'">
-                  <h4 class="section-title">Bride - Person Who Gave {{ brideRequirement === 'parental-consent' ? 'Consent' : 'Advice' }} (Info)</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label">First Name</label>
-                      <input class="form-control" v-model="form.consentSource.bride.firstName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Middle Name</label>
-                      <input class="form-control" v-model="form.consentSource.bride.middleName">
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label">Last Name</label>
-                      <input class="form-control" v-model="form.consentSource.bride.lastName">
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-label">Citizenship</label>
-                      <select class="form-control" v-model="form.consentSource.bride.citizenship">
-                        <option value="" disabled>Select Citizenship</option>
-                        <option value="Filipino">Filipino</option>
-                        <option value="Foreign National">Foreign National</option>
-                      </select>
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-label">Relationship</label>
-                      <input class="form-control" v-model="form.consentSource.bride.relationship" placeholder="e.g. Father / Mother / Guardian">
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 35 – BRIDE CONSENT/ADVICE SOURCE RESIDENCE -->
-                <div v-if="step === 35 && brideRequirement !== 'no-need'">
-                  <h4 class="section-title">Bride - Person Who Gave {{ brideRequirement === 'parental-consent' ? 'Consent' : 'Advice' }} (Residence)</h4>
-                  <div ref="errorContainer">
-                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label class="form-label">House No., Street, City/Municipality, Province, Country</label>
-                      <input class="form-control" v-model="form.consentSource.bride.residence">
-                      <small class=" text-primary">Tips: Enter the full address including house number, street name, city/municipality, province, and country.</small>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- STEP 36 – BRIDE REVIEW -->
-                <div v-if="step === 36">
-                  <div class="d-flex align-items-center mb-4">
-                    <div class="bg-danger p-2 rounded-3 me-3">
-                      <i class="bi bi-person-check-fill fs-4 text-white"></i>
-                    </div>
-                    <h4 class="section-title mb-0 border-0 p-0 text-white">Review Bride's Information</h4>
                   </div>
 
-                  <div class="review-scroll-area glass-inner p-4">
-                    <div class="row g-4">
+                  <!-- Origin & Legal Status -->
+                  <div class="glass-inner p-4 mb-4">
+                    <h4 class="section-title mb-4">Origin & Legal Status</h4>
+                    
+                    <div class="row g-3 mb-3">
+                      <div class="col-md-4">
+                        <label class="form-label">Birth City / Municipality</label>
+                        <div class="position-relative">
+                          <input
+                            class="form-control"
+                            v-model="form.groom.cityMunicipality"
+                            @input="onGroomCityInput"
+                            @focus="onGroomCityFocus"
+                            @blur="onGroomCityBlur"
+                            autocomplete="off"
+                            placeholder="Type city / municipality"
+                          >
+                          <div
+                            v-if="showGroomCitySuggestions && groomCitySuggestions.length"
+                            class="city-suggestion-menu"
+                          >
+                            <button
+                              v-for="suggestion in groomCitySuggestions"
+                              :key="suggestion.id"
+                              type="button"
+                              class="city-suggestion-item"
+                              @mousedown.prevent="selectGroomCitySuggestion(suggestion)"
+                            >
+                              <span class="city-suggestion-name">{{ suggestion.cityMunicipality }}</span>
+                              <span v-if="suggestion.context" class="city-suggestion-context">{{ suggestion.context }}</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Birth Province</label>
+                        <input class="form-control" v-model="form.groom.province">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Birth Country</label>
+                        <input class="form-control" v-model="form.groom.country">
+                      </div>
+                    </div>
+
+                    <div class="row g-3">
+                      <div class="col-md-4">
+                        <label class="form-label">Citizenship</label>
+                        <select class="form-control" disabled v-model="form.groom.citizenship">
+                          <option value="" disabled>Select Citizenship</option>
+                          <option value="Filipino">Filipino</option>
+                          <option value="Others">Others</option>
+                        </select>
+                      </div>
+                      <div v-if="form.groom.citizenship === 'Others'" class="col-md-8 animate-fade-in">
+                        <label class="form-label">Specify Citizenship</label>
+                        <input 
+                          class="form-control" 
+                          v-model="form.groom.citizenshipOther" 
+                          list="citizenshipOptions" 
+                          placeholder="Type to search (e.g. American, Canadian...)"
+                        >
+                        <datalist id="citizenshipOptions">
+                          <option value="Filipino"></option>
+                          <option value="American"></option>
+                          <option value="Canadian"></option>
+                          <option value="Chinese"></option>
+                          <option value="Indian"></option>
+                          <option value="Japanese"></option>
+                          <option value="Korean"></option>
+                          <option value="Australian"></option>
+                          <option value="British"></option>
+                        </datalist>
+                        <datalist id="father-citizenship-options">
+                          <option value="Filipino"></option>
+                          <option value="American"></option>
+                          <option value="Canadian"></option>
+                          <option value="British"></option>
+                          <option value="Australian"></option>
+                          <option value="Japanese"></option>
+                        </datalist>
+                        <datalist id="mother-citizenship-options">
+                          <option value="Filipino"></option>
+                          <option value="American"></option>
+                          <option value="Canadian"></option>
+                          <option value="British"></option>
+                          <option value="Korean"></option>
+                          <option value="Chinese"></option>
+                        </datalist>
+                        <datalist id="source-citizenship-options">
+                          <option value="Filipino"></option>
+                          <option value="American"></option>
+                          <option value="Canadian"></option>
+                          <option value="British"></option>
+                          <option value="Australian"></option>
+                          <option value="Japanese"></option>
+                        </datalist>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Religion / Sect</label>
+                        <input 
+                          class="form-control" 
+                          v-model="form.groom.religion" 
+                          list="religionOptions" 
+                          placeholder="e.g. Roman Catholic"
+                        >
+                        <datalist id="religionOptions">
+                          <option value="Christian"></option>
+                          <option value="Roman Catholic"></option>
+                          <option value="Islam"></option>
+                          <option value="Iglesia ni Cristo"></option>
+                          <option value="Seventh-day Adventist"></option>
+                          <option value="Jehovah's Witnesses"></option>
+                          <option value="Latter-day Saints (Mormon)"></option>
+                          <option value="None / Atheist"></option>
+                        </datalist>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Civil Status</label>
+                        <select class="form-control" v-model="form.groom.civilStatus">
+                          <option value="Single">Single</option>
+                          <option value="Widowed">Widowed</option>
+                          <option value="Annulled">Annulled</option>
+                          <option value="Divorced">Divorced</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- If previously Married -->
+                  <div v-if="isPreviouslyMarried" class="glass-inner p-4 mb-4 border border-info">
+                    <h4 class="section-title mb-4">Dissolution of Previous Marriage</h4>
+                    <div class="row g-3">
+                      <div class="col-md-12">
+                        <label class="form-label">How was it dissolved?</label>
+                        <textarea class="form-control" rows="2" v-model="form.groom.previousMarriageDissolve"></textarea>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Place where dissolved</label>
+                        <input
+                          class="form-control"
+                          v-model="form.groom.dissolvedCityMunicipality"
+                          @input="onGroomDissolvedPlaceInput"
+                          list="groom-dissolved-place-suggestions"
+                          autocomplete="off"
+                          placeholder="City/Municipality, Province, Country"
+                        >
+                        <datalist id="groom-dissolved-place-suggestions">
+                          <option
+                            v-for="suggestion in groomDissolvedPlaceSuggestions"
+                            :key="suggestion.id"
+                            :value="suggestion.formatted || suggestion.cityMunicipality"
+                          >
+                            {{ suggestion.context }}
+                          </option>
+                        </datalist>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Date when dissolved</label>
+                        <div class="input-group">
+                          <input
+                            type="text"
+                            class="form-control"
+                            v-model="form.groom.dissolvedDay"
+                            list="dissolved-day-suggestions"
+                            placeholder="Ex: 24"
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            v-model="form.groom.dissolvedMonth"
+                            list="dissolved-month-suggestions"
+                            placeholder="Ex: May"
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            v-model="form.groom.dissolvedYear"
+                            list="dissolved-year-suggestions"
+                            placeholder="Ex: 2004"
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div v-if="['Widowed', 'Annulled', 'Divorced'].includes(form.groom.civilStatus) && type === 'groom'" 
+                        class="row g-4 mt-3 mb-5 border-bottom border-white-10 pb-4">
+                      
                       <div class="col-12">
-                        <h6 class="text-danger-emphasis small fw-bold text-uppercase mb-3" style="letter-spacing: 1px; color: #ff8fa3 !important;">
-                          <i class="bi bi-info-circle me-2"></i>Personal Details
-                        </h6>
-                        <div class="row row-cols-1 row-cols-md-2 g-3">
-                          <div class="col"><small class="text-white-50 d-block">Full Name</small><span class="text-white fw-bold">{{ form.bride.firstName }} {{ form.bride.middleName }} {{ form.bride.lastName }}</span></div>
-                          <div class="col"><small class="text-white-50 d-block">Birth Date</small><span class="text-white">{{ form.bride.month }}/{{ form.bride.day }}/{{ form.bride.year }} (Age: {{ form.bride.age }})</span></div>
-                          <div class="col"><small class="text-white-50 d-block">Civil Status</small><span class="badge bg-danger glow-badge mt-1">{{ form.bride.civilStatus }}</span></div>
-                          <div class="col"><small class="text-white-50 d-block">Citizenship | Religion</small><span class="text-white">{{ form.bride.citizenship }} | {{ form.bride.religion }}</span></div>
-                          <div class="col-12"><small class="text-white-50 d-block">Residence</small><span class="text-white small">{{ form.bride.residence }}</span></div>
+                        <div class="mb-3">
+                          <label class="form-label fw-bold small text-info text-uppercase">
+                            Groom's {{ form.groom.civilStatus === 'Widowed' ? 'Apostilled Foreign Death Cert' : 'Divorce / Anullment Decree' }}
+                          </label>
+
+                          <div v-if="form.groom.civilStatus === 'Widowed'" 
+                              key="upload-widowed" 
+                              class="glass-upload-container position-relative">
+                            <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'appostilled')" accept="image/*,.pdf" />
+                            <div class="glass-placeholder border-glass rounded-3 p-3 text-center" :class="{'has-file': previews.groom.appostilled}">
+                              <div v-if="!previews.groom.appostilled">
+                                <i class="bi bi-file-earmark-arrow-up text-white-50"></i>
+                                <p class="smallest text-white-50">Upload Death Certificate</p>
+                              </div>
+                              <div v-else class="text-info small">Death Cert Loaded</div>
+                            </div>
+                          </div>
+
+                          <div v-if="form.groom.civilStatus === 'Divorced' || form.groom.civilStatus === 'Annulled'" 
+                              key="upload-divorced" 
+                              class="glass-upload-container position-relative">
+                            <input type="file" class="file-input-overlay" @change="handleFileUpload($event, 'groom', 'divorceDecree')" accept="image/*,.pdf" />
+                            <div class="glass-placeholder border-glass rounded-3 p-3 text-center" :class="{'has-file': previews.groom.divorceDecree}">
+                              <div v-if="!previews.groom.divorceDecree">
+                                <i class="bi bi-file-earmark-arrow-up text-white-50"></i>
+                                <p class="smallest text-white-50">Upload Divorce Decree</p>
+                              </div>
+                              <div v-else class="text-info small">Divorce Decree Loaded</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Residence & Contact Info -->
+                  <div class="glass-inner p-4 mb-4">
+                    <h4 class="section-title mb-3">Residence & Contact Info</h4>
+                    <div class="row g-3">
+                      <div class="col-md-12">
+                        <label class="form-label">Full Address</label>
+                        <div class="position-relative">
+
+                          <div class="row g-2">
+
+
+                            <div class="col-md-5">
+                              <input
+                                class="form-control"
+                                v-model="form.groom.streethousenum"
+                                autocomplete="off"
+                                placeholder="House no., Street"
+                              >
+                            </div>
+                            <div class="col-md-7">
+                                <input
+                                class="form-control"
+                                v-model="form.groom.residence"
+                                @input="onGroomResidenceInput"
+                                @focus="onGroomResidenceFocus"
+                                @blur="onGroomResidenceBlur"
+                                autocomplete="off"
+                                placeholder="Barangay, City/Municipality, Province, Country, Zip code"
+                              >
+                              <div
+                                v-if="showGroomResidenceSuggestions && groomResidenceSuggestions.length"
+                                class="city-suggestion-menu"
+                              >
+                                <button
+                                  v-for="suggestion in groomResidenceSuggestions"
+                                  :key="suggestion.id"
+                                  type="button"
+                                  class="city-suggestion-item"
+                                  @mousedown.prevent="selectGroomResidenceSuggestion(suggestion)"
+                                >
+                                  <span class="city-suggestion-name">{{ suggestion.mainText }}</span>
+                                  <span class="city-suggestion-context">{{ suggestion.displayName }}</span>
+                                </button>
+                              </div>
+                            </div>
+
+                          </div>
+
+                          
+                        </div>
+                        <small class="text-white-50 smallest mt-2 d-block italic"><i class="bi bi-info-circle me-1"></i>Tips: Please enter complete details for legal records.</small>
+                      </div>
+                      <div class="col-md-12 mt-3">
+                        <label class="form-label">Degree of relationship (Contracting Parties)</label>
+                        <input class="form-control" v-model="form.groom.degree">
+                        <small class="text-white-50 smallest">Leave blank if not applicable.</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Parent Information -->
+                  <div class="glass-inner p-4 mb-4">
+                    <h4 class="section-title mb-4">Parents' Information</h4>
+                    
+                    <div class="row g-3 mb-4 border-bottom border-white-10 pb-4">
+                      <div class="col-12"><small class="text-white-50">Father's Details</small></div>
+                      <div class="col-md-4"><input class="form-control" v-model="form.groom.fatherFirstName" placeholder="First Name"></div>
+                      <div class="col-md-4"><input class="form-control" v-model="form.groom.fatherMiddleName" placeholder="Middle Name"></div>
+                      <div class="col-md-4"><input class="form-control" v-model="form.groom.fatherLastName" placeholder="Last Name"></div>
+                      <div class="col-md-4">
+                        <select class="form-control" v-model="form.groom.fatherCitizenship">
+                          <option value="" disabled>Father's Citizenship</option>
+                          <option value="Filipino">Filipino</option>
+                          <option value="Others">Others</option>
+                        </select>
+                      </div>
+                      <div v-if="form.groom.fatherCitizenship === 'Others'" class="col-md-8 animate-fade-in">
+                        <input
+                          class="form-control"
+                          v-model="form.groom.fatherCitizenshipOther"
+                          list="father-citizenship-options"
+                          placeholder="Specify father's citizenship"
+                        >
+                      </div>
+
+                      <div class="row g-2">
+                        <label class="form-label">Full Residence</label>
+                        <div class="col-md-5">
+                          <div class="position-relative">
+                            <input
+                              class="form-control"
+                              v-model="form.groom.fatherHouseNumStreet"
+                              autocomplete="off"
+                              placeholder="House no., Street"
+                            >
+                          </div>
+                        </div>
+                        <div class="col-md-7">
+                          <div class="position-relative">
+                            <input
+                              class="form-control"
+                              v-model="form.groom.fatherResidence"
+                              @input="onGroomRelatedResidenceInput('fatherResidence')"
+                              @focus="onGroomRelatedResidenceFocus('fatherResidence')"
+                              @blur="onGroomRelatedResidenceBlur"
+                              autocomplete="off"
+                              placeholder="Barangay, City/Municipality, Province, Country, Zip code"
+                            >
+                            <div
+                              v-if="showGroomRelatedResidenceSuggestions && groomRelatedResidenceField === 'fatherResidence' && groomRelatedResidenceSuggestions.length"
+                              class="city-suggestion-menu"
+                            >
+                              <button
+                                v-for="suggestion in groomRelatedResidenceSuggestions"
+                                :key="suggestion.id"
+                                type="button"
+                                class="city-suggestion-item"
+                                @mousedown.prevent="selectGroomRelatedResidenceSuggestion(suggestion)"
+                              >
+                                <span class="city-suggestion-name">{{ suggestion.mainText }}</span>
+                                <span class="city-suggestion-context">{{ suggestion.displayName }}</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div> 
+                      </div>
+                    </div>
+
+                    <div class="row g-3">
+                      <div class="col-12"><small class="text-white-50">Mother's Maiden Details</small></div>
+                      <div class="col-md-4"><input class="form-control" v-model="form.groom.motherMaidenFirstName" placeholder="First Name"></div>
+                      <div class="col-md-4"><input class="form-control" v-model="form.groom.motherMaidenMiddleName" placeholder="Middle Name"></div>
+                      <div class="col-md-4"><input class="form-control" v-model="form.groom.motherMaidenLastName" placeholder="Last Name"></div>
+                      <div class="col-md-4">
+                        <select class="form-control" v-model="form.groom.motherMaidenCitizenship">
+                          <option value="" disabled>Mother's Citizenship</option>
+                          <option value="Filipino">Filipino</option>
+                          <option value="Others">Others</option>
+                        </select>
+                      </div>
+
+                      <div v-if="form.groom.motherMaidenCitizenship === 'Others'" class="col-md-8 animate-fade-in">
+                        <input
+                          class="form-control"
+                          v-model="form.groom.motherMaidenCitizenshipOther"
+                          list="mother-citizenship-options"
+                          placeholder="Specify mother's citizenship"
+                        >
+                      </div>
+
+                      <div class="row g-2">
+                        <label class="form-label">Full Residence</label>
+                        <div class="col-md-5">
+                          <div class="position-relative">
+                            <input
+                              class="form-control"
+                              v-model="form.groom.motherHouseNumStreet"
+                              autocomplete="off"
+                              placeholder="House no., Street"
+                            >
+                          </div>
+                        </div>
+
+                        <div class="col-md-7">
+                          <div class="position-relative">
+                            <input
+                              class="form-control"
+                              v-model="form.groom.motherMaidenResidence"
+                              @input="onGroomRelatedResidenceInput('motherMaidenResidence')"
+                              @focus="onGroomRelatedResidenceFocus('motherMaidenResidence')"
+                              @blur="onGroomRelatedResidenceBlur"
+                              autocomplete="off"
+                              placeholder="Barangay, City/Municipality, Province, Country, Zip code"
+                            >
+                            <div
+                              v-if="showGroomRelatedResidenceSuggestions && groomRelatedResidenceField === 'motherMaidenResidence' && groomRelatedResidenceSuggestions.length"
+                              class="city-suggestion-menu"
+                            >
+                              <button
+                                v-for="suggestion in groomRelatedResidenceSuggestions"
+                                :key="suggestion.id"
+                                type="button"
+                                class="city-suggestion-item"
+                                @mousedown.prevent="selectGroomRelatedResidenceSuggestion(suggestion)"
+                              >
+                                <span class="city-suggestion-name">{{ suggestion.mainText }}</span>
+                                <span class="city-suggestion-context">{{ suggestion.displayName }}</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                      </div>
+
+                      
+                    </div>
+                  </div>
+
+                  <!-- Age Requirements -->
+                  <div v-if="groomRequirement !== 'no-need'" class="glass-inner p-4 mb-4 border border-warning">
+                    <h4 class="section-title mb-4">Person Providing {{ groomRequirement === 'parental-consent' ? 'Consent' : 'Advice' }}</h4>
+                    <div class="row g-3">
+                      <div class="col-md-4"><label class="form-label">First Name</label><input class="form-control" v-model="form.consentSource.groom.firstName"></div>
+                      <div class="col-md-4"><label class="form-label">Middle Name</label><input class="form-control" v-model="form.consentSource.groom.middleName"></div>
+                      <div class="col-md-4"><label class="form-label">Last Name</label><input class="form-control" v-model="form.consentSource.groom.lastName"></div>
+                      <div class="col-md-4">
+                        <label class="form-label">Citizenship</label>
+                        <select class="form-control" v-model="form.consentSource.groom.citizenship">
+                          <option value="" disabled>Select Citizenship</option>
+                          <option value="Filipino">Filipino</option>
+                          <option value="Others">Others</option>
+                        </select>
+                      </div>
+                      <div v-if="form.consentSource.groom.citizenship === 'Others'" class="col-md-8 animate-fade-in">
+                        <label class="form-label">Specify Citizenship</label>
+                        <input
+                          class="form-control"
+                          v-model="form.consentSource.groom.citizenshipOther"
+                          list="source-citizenship-options"
+                          placeholder="Specify citizenship"
+                        >
+                      </div>
+                      <div class="col-md-4"><label class="form-label">Relationship</label><input class="form-control" v-model="form.consentSource.groom.relationship" placeholder="e.g. Father"></div>
+
+
+                      <div class="row g-2">
+                        
+                        <label class="form-label">Full Residence</label>
+                        <div class="col-md-5">
+                          <div class="position-relative">
+                            <input
+                            class="form-control"
+                            v-model="form.consentSource.groom.houseNumStreet"
+                            autocomplete="off"
+                            placeholder="House no., Street"
+                            >
+                          </div>
+                        </div>
+
+                        <div class="col-md-7">
+                          <div class="position-relative">
+                            <input
+                              class="form-control"
+                              v-model="form.consentSource.groom.residence"
+                              @input="onGroomRelatedResidenceInput('consentSourceResidence')"
+                              @focus="onGroomRelatedResidenceFocus('consentSourceResidence')"
+                              @blur="onGroomRelatedResidenceBlur"
+                              autocomplete="off"
+                              placeholder="Barangay, City/Municipality, Province, Country, Zip code"
+                            >
+                            <div
+                              v-if="showGroomRelatedResidenceSuggestions && groomRelatedResidenceField === 'consentSourceResidence' && groomRelatedResidenceSuggestions.length"
+                              class="city-suggestion-menu"
+                            >
+                              <button
+                                v-for="suggestion in groomRelatedResidenceSuggestions"
+                                :key="suggestion.id"
+                                type="button"
+                                class="city-suggestion-item"
+                                @mousedown.prevent="selectGroomRelatedResidenceSuggestion(suggestion)"
+                              >
+                                <span class="city-suggestion-name">{{ suggestion.mainText }}</span>
+                                <span class="city-suggestion-context">{{ suggestion.displayName }}</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- STEP 3 – BRIDE INFO -->
+                <div v-if="step === 3">
+                  <div ref="errorContainer">
+                    <WarningForm v-for="(msg, index) in message" :key="index" :message="msg" class="mb-3"/>
+                  </div>
+
+                  <div class="glass-inner p-4 mb-4">
+                    <h4 class="section-title mb-4">Bride's Primary Information</h4>
+                    
+                    <div class="row g-3 mb-4">
+                      <div class="col-md-4">
+                        <label class="form-label">First Name</label>
+                        <input class="form-control" v-model="form.bride.firstName" placeholder="Enter first name">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Middle Name</label>
+                        <input class="form-control" v-model="form.bride.middleName" placeholder="Enter middle name">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Last Name</label>
+                        <input class="form-control" v-model="form.bride.lastName" placeholder="Enter last name">
+                      </div>
+                    </div>
+
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label class="form-label">Birth Date</label>
+                        <div class="row g-2">
+                          <div class="col-4">
+                            <select class="form-control" v-model="form.bride.month">
+                              <option value="" disabled>Month</option>
+                              <option v-for="month in monthOptions" :key="`b-month-${month.value}`" :value="month.value">
+                                {{ month.label }}
+                              </option>
+                            </select>
+                          </div>
+                          <div class="col-4">
+                            <select class="form-control" v-model="form.bride.day">
+                              <option value="" disabled>Day</option>
+                              <option v-for="day in brideDayOptions" :key="`b-day-${day}`" :value="day">
+                                {{ day }}
+                              </option>
+                            </select>
+                          </div>
+                          <div class="col-4">
+                            <select class="form-control" v-model="form.bride.year">
+                              <option value="" disabled>Year</option>
+                              <option v-for="year in brideYearOptions" :key="`b-year-${year}`" :value="year">
+                                {{ year }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <small class="text-info fw-semibold smallest d-block mt-2">
+                          Allowed age bracket: {{ getRequirementLabel(brideRequirement) }}
+                        </small>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Age</label>
+                        <input class="form-control bg-light text-dark" v-model="form.bride.age" readonly placeholder="Auto">
+                        <small v-if="brideAgeError" class="text-danger fw-bold smallest">{{ brideAgeError }}</small>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Sex</label>
+                        <input class="form-control bg-light text-dark" v-model="form.bride.sex" readonly placeholder="Female">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="glass-inner p-4 mb-4">
+                    <h4 class="section-title mb-4">Origin & Legal Status</h4>
+                    
+                    <div class="row g-3 mb-3">
+                      <div class="col-md-4">
+                        <label class="form-label">Birth City / Municipality</label>
+                        <div class="position-relative">
+                          <input
+                            class="form-control"
+                            v-model="form.bride.cityMunicipality"
+                            @input="onBrideCityInput"
+                            @focus="onBrideCityFocus"
+                            @blur="onBrideCityBlur"
+                            autocomplete="off"
+                            placeholder="Type city / municipality"
+                          >
+                          <div
+                            v-if="showBrideCitySuggestions && brideCitySuggestions.length"
+                            class="city-suggestion-menu"
+                          >
+                            <button
+                              v-for="suggestion in brideCitySuggestions"
+                              :key="suggestion.id"
+                              type="button"
+                              class="city-suggestion-item"
+                              @mousedown.prevent="selectBrideCitySuggestion(suggestion)"
+                            >
+                              <span class="city-suggestion-name">{{ suggestion.cityMunicipality }}</span>
+                              <span v-if="suggestion.context" class="city-suggestion-context">{{ suggestion.context }}</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Birth Province</label>
+                        <input class="form-control" v-model="form.bride.province">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Birth Country</label>
+                        <input class="form-control" v-model="form.bride.country">
+                      </div>
+                    </div>
+
+                    <div class="row g-3">
+                      <div class="col-md-4">
+                        <label class="form-label">Citizenship</label>
+                        <select class="form-control" disabled v-model="form.bride.citizenship">
+                          <option value="" disabled>Select Citizenship</option>
+                          <option value="Filipino">Filipino</option>
+                          <option value="Others">Others</option>
+                        </select>
+                      </div>
+                      <div v-if="form.bride.citizenship === 'Others'" class="col-md-8 animate-fade-in">
+                        <label class="form-label">Specify Citizenship</label>
+                        <input
+                          class="form-control"
+                          v-model="form.bride.citizenshipOther"
+                          list="citizenshipOptions"
+                          placeholder="Type to search (e.g. American, Canadian...)"
+                        >
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Religion / Sect</label>
+                        <input
+                          class="form-control"
+                          v-model="form.bride.religion"
+                          list="religionOptions"
+                          placeholder="e.g. Roman Catholic"
+                        >
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Civil Status</label>
+                        <select class="form-control" v-model="form.bride.civilStatus">
+                          <option value="Single">Single</option>
+                          <option value="Widowed">Widowed</option>
+                          <option value="Annulled">Annulled</option>
+                          <option value="Divorced">Divorced</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="glass-inner p-4 mb-4">
+                    <h4 class="section-title mb-3">Residence & Contact Info</h4>
+                    <div class="row g-3">
+                      <div class="col-md-12">
+                        <label class="form-label">Full Address</label>
+                        <div class="row g-2">
+                          <div class="col-md-2">
+                            <input
+                              class="form-control"
+                              v-model="form.bride.housenum"
+                              autocomplete="off"
+                              placeholder="House no."
+                            >
+                          </div>
+                          <div class="col-md-2">
+                            <input
+                              class="form-control"
+                              v-model="form.bride.street"
+                              autocomplete="off"
+                              placeholder="Street."
+                            >
+                          </div>
+                          <div class="col-md-8">
+                            <div class="position-relative">
+                              <input
+                                class="form-control"
+                                v-model="form.bride.residence"
+                                @input="onBrideResidenceInput"
+                                @focus="onBrideResidenceFocus"
+                                @blur="onBrideResidenceBlur"
+                                autocomplete="off"
+                                placeholder="Barangay, City/Municipality, Province, Country, Zip code"
+                              >
+                              <div
+                                v-if="showBrideResidenceSuggestions && brideResidenceSuggestions.length"
+                                class="city-suggestion-menu"
+                              >
+                                <button
+                                  v-for="suggestion in brideResidenceSuggestions"
+                                  :key="suggestion.id"
+                                  type="button"
+                                  class="city-suggestion-item"
+                                  @mousedown.prevent="selectBrideResidenceSuggestion(suggestion)"
+                                >
+                                  <span class="city-suggestion-name">{{ suggestion.mainText }}</span>
+                                  <span class="city-suggestion-context">{{ suggestion.displayName }}</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <small class="text-white-50 smallest mt-2 d-block italic"><i class="bi bi-info-circle me-1"></i>Tips: Please enter complete details for legal records.</small>
+                      </div>
+                      <div class="col-md-12 mt-3">
+                        <label class="form-label">Degree of relationship (Contracting Parties)</label>
+                        <input class="form-control" v-model="form.bride.degree">
+                        <small class="text-white-50 smallest">Leave blank if not applicable.</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div v-if="isPreviouslyMarried" class="glass-inner p-4 mb-4 border border-info">
+                    <h4 class="section-title mb-4">Dissolution of Previous Marriage</h4>
+                    <div class="row g-3">
+                      <div class="col-md-12">
+                        <label class="form-label">How was it dissolved?</label>
+                        <textarea class="form-control" rows="2" v-model="form.bride.previousMarriageDissolve"></textarea>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Place where dissolved</label>
+                        <input
+                          class="form-control"
+                          v-model="form.bride.dissolvedCityMunicipality"
+                          @input="onBrideDissolvedPlaceInput"
+                          list="bride-dissolved-place-suggestions"
+                          autocomplete="off"
+                          placeholder="City/Municipality, Province, Country"
+                        >
+                        <datalist id="bride-dissolved-place-suggestions">
+                          <option
+                            v-for="suggestion in brideDissolvedPlaceSuggestions"
+                            :key="suggestion.id"
+                            :value="suggestion.formatted || suggestion.cityMunicipality"
+                          >
+                            {{ suggestion.context }}
+                          </option>
+                        </datalist>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Date when dissolved</label>
+                        <div class="input-group">
+                          <input
+                            type="text"
+                            class="form-control"
+                            v-model="form.bride.dissolvedDay"
+                            list="bride-dissolved-day-suggestions"
+                            placeholder="Day"
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            v-model="form.bride.dissolvedMonth"
+                            list="bride-dissolved-month-suggestions"
+                            placeholder="Month"
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            v-model="form.bride.dissolvedYear"
+                            list="bride-dissolved-year-suggestions"
+                            placeholder="Year"
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="glass-inner p-4 mb-4">
+                    <h4 class="section-title mb-4">Parents' Information</h4>
+                    
+                    <div class="row g-3 mb-4 border-bottom border-white-10 pb-4">
+                      <div class="col-12"><small class="text-white-50 uppercase fw-bold">Father's Details</small></div>
+                      <div class="col-md-4"><input class="form-control" v-model="form.bride.fatherFirstName" placeholder="First Name"></div>
+                      <div class="col-md-4"><input class="form-control" v-model="form.bride.fatherMiddleName" placeholder="Middle Name"></div>
+                      <div class="col-md-4"><input class="form-control" v-model="form.bride.fatherLastName" placeholder="Last Name"></div>
+                      <div class="col-md-4">
+                        <select class="form-control" v-model="form.bride.fatherCitizenship">
+                          <option value="" disabled>Father's Citizenship</option>
+                          <option value="Filipino">Filipino</option>
+                          <option value="Others">Others</option>
+                        </select>
+                      </div>
+                      <div v-if="form.bride.fatherCitizenship === 'Others'" class="col-md-8 animate-fade-in">
+                        <input
+                          class="form-control"
+                          v-model="form.bride.fatherCitizenshipOther"
+                          list="father-citizenship-options"
+                          placeholder="Specify father's citizenship"
+                        >
+                      </div>
+                      <div class="row g-2">
+                        <label class="form-label">Full Residence</label>
+                        <div class="col-md-5">
+                          <div class="position-relative">
+                            <input
+                              class="form-control"
+                              v-model="form.bride.fatherHouseNumStreet"
+                              autocomplete="off"
+                              placeholder="House no., Street"
+                            >
+                          </div>
+                        </div>
+                        <div class="col-md-7">
+                          <div class="position-relative">
+                            <input
+                              class="form-control"
+                              v-model="form.bride.fatherResidence"
+                              @input="onBrideRelatedResidenceInput('fatherResidence')"
+                              @focus="onBrideRelatedResidenceFocus('fatherResidence')"
+                              @blur="onBrideRelatedResidenceBlur"
+                              autocomplete="off"
+                              placeholder="Barangay, City/Municipality, Province, Country, Zip code"
+                            >
+                            <div
+                              v-if="showBrideRelatedResidenceSuggestions && brideRelatedResidenceField === 'fatherResidence' && brideRelatedResidenceSuggestions.length"
+                              class="city-suggestion-menu"
+                            >
+                              <button
+                                v-for="suggestion in brideRelatedResidenceSuggestions"
+                                :key="suggestion.id"
+                                type="button"
+                                class="city-suggestion-item"
+                                @mousedown.prevent="selectBrideRelatedResidenceSuggestion(suggestion)"
+                              >
+                                <span class="city-suggestion-name">{{ suggestion.mainText }}</span>
+                                <span class="city-suggestion-context">{{ suggestion.displayName }}</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row g-3">
+                      <div class="col-12"><small class="text-white-50 uppercase fw-bold">Mother's Maiden Details</small></div>
+                      <div class="col-md-4"><input class="form-control" v-model="form.bride.motherMaidenFirstName" placeholder="First Name"></div>
+                      <div class="col-md-4"><input class="form-control" v-model="form.bride.motherMaidenMiddleName" placeholder="Middle Name"></div>
+                      <div class="col-md-4"><input class="form-control" v-model="form.bride.motherMaidenLastName" placeholder="Last Name"></div>
+                      <div class="col-md-4">
+                        <select class="form-control" v-model="form.bride.motherMaidenCitizenship">
+                          <option value="" disabled>Mother's Citizenship</option>
+                          <option value="Filipino">Filipino</option>
+                          <option value="Others">Others</option>
+                        </select>
+                      </div>
+                      <div v-if="form.bride.motherMaidenCitizenship === 'Others'" class="col-md-8 animate-fade-in">
+                        <input
+                          class="form-control"
+                          v-model="form.bride.motherMaidenCitizenshipOther"
+                          list="mother-citizenship-options"
+                          placeholder="Specify mother's citizenship"
+                        >
+                      </div>
+                      <div class="row g-2">
+                        <label class="form-label">Full Residence</label>
+                        <div class="col-md-5">
+                          <div class="position-relative">
+                            <input
+                              class="form-control"
+                              v-model="form.bride.motherHouseNumStreet"
+                              autocomplete="off"
+                              placeholder="House no., Street"
+                            >
+                          </div>
+                        </div>
+                        <div class="col-md-7">
+                          <div class="position-relative">
+                            <input
+                              class="form-control"
+                              v-model="form.bride.motherMaidenResidence"
+                              @input="onBrideRelatedResidenceInput('motherMaidenResidence')"
+                              @focus="onBrideRelatedResidenceFocus('motherMaidenResidence')"
+                              @blur="onBrideRelatedResidenceBlur"
+                              autocomplete="off"
+                              placeholder="Barangay, City/Municipality, Province, Country, Zip code"
+                            >
+                            <div
+                              v-if="showBrideRelatedResidenceSuggestions && brideRelatedResidenceField === 'motherMaidenResidence' && brideRelatedResidenceSuggestions.length"
+                              class="city-suggestion-menu"
+                            >
+                              <button
+                                v-for="suggestion in brideRelatedResidenceSuggestions"
+                                :key="suggestion.id"
+                                type="button"
+                                class="city-suggestion-item"
+                                @mousedown.prevent="selectBrideRelatedResidenceSuggestion(suggestion)"
+                              >
+                                <span class="city-suggestion-name">{{ suggestion.mainText }}</span>
+                                <span class="city-suggestion-context">{{ suggestion.displayName }}</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div v-if="brideRequirement !== 'no-need'" class="glass-inner p-4 mb-4 border border-warning">
+                    <h4 class="section-title mb-4">Person Providing {{ brideRequirement === 'parental-consent' ? 'Consent' : 'Advice' }}</h4>
+                    <div class="row g-3">
+                      <div class="col-md-4">
+                        <label class="form-label">First Name</label>
+                        <input class="form-control" v-model="form.consentSource.bride.firstName">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Middle Name</label>
+                        <input class="form-control" v-model="form.consentSource.bride.middleName">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Last Name</label>
+                        <input class="form-control" v-model="form.consentSource.bride.lastName">
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Citizenship</label>
+                        <select class="form-control" v-model="form.consentSource.bride.citizenship">
+                          <option value="" disabled>Select Citizenship</option>
+                          <option value="Filipino">Filipino</option>
+                          <option value="Others">Others</option>
+                        </select>
+                      </div>
+                      <div v-if="form.consentSource.bride.citizenship === 'Others'" class="col-md-6 animate-fade-in">
+                        <label class="form-label">Specify Citizenship</label>
+                        <input
+                          class="form-control"
+                          v-model="form.consentSource.bride.citizenshipOther"
+                          list="source-citizenship-options"
+                          placeholder="Specify citizenship"
+                        >
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Relationship</label>
+                        <input class="form-control" v-model="form.consentSource.bride.relationship" placeholder="e.g. Mother / Guardian">
+                      </div>
+
+                      <div class="row g-2">
+                        <label class="form-label">Full Residence</label>
+                        <div class="col-md-5">
+                          <div class="position-relative">
+                            <input
+                              class="form-control"
+                              v-model="form.consentSource.bride.houseNumStreet"
+                              autocomplete="off"
+                              placeholder="House no., Street"
+                            >
+                          </div>
+                        </div>
+                        <div class="col-md-7">
+                          <div class="position-relative">
+                            <input
+                              class="form-control"
+                              v-model="form.consentSource.bride.residence"
+                              @input="onBrideRelatedResidenceInput('consentSourceResidence')"
+                              @focus="onBrideRelatedResidenceFocus('consentSourceResidence')"
+                              @blur="onBrideRelatedResidenceBlur"
+                              autocomplete="off"
+                              placeholder="Barangay, City/Municipality, Province, Country, Zip code"
+                            >
+                            <div
+                              v-if="showBrideRelatedResidenceSuggestions && brideRelatedResidenceField === 'consentSourceResidence' && brideRelatedResidenceSuggestions.length"
+                              class="city-suggestion-menu"
+                            >
+                              <button
+                                v-for="suggestion in brideRelatedResidenceSuggestions"
+                                :key="suggestion.id"
+                                type="button"
+                                class="city-suggestion-item"
+                                @mousedown.prevent="selectBrideRelatedResidenceSuggestion(suggestion)"
+                              >
+                                <span class="city-suggestion-name">{{ suggestion.mainText }}</span>
+                                <span class="city-suggestion-context">{{ suggestion.displayName }}</span>
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      <div class="col-12 border-top border-white-10 pt-4">
-                        <h6 class="text-danger-emphasis small fw-bold text-uppercase mb-3" style="letter-spacing: 1px; color: #ff8fa3 !important;">
-                          <i class="bi bi-people me-2"></i>Family Background
-                        </h6>
-                        <div class="row g-3">
-                          <div class="col-md-6 border-end border-white-10">
-                            <small class="text-white-50 d-block">Father's Name</small>
-                            <span class="text-white d-block">{{ form.bride.fatherFirstName }} {{ form.bride.fatherLastName }}</span>
-                            <span class="smallest text-white-50 italic">({{ form.bride.fatherCitizenship }})</span>
-                          </div>
-                          <div class="col-md-6">
-                            <small class="text-white-50 d-block">Mother's Maiden Name</small>
-                            <span class="text-white d-block">{{ form.bride.motherMaidenFirstName }} {{ form.bride.motherMaidenLastName }}</span>
-                            <span class="smallest text-white-50 italic">({{ form.bride.motherMaidenCitizenship }})</span>
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
 
                 <!-- STEP 37 – REVIEW -->
-                <div v-if="step === 37">
-                  <h4 class="section-title mb-4 text-center border-0">Final Verification</h4>
-                  <div class="row g-3">
+                <div v-if="step === 4">
+                  <div class="text-center mb-4">
+                    <h4 class="section-title border-0 mb-1">Final Verification</h4>
+                    <p class="text-white-50 small">Please review all information before submitting the application.</p>
+                  </div>
+
+                  <div class="row g-4">
                     <div class="col-md-6">
-                      <div class="glass-inner p-3 h-100 border-primary-subtle border-start border-4">
-                        <h6 class="text-white fw-bold text-uppercase small mb-3">Groom Details</h6>
-                        <div class="final-review-list text-white">
-                          <p><strong>Name:</strong> {{ form.groom.lastName }}, {{ form.groom.firstName }}</p>
-                          <p><strong>Age/Status:</strong> {{ form.groom.age }} / {{ form.groom.civilStatus }}</p>
-                          <p><strong>Religion:</strong> {{ form.groom.religion }}</p>
-                          <p class="small opacity-75"><strong>Address:</strong> {{ form.groom.residence }}</p>
+                      <div class="glass-inner p-4 h-100 border-primary-subtle border-top border-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                          <h6 class="text-primary-subtle fw-bold text-uppercase tracking-wider small mb-0">
+                            <i class="bi bi-person-fill me-2"></i>Groom's Profile
+                          </h6>
+                          <span class="badge rounded-pill bg-primary px-3">Primary</span>
+                        </div>
+
+                        <div class="final-review-content text-white">
+                          <div class="mb-4">
+                            <label class="text-white-50 smallest text-uppercase d-block">Full Name</label>
+                            <h5 class="fw-bold mb-0">{{ form.groom.lastName }}, {{ form.groom.firstName }} {{ form.groom.middleName }}</h5>
+                          </div>
+
+                          <div class="row g-3">
+                            <div class="col-6">
+                              <label class="text-white-50 smallest text-uppercase d-block">Age / Status</label>
+                              <p class="mb-0 fw-semibold">{{ form.groom.age }} — {{ form.groom.civilStatus }}</p>
+                            </div>
+                            <div class="col-6">
+                              <label class="text-white-50 smallest text-uppercase d-block">Religion</label>
+                              <p class="mb-0 fw-semibold">{{ form.groom.religion || 'N/A' }}</p>
+                            </div>
+                            <div class="col-12">
+                              <label class="text-white-50 smallest text-uppercase d-block">Citizenship</label>
+                              <p class="mb-0 fw-semibold">{{ form.groom.citizenship }}</p>
+                            </div>
+                            <div class="col-12">
+                              <div class="p-2 rounded bg-white bg-opacity-10">
+                                <label class="text-white-50 smallest text-uppercase d-block">Current Residence</label>
+                                <p class="small mb-0 lh-sm">{{ form.groom.residence }}</p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+
                     <div class="col-md-6">
-                      <div class="glass-inner p-3 h-100 border-info-subtle border-start border-4">
-                        <h6 class="text-white fw-bold text-uppercase small mb-3">Bride Details</h6>
-                        <div class="final-review-list text-white">
-                          <p><strong>Name:</strong> {{ form.bride.lastName }}, {{ form.bride.firstName }}</p>
-                          <p><strong>Age/Status:</strong> {{ form.bride.age }} / {{ form.bride.civilStatus }}</p>
-                          <p><strong>Religion:</strong> {{ form.bride.religion }}</p>
-                          <p class="small opacity-75"><strong>Address:</strong> {{ form.bride.residence }}</p>
+                      <div class="glass-inner p-4 h-100 border-info-subtle border-top border-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                          <h6 class="text-info-subtle fw-bold text-uppercase tracking-wider small mb-0">
+                            <i class="bi bi-person-heart me-2"></i>Bride's Profile
+                          </h6>
+                          <span class="badge rounded-pill bg-info text-dark px-3">Primary</span>
+                        </div>
+
+                        <div class="final-review-content text-white">
+                          <div class="mb-4">
+                            <label class="text-white-50 smallest text-uppercase d-block">Full Name</label>
+                            <h5 class="fw-bold mb-0">{{ form.bride.lastName }}, {{ form.bride.firstName }} {{ form.bride.middleName }}</h5>
+                          </div>
+
+                          <div class="row g-3">
+                            <div class="col-6">
+                              <label class="text-white-50 smallest text-uppercase d-block">Age / Status</label>
+                              <p class="mb-0 fw-semibold">{{ form.bride.age }} — {{ form.bride.civilStatus }}</p>
+                            </div>
+                            <div class="col-6">
+                              <label class="text-white-50 smallest text-uppercase d-block">Religion</label>
+                              <p class="mb-0 fw-semibold">{{ form.bride.religion || 'N/A' }}</p>
+                            </div>
+                            <div class="col-12">
+                              <label class="text-white-50 smallest text-uppercase d-block">Citizenship</label>
+                              <p class="mb-0 fw-semibold">{{ form.bride.citizenship }}</p>
+                            </div>
+                            <div class="col-12">
+                              <div class="p-2 rounded bg-white bg-opacity-10">
+                                <label class="text-white-50 smallest text-uppercase d-block">Current Residence</label>
+                                <p class="small mb-0 lh-sm">{{ form.bride.residence }}</p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+                  </div>
+
+                  <div class="mt-4 p-3 glass-inner text-center border-0">
+                    <p class="text-white-50 small mb-0">
+                      <i class="bi bi-shield-check me-2 text-success"></i>
+                      By proceeding, you confirm that the information provided above is true and correct to the best of your knowledge.
+                    </p>
                   </div>
                 </div>
 
@@ -1319,7 +1342,7 @@
                     Back
                   </button>
 
-                  <button v-if="step < totalSteps && step != 37"
+                  <button v-if="step < totalSteps && step != 4"
                           class="btn btn-primary glow-button"
                           @click="goNext()">
                     Next
@@ -1360,10 +1383,51 @@ export default {
       brideRequirement: null,
       ageRequirements : null,
       message: [],
-      step: 1,
-      totalSteps: 37,
-      ageError: '',
+      step: 2,
+      totalSteps: 4,
+      groomAgeError: '',
+      brideAgeError: '',
       isPreviouslyMarried: false,
+      groomCitySuggestions: [],
+      showGroomCitySuggestions: false,
+      groomCityDebounceTimer: null,
+      groomCityAbortController: null,
+      groomCityBlurTimer: null,
+      groomResidenceSuggestions: [],
+      showGroomResidenceSuggestions: false,
+      groomResidenceDebounceTimer: null,
+      groomResidenceAbortController: null,
+      groomResidenceBlurTimer: null,
+      groomRelatedResidenceField: '',
+      groomRelatedResidenceSuggestions: [],
+      showGroomRelatedResidenceSuggestions: false,
+      groomRelatedResidenceDebounceTimer: null,
+      groomRelatedResidenceAbortController: null,
+      groomRelatedResidenceBlurTimer: null,
+      groomDissolvedPlaceSuggestions: [],
+      showGroomDissolvedPlaceSuggestions: false,
+      groomDissolvedPlaceDebounceTimer: null,
+      groomDissolvedPlaceAbortController: null,
+      groomDissolvedPlaceBlurTimer: null,
+      brideRelatedResidenceField: '',
+      brideRelatedResidenceSuggestions: [],
+      showBrideRelatedResidenceSuggestions: false,
+      brideRelatedResidenceDebounceTimer: null,
+      brideRelatedResidenceAbortController: null,
+      brideRelatedResidenceBlurTimer: null,
+      brideResidenceSuggestions: [],
+      showBrideResidenceSuggestions: false,
+      brideResidenceDebounceTimer: null,
+      brideResidenceAbortController: null,
+      brideResidenceBlurTimer: null,
+      brideCitySuggestions: [],
+      showBrideCitySuggestions: false,
+      brideCityDebounceTimer: null,
+      brideCityAbortController: null,
+      brideCityBlurTimer: null,
+      brideDissolvedPlaceSuggestions: [],
+      brideDissolvedPlaceDebounceTimer: null,
+      brideDissolvedPlaceAbortController: null,
       previews: {
         groom: { cenomar: null, psa: null, lcro: null },
         bride: { cenomar: null, psa: null, lcro: null }
@@ -1391,6 +1455,47 @@ export default {
     'form.bride': {
       handler(val) { this.handlePersonValidation(val, 'bride'); },
       deep: true
+    }
+  },
+  computed: {
+    monthOptions() {
+      return [
+        { value: 1, label: 'January' },
+        { value: 2, label: 'February' },
+        { value: 3, label: 'March' },
+        { value: 4, label: 'April' },
+        { value: 5, label: 'May' },
+        { value: 6, label: 'June' },
+        { value: 7, label: 'July' },
+        { value: 8, label: 'August' },
+        { value: 9, label: 'September' },
+        { value: 10, label: 'October' },
+        { value: 11, label: 'November' },
+        { value: 12, label: 'December' }
+      ];
+    },
+    groomYearOptions() {
+      return this.getYearOptions(this.groomRequirement);
+    },
+    brideYearOptions() {
+      return this.getYearOptions(this.brideRequirement);
+    },
+    groomDayOptions() {
+      return this.getDayOptions(this.form.groom.year, this.form.groom.month);
+    },
+    brideDayOptions() {
+      return this.getDayOptions(this.form.bride.year, this.form.bride.month);
+    },
+    dissolvedYearOptions() {
+      const currentYear = new Date().getFullYear();
+      const years = [];
+      for (let year = currentYear; year >= 1900; year--) {
+        years.push(year);
+      }
+      return years;
+    },
+    groomDissolvedDayOptions() {
+      return this.getDayOptions(this.form.groom.dissolvedYear, this.form.groom.dissolvedMonth);
     }
   },
 
@@ -1436,6 +1541,169 @@ export default {
 
       return `The ${personLabel} age must be within ${this.getRequirementLabel(requirement)} based on the selected age bracket.`;
     },
+    getYearOptions(requirement) {
+      const currentYear = new Date().getFullYear();
+      const { min, max } = this.getAgeLimits(requirement);
+      const youngestBirthYear = currentYear - min;
+      const oldestBirthYear = currentYear - max;
+      const years = [];
+
+      for (let year = youngestBirthYear; year >= oldestBirthYear; year--) {
+        years.push(year);
+      }
+
+      return years;
+    },
+    getDayOptions(year, month) {
+      const monthNum = Number(month);
+      if (!monthNum || monthNum < 1 || monthNum > 12) return [];
+
+      const yearNum = Number(year);
+      const safeYear = Number.isFinite(yearNum) && yearNum > 0 ? yearNum : 2000;
+      const daysInMonth = new Date(safeYear, monthNum, 0).getDate();
+
+      return Array.from({ length: daysInMonth }, (_, index) => index + 1);
+    },
+    parseMonthValue(monthInput) {
+      if (monthInput === null || monthInput === undefined) return null;
+      const raw = String(monthInput).trim();
+      if (!raw) return null;
+
+      const asNumber = Number(raw);
+      if (Number.isInteger(asNumber) && asNumber >= 1 && asNumber <= 12) {
+        return asNumber;
+      }
+
+      const normalized = raw.toLowerCase();
+      const monthIndex = this.monthOptions.findIndex((month) =>
+        month.label.toLowerCase().startsWith(normalized) || normalized.startsWith(month.label.toLowerCase())
+      );
+
+      return monthIndex >= 0 ? this.monthOptions[monthIndex].value : null;
+    },
+    isValidFullDate(dayInput, monthInput, yearInput) {
+      const day = Number(dayInput);
+      const month = this.parseMonthValue(monthInput);
+      const year = Number(yearInput);
+
+      if (!day || !month || !year) return false;
+      const candidate = new Date(year, month - 1, day);
+      return candidate.getFullYear() === year &&
+        candidate.getMonth() === month - 1 &&
+        candidate.getDate() === day;
+    },
+    isValidCalendarDate(day, month, year) {
+      const dayNum = Number(day);
+      const monthNum = Number(month);
+      const yearNum = Number(year);
+
+      if (!dayNum || !monthNum || !yearNum) return false;
+
+      const candidate = new Date(yearNum, monthNum - 1, dayNum);
+      return candidate.getFullYear() === yearNum &&
+        candidate.getMonth() === monthNum - 1 &&
+        candidate.getDate() === dayNum;
+    },
+    calculateAge(day, month, year) {
+      const dayNum = Number(day);
+      const monthNum = Number(month);
+      const yearNum = Number(year);
+
+      const today = new Date();
+      const birthDate = new Date(yearNum, monthNum - 1, dayNum);
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+
+      return age;
+    },
+    setAgeError(type, message) {
+      if (type === 'groom') {
+        this.groomAgeError = message;
+      } else {
+        this.brideAgeError = message;
+      }
+    },
+    getResidenceAddressParts(address, placeName = '') {
+      if (!address || typeof address !== 'object') {
+        return {
+          houseNumber: '',
+          street: '',
+          barangay: '',
+          cityMunicipality: '',
+          province: '',
+          country: '',
+          zipCode: ''
+        };
+      }
+
+      const cityMunicipality =
+        address.city ||
+        address.town ||
+        address.municipality ||
+        address.village ||
+        address.county ||
+        '';
+      const province =
+        address.state ||
+        address.province ||
+        address.region ||
+        address.state_district ||
+        '';
+      const country = address.country || '';
+
+      let barangay =
+        address.suburb ||
+        address.neighbourhood ||
+        address.quarter ||
+        address.city_district ||
+        address.borough ||
+        address.hamlet ||
+        '';
+
+      const normalizedPlaceName = (placeName || '').trim();
+      const lowerPlaceName = normalizedPlaceName.toLowerCase();
+      const blockedValues = new Set(
+        [cityMunicipality, province, country].filter(Boolean).map((v) => v.toLowerCase())
+      );
+      if (!barangay && normalizedPlaceName && !blockedValues.has(lowerPlaceName)) {
+        barangay = normalizedPlaceName;
+      }
+
+      return {
+        houseNumber: address.house_number || '',
+        street:
+          address.road ||
+          address.pedestrian ||
+          address.path ||
+          address.residential ||
+          '',
+        barangay,
+        cityMunicipality,
+        province,
+        country,
+        zipCode: address.postcode || ''
+      };
+    },
+    formatResidenceAddress(address, fallbackDisplayName = '', placeName = '', includeHouseStreet = true) {
+      if (!address || typeof address !== 'object') return fallbackDisplayName;
+
+      const parts = this.getResidenceAddressParts(address, placeName);
+      const orderedParts = [
+        includeHouseStreet ? parts.houseNumber : '',
+        includeHouseStreet ? parts.street : '',
+        parts.barangay,
+        parts.cityMunicipality,
+        parts.province,
+        parts.country,
+        parts.zipCode
+      ].filter(Boolean);
+
+      return orderedParts.length ? orderedParts.join(', ') : fallbackDisplayName;
+    },
     handleFileUpload(event, person, docType) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1459,29 +1727,955 @@ export default {
       const type = this.fileTypes[person][docType];
       return type && type.startsWith('image/');
     },
+    onGroomCityInput() {
+      const query = (this.form.groom.cityMunicipality || '').trim();
+
+      this.showGroomCitySuggestions = true;
+
+      if (this.groomCityDebounceTimer) {
+        clearTimeout(this.groomCityDebounceTimer);
+      }
+
+      if (this.groomCityAbortController) {
+        this.groomCityAbortController.abort();
+        this.groomCityAbortController = null;
+      }
+
+      if (query.length < 3) {
+        this.groomCitySuggestions = [];
+        return;
+      }
+
+      this.groomCityDebounceTimer = setTimeout(() => {
+        this.fetchGroomCitySuggestions(query);
+      }, 350);
+    },
+    async fetchGroomCitySuggestions(query) {
+      this.groomCityAbortController = new AbortController();
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=10&dedupe=0&q=${encodeURIComponent(query)}`,
+          {
+            signal: this.groomCityAbortController.signal,
+            headers: { 'Accept-Language': 'en' }
+          }
+        );
+
+        if (!response.ok) {
+          this.groomCitySuggestions = [];
+          return;
+        }
+
+        const data = await response.json();
+        const normalizedQuery = query.toLowerCase();
+
+        const suggestions = data
+          .map((item, index) => {
+            const address = item.address || {};
+            const cityMunicipality =
+              address.city ||
+              address.town ||
+              address.municipality ||
+              address.village ||
+              address.hamlet ||
+              address.county ||
+              item.name ||
+              '';
+
+            if (!cityMunicipality) return null;
+
+            const province =
+              address.state ||
+              address.region ||
+              address.province ||
+              address.state_district ||
+              '';
+            const country = address.country || '';
+            const countryCode = (address.country_code || '').toLowerCase();
+            const cityLower = cityMunicipality.toLowerCase();
+
+            let score = 0;
+            if (cityLower === normalizedQuery) score += 20;
+            if (cityLower.startsWith(normalizedQuery)) score += 10;
+            if (countryCode === 'ph') score += 50;
+
+            return {
+              id: item.place_id || `${cityMunicipality}-${index}`,
+              cityMunicipality,
+              province,
+              country,
+              countryCode,
+              context: [province, country].filter(Boolean).join(', '),
+              score
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => b.score - a.score);
+
+        const uniqueByLocation = new Map();
+        suggestions.forEach((item) => {
+          const key = [
+            item.cityMunicipality.toLowerCase(),
+            item.province.toLowerCase(),
+            item.country.toLowerCase()
+          ].join('|');
+          if (!uniqueByLocation.has(key)) {
+            uniqueByLocation.set(key, item);
+          }
+        });
+
+        this.groomCitySuggestions = Array.from(uniqueByLocation.values()).slice(0, 6);
+      } catch (error) {
+        // Ignore canceled requests; clear suggestions for actual request failures.
+        if (error.name !== 'AbortError') {
+          this.groomCitySuggestions = [];
+        }
+      } finally {
+        this.groomCityAbortController = null;
+      }
+    },
+    onGroomCityFocus() {
+      if (this.groomCityBlurTimer) {
+        clearTimeout(this.groomCityBlurTimer);
+        this.groomCityBlurTimer = null;
+      }
+      this.showGroomCitySuggestions = this.groomCitySuggestions.length > 0;
+    },
+    onGroomCityBlur() {
+      this.groomCityBlurTimer = setTimeout(() => {
+        this.showGroomCitySuggestions = false;
+      }, 120);
+    },
+    selectGroomCitySuggestion(selected) {
+      this.form.groom.cityMunicipality = selected.cityMunicipality;
+      if (!this.form.groom.province && selected.province) {
+        this.form.groom.province = selected.province;
+      }
+      if (!this.form.groom.country && selected.country) {
+        this.form.groom.country = selected.country;
+      }
+      this.showGroomCitySuggestions = false;
+    },
+    onGroomResidenceInput() {
+      const query = (this.form.groom.residence || '').trim();
+      this.showGroomResidenceSuggestions = true;
+
+      if (this.groomResidenceDebounceTimer) {
+        clearTimeout(this.groomResidenceDebounceTimer);
+      }
+
+      if (this.groomResidenceAbortController) {
+        this.groomResidenceAbortController.abort();
+        this.groomResidenceAbortController = null;
+      }
+
+      if (query.length < 5) {
+        this.groomResidenceSuggestions = [];
+        return;
+      }
+
+      this.groomResidenceDebounceTimer = setTimeout(() => {
+        this.fetchGroomResidenceSuggestions(query);
+      }, 350);
+    },
+    async fetchGroomResidenceSuggestions(query) {
+      this.groomResidenceAbortController = new AbortController();
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&dedupe=0&q=${encodeURIComponent(query)}`,
+          {
+            signal: this.groomResidenceAbortController.signal,
+            headers: { 'Accept-Language': 'en' }
+          }
+        );
+
+        if (!response.ok) {
+          this.groomResidenceSuggestions = [];
+          return;
+        }
+
+        const data = await response.json();
+        const suggestions = data
+          .map((item, index) => {
+            const address = item.address || {};
+            const countryCode = (address.country_code || '').toLowerCase();
+            const displayName = item.display_name || '';
+            const mainText =
+              item.name ||
+              address.road ||
+              address.suburb ||
+              address.city ||
+              address.town ||
+              address.municipality ||
+              displayName.split(',')[0] ||
+              '';
+
+            if (!displayName) return null;
+
+            let score = 0;
+            if (countryCode === 'ph') score += 30;
+            if (displayName.toLowerCase().startsWith(query.toLowerCase())) score += 10;
+
+            return {
+              id: item.place_id || `res-${index}`,
+              mainText,
+              displayName,
+              addressParts: this.getResidenceAddressParts(address, item.name || ''),
+              formattedAddress: this.formatResidenceAddress(address, displayName, item.name || ''),
+              formattedResidenceOnly: this.formatResidenceAddress(address, displayName, item.name || '', false),
+              score
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => b.score - a.score);
+
+        const uniqueByDisplay = new Map();
+        suggestions.forEach((item) => {
+          if (!uniqueByDisplay.has(item.displayName.toLowerCase())) {
+            uniqueByDisplay.set(item.displayName.toLowerCase(), item);
+          }
+        });
+
+        this.groomResidenceSuggestions = Array.from(uniqueByDisplay.values()).slice(0, 6);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          this.groomResidenceSuggestions = [];
+        }
+      } finally {
+        this.groomResidenceAbortController = null;
+      }
+    },
+    onGroomResidenceFocus() {
+      if (this.groomResidenceBlurTimer) {
+        clearTimeout(this.groomResidenceBlurTimer);
+        this.groomResidenceBlurTimer = null;
+      }
+      this.showGroomResidenceSuggestions = this.groomResidenceSuggestions.length > 0;
+    },
+    onGroomResidenceBlur() {
+      this.groomResidenceBlurTimer = setTimeout(() => {
+        this.showGroomResidenceSuggestions = false;
+      }, 120);
+    },
+    selectGroomResidenceSuggestion(selected) {
+      const parts = selected.addressParts || {};
+      const mergedStreetHouse = [parts.houseNumber, parts.street].filter(Boolean).join(' ').trim();
+      if (!this.form.groom.streethousenum && mergedStreetHouse) {
+        this.form.groom.streethousenum = mergedStreetHouse;
+      }
+      this.form.groom.residence = selected.formattedResidenceOnly || selected.formattedAddress || selected.displayName;
+      this.showGroomResidenceSuggestions = false;
+    },
+    getGroomRelatedResidenceValue(fieldKey) {
+      if (fieldKey === 'fatherResidence') return this.form.groom.fatherResidence || '';
+      if (fieldKey === 'motherMaidenResidence') return this.form.groom.motherMaidenResidence || '';
+      if (fieldKey === 'consentSourceResidence') return this.form.consentSource.groom.residence || '';
+      return '';
+    },
+    setGroomRelatedResidenceValue(fieldKey, value) {
+      if (fieldKey === 'fatherResidence') this.form.groom.fatherResidence = value;
+      if (fieldKey === 'motherMaidenResidence') this.form.groom.motherMaidenResidence = value;
+      if (fieldKey === 'consentSourceResidence') this.form.consentSource.groom.residence = value;
+    },
+    onGroomRelatedResidenceInput(fieldKey) {
+      const query = this.getGroomRelatedResidenceValue(fieldKey).trim();
+      this.groomRelatedResidenceField = fieldKey;
+      this.showGroomRelatedResidenceSuggestions = true;
+
+      if (this.groomRelatedResidenceDebounceTimer) {
+        clearTimeout(this.groomRelatedResidenceDebounceTimer);
+      }
+
+      if (this.groomRelatedResidenceAbortController) {
+        this.groomRelatedResidenceAbortController.abort();
+        this.groomRelatedResidenceAbortController = null;
+      }
+
+      if (query.length < 5) {
+        this.groomRelatedResidenceSuggestions = [];
+        return;
+      }
+
+      this.groomRelatedResidenceDebounceTimer = setTimeout(() => {
+        this.fetchGroomRelatedResidenceSuggestions(fieldKey, query);
+      }, 350);
+    },
+    async fetchGroomRelatedResidenceSuggestions(fieldKey, query) {
+      this.groomRelatedResidenceAbortController = new AbortController();
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&dedupe=0&q=${encodeURIComponent(query)}`,
+          {
+            signal: this.groomRelatedResidenceAbortController.signal,
+            headers: { 'Accept-Language': 'en' }
+          }
+        );
+
+        if (!response.ok) {
+          this.groomRelatedResidenceSuggestions = [];
+          return;
+        }
+
+        const data = await response.json();
+        const suggestions = data
+          .map((item, index) => {
+            const address = item.address || {};
+            const countryCode = (address.country_code || '').toLowerCase();
+            const displayName = item.display_name || '';
+            const mainText =
+              item.name ||
+              address.road ||
+              address.suburb ||
+              address.city ||
+              address.town ||
+              address.municipality ||
+              displayName.split(',')[0] ||
+              '';
+
+            if (!displayName) return null;
+
+            let score = 0;
+            if (countryCode === 'ph') score += 30;
+            if (displayName.toLowerCase().startsWith(query.toLowerCase())) score += 10;
+
+            return {
+              id: item.place_id || `g-rel-res-${index}`,
+              mainText,
+              displayName,
+              formattedAddress: this.formatResidenceAddress(address, displayName, item.name || ''),
+              score
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => b.score - a.score);
+
+        if (this.groomRelatedResidenceField !== fieldKey) return;
+
+        const uniqueByDisplay = new Map();
+        suggestions.forEach((item) => {
+          if (!uniqueByDisplay.has(item.displayName.toLowerCase())) {
+            uniqueByDisplay.set(item.displayName.toLowerCase(), item);
+          }
+        });
+
+        this.groomRelatedResidenceSuggestions = Array.from(uniqueByDisplay.values()).slice(0, 6);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          this.groomRelatedResidenceSuggestions = [];
+        }
+      } finally {
+        this.groomRelatedResidenceAbortController = null;
+      }
+    },
+    onGroomRelatedResidenceFocus(fieldKey) {
+      this.groomRelatedResidenceField = fieldKey;
+      if (this.groomRelatedResidenceBlurTimer) {
+        clearTimeout(this.groomRelatedResidenceBlurTimer);
+        this.groomRelatedResidenceBlurTimer = null;
+      }
+      this.showGroomRelatedResidenceSuggestions = this.groomRelatedResidenceSuggestions.length > 0;
+    },
+    onGroomRelatedResidenceBlur() {
+      this.groomRelatedResidenceBlurTimer = setTimeout(() => {
+        this.showGroomRelatedResidenceSuggestions = false;
+      }, 120);
+    },
+    selectGroomRelatedResidenceSuggestion(selected) {
+      if (!this.groomRelatedResidenceField) return;
+      this.setGroomRelatedResidenceValue(
+        this.groomRelatedResidenceField,
+        selected.formattedAddress || selected.displayName
+      );
+      this.showGroomRelatedResidenceSuggestions = false;
+    },
+    onGroomDissolvedPlaceInput() {
+      const query = (this.form.groom.dissolvedCityMunicipality || '').trim();
+      this.showGroomDissolvedPlaceSuggestions = true;
+
+      if (this.groomDissolvedPlaceDebounceTimer) {
+        clearTimeout(this.groomDissolvedPlaceDebounceTimer);
+      }
+
+      if (this.groomDissolvedPlaceAbortController) {
+        this.groomDissolvedPlaceAbortController.abort();
+        this.groomDissolvedPlaceAbortController = null;
+      }
+
+      if (query.length < 3) {
+        this.groomDissolvedPlaceSuggestions = [];
+        return;
+      }
+
+      this.groomDissolvedPlaceDebounceTimer = setTimeout(() => {
+        this.fetchGroomDissolvedPlaceSuggestions(query);
+      }, 350);
+    },
+    async fetchGroomDissolvedPlaceSuggestions(query) {
+      this.groomDissolvedPlaceAbortController = new AbortController();
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&dedupe=0&q=${encodeURIComponent(query)}`,
+          {
+            signal: this.groomDissolvedPlaceAbortController.signal,
+            headers: { 'Accept-Language': 'en' }
+          }
+        );
+
+        if (!response.ok) {
+          this.groomDissolvedPlaceSuggestions = [];
+          return;
+        }
+
+        const data = await response.json();
+        const normalizedQuery = query.toLowerCase();
+        const suggestions = data
+          .map((item, index) => {
+            const address = item.address || {};
+            const cityMunicipality =
+              address.city ||
+              address.town ||
+              address.municipality ||
+              address.village ||
+              address.hamlet ||
+              address.county ||
+              item.name ||
+              '';
+            if (!cityMunicipality) return null;
+
+            const province =
+              address.state ||
+              address.region ||
+              address.province ||
+              address.state_district ||
+              '';
+            const country = address.country || '';
+            const countryCode = (address.country_code || '').toLowerCase();
+            const cityLower = cityMunicipality.toLowerCase();
+
+            let score = 0;
+            if (cityLower === normalizedQuery) score += 20;
+            if (cityLower.startsWith(normalizedQuery)) score += 10;
+            if (countryCode === 'ph') score += 40;
+
+            return {
+              id: item.place_id || `g-dis-place-${index}`,
+              cityMunicipality,
+              province,
+              country,
+              context: [province, country].filter(Boolean).join(', '),
+              formatted: [cityMunicipality, province, country].filter(Boolean).join(', '),
+              score
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => b.score - a.score);
+
+        const uniqueByLocation = new Map();
+        suggestions.forEach((item) => {
+          const key = [
+            item.cityMunicipality.toLowerCase(),
+            item.province.toLowerCase(),
+            item.country.toLowerCase()
+          ].join('|');
+          if (!uniqueByLocation.has(key)) {
+            uniqueByLocation.set(key, item);
+          }
+        });
+
+        this.groomDissolvedPlaceSuggestions = Array.from(uniqueByLocation.values()).slice(0, 6);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          this.groomDissolvedPlaceSuggestions = [];
+        }
+      } finally {
+        this.groomDissolvedPlaceAbortController = null;
+      }
+    },
+    onGroomDissolvedPlaceFocus() {
+      if (this.groomDissolvedPlaceBlurTimer) {
+        clearTimeout(this.groomDissolvedPlaceBlurTimer);
+        this.groomDissolvedPlaceBlurTimer = null;
+      }
+      this.showGroomDissolvedPlaceSuggestions = this.groomDissolvedPlaceSuggestions.length > 0;
+    },
+    onGroomDissolvedPlaceBlur() {
+      this.groomDissolvedPlaceBlurTimer = setTimeout(() => {
+        this.showGroomDissolvedPlaceSuggestions = false;
+      }, 120);
+    },
+    selectGroomDissolvedPlaceSuggestion(selected) {
+      this.form.groom.dissolvedCityMunicipality = selected.formatted || selected.cityMunicipality;
+      this.showGroomDissolvedPlaceSuggestions = false;
+    },
+    getBrideRelatedResidenceValue(fieldKey) {
+      if (fieldKey === 'fatherResidence') return this.form.bride.fatherResidence || '';
+      if (fieldKey === 'motherMaidenResidence') return this.form.bride.motherMaidenResidence || '';
+      if (fieldKey === 'consentSourceResidence') return this.form.consentSource.bride.residence || '';
+      return '';
+    },
+    setBrideRelatedResidenceValue(fieldKey, value) {
+      if (fieldKey === 'fatherResidence') this.form.bride.fatherResidence = value;
+      if (fieldKey === 'motherMaidenResidence') this.form.bride.motherMaidenResidence = value;
+      if (fieldKey === 'consentSourceResidence') this.form.consentSource.bride.residence = value;
+    },
+    onBrideRelatedResidenceInput(fieldKey) {
+      const query = this.getBrideRelatedResidenceValue(fieldKey).trim();
+      this.brideRelatedResidenceField = fieldKey;
+      this.showBrideRelatedResidenceSuggestions = true;
+
+      if (this.brideRelatedResidenceDebounceTimer) {
+        clearTimeout(this.brideRelatedResidenceDebounceTimer);
+      }
+
+      if (this.brideRelatedResidenceAbortController) {
+        this.brideRelatedResidenceAbortController.abort();
+        this.brideRelatedResidenceAbortController = null;
+      }
+
+      if (query.length < 5) {
+        this.brideRelatedResidenceSuggestions = [];
+        return;
+      }
+
+      this.brideRelatedResidenceDebounceTimer = setTimeout(() => {
+        this.fetchBrideRelatedResidenceSuggestions(fieldKey, query);
+      }, 350);
+    },
+    async fetchBrideRelatedResidenceSuggestions(fieldKey, query) {
+      this.brideRelatedResidenceAbortController = new AbortController();
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&dedupe=0&q=${encodeURIComponent(query)}`,
+          {
+            signal: this.brideRelatedResidenceAbortController.signal,
+            headers: { 'Accept-Language': 'en' }
+          }
+        );
+
+        if (!response.ok) {
+          this.brideRelatedResidenceSuggestions = [];
+          return;
+        }
+
+        const data = await response.json();
+        const suggestions = data
+          .map((item, index) => {
+            const address = item.address || {};
+            const countryCode = (address.country_code || '').toLowerCase();
+            const displayName = item.display_name || '';
+            const mainText =
+              item.name ||
+              address.road ||
+              address.suburb ||
+              address.city ||
+              address.town ||
+              address.municipality ||
+              displayName.split(',')[0] ||
+              '';
+
+            if (!displayName) return null;
+
+            let score = 0;
+            if (countryCode === 'ph') score += 30;
+            if (displayName.toLowerCase().startsWith(query.toLowerCase())) score += 10;
+
+            return {
+              id: item.place_id || `b-rel-res-${index}`,
+              mainText,
+              displayName,
+              formattedAddress: this.formatResidenceAddress(address, displayName, item.name || ''),
+              score
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => b.score - a.score);
+
+        if (this.brideRelatedResidenceField !== fieldKey) return;
+
+        const uniqueByDisplay = new Map();
+        suggestions.forEach((item) => {
+          if (!uniqueByDisplay.has(item.displayName.toLowerCase())) {
+            uniqueByDisplay.set(item.displayName.toLowerCase(), item);
+          }
+        });
+
+        this.brideRelatedResidenceSuggestions = Array.from(uniqueByDisplay.values()).slice(0, 6);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          this.brideRelatedResidenceSuggestions = [];
+        }
+      } finally {
+        this.brideRelatedResidenceAbortController = null;
+      }
+    },
+    onBrideRelatedResidenceFocus(fieldKey) {
+      this.brideRelatedResidenceField = fieldKey;
+      if (this.brideRelatedResidenceBlurTimer) {
+        clearTimeout(this.brideRelatedResidenceBlurTimer);
+        this.brideRelatedResidenceBlurTimer = null;
+      }
+      this.showBrideRelatedResidenceSuggestions = this.brideRelatedResidenceSuggestions.length > 0;
+    },
+    onBrideRelatedResidenceBlur() {
+      this.brideRelatedResidenceBlurTimer = setTimeout(() => {
+        this.showBrideRelatedResidenceSuggestions = false;
+      }, 120);
+    },
+    selectBrideRelatedResidenceSuggestion(selected) {
+      if (!this.brideRelatedResidenceField) return;
+      this.setBrideRelatedResidenceValue(
+        this.brideRelatedResidenceField,
+        selected.formattedAddress || selected.displayName
+      );
+      this.showBrideRelatedResidenceSuggestions = false;
+    },
+    onBrideDissolvedPlaceInput() {
+      const query = (this.form.bride.dissolvedCityMunicipality || '').trim();
+
+      if (this.brideDissolvedPlaceDebounceTimer) {
+        clearTimeout(this.brideDissolvedPlaceDebounceTimer);
+      }
+      if (this.brideDissolvedPlaceAbortController) {
+        this.brideDissolvedPlaceAbortController.abort();
+        this.brideDissolvedPlaceAbortController = null;
+      }
+      if (query.length < 3) {
+        this.brideDissolvedPlaceSuggestions = [];
+        return;
+      }
+      this.brideDissolvedPlaceDebounceTimer = setTimeout(() => {
+        this.fetchBrideDissolvedPlaceSuggestions(query);
+      }, 350);
+    },
+    async fetchBrideDissolvedPlaceSuggestions(query) {
+      this.brideDissolvedPlaceAbortController = new AbortController();
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&dedupe=0&q=${encodeURIComponent(query)}`,
+          {
+            signal: this.brideDissolvedPlaceAbortController.signal,
+            headers: { 'Accept-Language': 'en' }
+          }
+        );
+
+        if (!response.ok) {
+          this.brideDissolvedPlaceSuggestions = [];
+          return;
+        }
+
+        const data = await response.json();
+        const normalizedQuery = query.toLowerCase();
+        const suggestions = data
+          .map((item, index) => {
+            const address = item.address || {};
+            const cityMunicipality =
+              address.city ||
+              address.town ||
+              address.municipality ||
+              address.village ||
+              address.hamlet ||
+              address.county ||
+              item.name ||
+              '';
+            if (!cityMunicipality) return null;
+
+            const province =
+              address.state ||
+              address.region ||
+              address.province ||
+              address.state_district ||
+              '';
+            const country = address.country || '';
+            const countryCode = (address.country_code || '').toLowerCase();
+            const cityLower = cityMunicipality.toLowerCase();
+
+            let score = 0;
+            if (cityLower === normalizedQuery) score += 20;
+            if (cityLower.startsWith(normalizedQuery)) score += 10;
+            if (countryCode === 'ph') score += 40;
+
+            return {
+              id: item.place_id || `b-dis-place-${index}`,
+              cityMunicipality,
+              province,
+              country,
+              context: [province, country].filter(Boolean).join(', '),
+              formatted: [cityMunicipality, province, country].filter(Boolean).join(', '),
+              score
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => b.score - a.score);
+
+        const uniqueByLocation = new Map();
+        suggestions.forEach((item) => {
+          const key = [
+            item.cityMunicipality.toLowerCase(),
+            item.province.toLowerCase(),
+            item.country.toLowerCase()
+          ].join('|');
+          if (!uniqueByLocation.has(key)) {
+            uniqueByLocation.set(key, item);
+          }
+        });
+
+        this.brideDissolvedPlaceSuggestions = Array.from(uniqueByLocation.values()).slice(0, 6);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          this.brideDissolvedPlaceSuggestions = [];
+        }
+      } finally {
+        this.brideDissolvedPlaceAbortController = null;
+      }
+    },
+    onBrideCityInput() {
+      const query = (this.form.bride.cityMunicipality || '').trim();
+      this.showBrideCitySuggestions = true;
+
+      if (this.brideCityDebounceTimer) {
+        clearTimeout(this.brideCityDebounceTimer);
+      }
+
+      if (this.brideCityAbortController) {
+        this.brideCityAbortController.abort();
+        this.brideCityAbortController = null;
+      }
+
+      if (query.length < 3) {
+        this.brideCitySuggestions = [];
+        return;
+      }
+
+      this.brideCityDebounceTimer = setTimeout(() => {
+        this.fetchBrideCitySuggestions(query);
+      }, 350);
+    },
+    async fetchBrideCitySuggestions(query) {
+      this.brideCityAbortController = new AbortController();
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=10&dedupe=0&q=${encodeURIComponent(query)}`,
+          {
+            signal: this.brideCityAbortController.signal,
+            headers: { 'Accept-Language': 'en' }
+          }
+        );
+
+        if (!response.ok) {
+          this.brideCitySuggestions = [];
+          return;
+        }
+
+        const data = await response.json();
+        const normalizedQuery = query.toLowerCase();
+
+        const suggestions = data
+          .map((item, index) => {
+            const address = item.address || {};
+            const cityMunicipality =
+              address.city ||
+              address.town ||
+              address.municipality ||
+              address.village ||
+              address.hamlet ||
+              address.county ||
+              item.name ||
+              '';
+
+            if (!cityMunicipality) return null;
+
+            const province =
+              address.state ||
+              address.region ||
+              address.province ||
+              address.state_district ||
+              '';
+            const country = address.country || '';
+            const countryCode = (address.country_code || '').toLowerCase();
+            const cityLower = cityMunicipality.toLowerCase();
+
+            let score = 0;
+            if (cityLower === normalizedQuery) score += 20;
+            if (cityLower.startsWith(normalizedQuery)) score += 10;
+            if (countryCode === 'ph') score += 50;
+
+            return {
+              id: item.place_id || `${cityMunicipality}-${index}`,
+              cityMunicipality,
+              province,
+              country,
+              countryCode,
+              context: [province, country].filter(Boolean).join(', '),
+              score
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => b.score - a.score);
+
+        const uniqueByLocation = new Map();
+        suggestions.forEach((item) => {
+          const key = [
+            item.cityMunicipality.toLowerCase(),
+            item.province.toLowerCase(),
+            item.country.toLowerCase()
+          ].join('|');
+          if (!uniqueByLocation.has(key)) {
+            uniqueByLocation.set(key, item);
+          }
+        });
+
+        this.brideCitySuggestions = Array.from(uniqueByLocation.values()).slice(0, 6);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          this.brideCitySuggestions = [];
+        }
+      } finally {
+        this.brideCityAbortController = null;
+      }
+    },
+    onBrideCityFocus() {
+      if (this.brideCityBlurTimer) {
+        clearTimeout(this.brideCityBlurTimer);
+        this.brideCityBlurTimer = null;
+      }
+      this.showBrideCitySuggestions = this.brideCitySuggestions.length > 0;
+    },
+    onBrideCityBlur() {
+      this.brideCityBlurTimer = setTimeout(() => {
+        this.showBrideCitySuggestions = false;
+      }, 120);
+    },
+    selectBrideCitySuggestion(selected) {
+      this.form.bride.cityMunicipality = selected.cityMunicipality;
+      if (!this.form.bride.province && selected.province) {
+        this.form.bride.province = selected.province;
+      }
+      if (!this.form.bride.country && selected.country) {
+        this.form.bride.country = selected.country;
+      }
+      this.showBrideCitySuggestions = false;
+    },
+    onBrideResidenceInput() {
+      const query = (this.form.bride.residence || '').trim();
+      this.showBrideResidenceSuggestions = true;
+
+      if (this.brideResidenceDebounceTimer) {
+        clearTimeout(this.brideResidenceDebounceTimer);
+      }
+      if (this.brideResidenceAbortController) {
+        this.brideResidenceAbortController.abort();
+        this.brideResidenceAbortController = null;
+      }
+      if (query.length < 5) {
+        this.brideResidenceSuggestions = [];
+        return;
+      }
+
+      this.brideResidenceDebounceTimer = setTimeout(() => {
+        this.fetchBrideResidenceSuggestions(query);
+      }, 350);
+    },
+    async fetchBrideResidenceSuggestions(query) {
+      this.brideResidenceAbortController = new AbortController();
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&dedupe=0&q=${encodeURIComponent(query)}`,
+          {
+            signal: this.brideResidenceAbortController.signal,
+            headers: { 'Accept-Language': 'en' }
+          }
+        );
+
+        if (!response.ok) {
+          this.brideResidenceSuggestions = [];
+          return;
+        }
+
+        const data = await response.json();
+        const suggestions = data
+          .map((item, index) => {
+            const address = item.address || {};
+            const countryCode = (address.country_code || '').toLowerCase();
+            const displayName = item.display_name || '';
+            const mainText =
+              item.name ||
+              address.road ||
+              address.suburb ||
+              address.city ||
+              address.town ||
+              address.municipality ||
+              displayName.split(',')[0] ||
+              '';
+
+            if (!displayName) return null;
+
+            let score = 0;
+            if (countryCode === 'ph') score += 30;
+            if (displayName.toLowerCase().startsWith(query.toLowerCase())) score += 10;
+
+            return {
+              id: item.place_id || `b-res-${index}`,
+              mainText,
+              displayName,
+              addressParts: this.getResidenceAddressParts(address, item.name || ''),
+              formattedAddress: this.formatResidenceAddress(address, displayName, item.name || ''),
+              formattedResidenceOnly: this.formatResidenceAddress(address, displayName, item.name || '', false),
+              score
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => b.score - a.score);
+
+        const uniqueByDisplay = new Map();
+        suggestions.forEach((item) => {
+          if (!uniqueByDisplay.has(item.displayName.toLowerCase())) {
+            uniqueByDisplay.set(item.displayName.toLowerCase(), item);
+          }
+        });
+
+        this.brideResidenceSuggestions = Array.from(uniqueByDisplay.values()).slice(0, 6);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          this.brideResidenceSuggestions = [];
+        }
+      } finally {
+        this.brideResidenceAbortController = null;
+      }
+    },
+    onBrideResidenceFocus() {
+      if (this.brideResidenceBlurTimer) {
+        clearTimeout(this.brideResidenceBlurTimer);
+        this.brideResidenceBlurTimer = null;
+      }
+      this.showBrideResidenceSuggestions = this.brideResidenceSuggestions.length > 0;
+    },
+    onBrideResidenceBlur() {
+      this.brideResidenceBlurTimer = setTimeout(() => {
+        this.showBrideResidenceSuggestions = false;
+      }, 120);
+    },
+    selectBrideResidenceSuggestion(selected) {
+      const parts = selected.addressParts || {};
+      if (!this.form.bride.housenum && parts.houseNumber) {
+        this.form.bride.housenum = parts.houseNumber;
+      }
+      if (!this.form.bride.street && parts.street) {
+        this.form.bride.street = parts.street;
+      }
+      this.form.bride.residence = selected.formattedResidenceOnly || selected.formattedAddress || selected.displayName;
+      this.showBrideResidenceSuggestions = false;
+    },
     goBack() {
       let prevStep = this.step - 1;
 
-      // If groom does not require consent/advice source, skip steps 19-20.
-      if ((prevStep === 20 || prevStep === 19) && this.groomRequirement === "no-need") {
-        prevStep = 18;
-      }
-
-      // If bride does not require consent/advice source, skip steps 34-35.
-      if ((prevStep === 35 || prevStep === 34) && this.brideRequirement === "no-need") {
-        prevStep = 33;
-      }
-
-      // If going back to Step 6, but it was skipped (no-need for parental docs)
-      if (prevStep === 6 && this.brideRequirement === "no-need" && this.groomRequirement === "no-need") {
-        prevStep--;
-      }
-
-      // If going back to Step 5, but they are not a foreigner
-      const foreignerCheck = String(this.isForeigner) === 'true';
-      if (prevStep === 5 && !foreignerCheck) {
-        prevStep--;
-      }
 
       this.step = prevStep;
       window.scrollTo(0, 0);
@@ -1490,11 +2684,285 @@ export default {
       // Clear any existing messages before starting new validation
       this.message = [];
 
+      // Current form flow is 4 steps only:
+      // 1 = Documents, 2 = Groom, 3 = Bride, 4 = Review/Submit
+      if (this.totalSteps === 4) {
+        if (this.step === 1) {
+          const baseDocs = ['cenomar', 'psa', 'govtIssuedId', 'pmocCertificate'];
+          const missingGroomBase = baseDocs.some((doc) => !this.form.groom.documents[doc]);
+          const missingBrideBase = baseDocs.some((doc) => !this.form.bride.documents[doc]);
+
+          if (missingGroomBase || missingBrideBase) {
+            this.message.push("Please upload all required base documents for both Groom and Bride.");
+            this.scrollToError();
+            return;
+          }
+
+          if (this.type === "groom" || this.type === "both") {
+            const missingGroomForeign = ['legalCapacity', 'validPassport', 'apostilledOrDecree']
+              .some((doc) => !this.form.groom.documents[doc]);
+            if (missingGroomForeign) {
+              this.message.push("Please upload all required foreigner documents for Groom.");
+              this.scrollToError();
+              return;
+            }
+          }
+
+          if (this.type === "bride" || this.type === "both") {
+            const missingBrideForeign = ['legalCapacity', 'validPassport']
+              .some((doc) => !this.form.bride.documents[doc]);
+            if (missingBrideForeign) {
+              this.message.push("Please upload all required foreigner documents for Bride.");
+              this.scrollToError();
+              return;
+            }
+          }
+
+          if (this.groomRequirement === "parental-consent" && !this.form.groom.documents.parentalConsent) {
+            this.message.push("Please upload Groom parental consent document.");
+            this.scrollToError();
+            return;
+          }
+          if (this.groomRequirement === "parental-advise" && !this.form.groom.documents.parentalAdvise) {
+            this.message.push("Please upload Groom parental advice document.");
+            this.scrollToError();
+            return;
+          }
+          if (this.brideRequirement === "parental-consent" && !this.form.bride.documents.parentalConsent) {
+            this.message.push("Please upload Bride parental consent document.");
+            this.scrollToError();
+            return;
+          }
+          if (this.brideRequirement === "parental-advise" && !this.form.bride.documents.parentalAdvise) {
+            this.message.push("Please upload Bride parental advice document.");
+            this.scrollToError();
+            return;
+          }
+        }
+
+        if (this.step === 2) {
+          if (!this.form.groom.firstName || !this.form.groom.lastName) {
+            this.message.push("Please fill in Groom name fields.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.groom.day || !this.form.groom.month || !this.form.groom.year) {
+            this.message.push("Please fill in Groom birth date.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.groom.cityMunicipality || !this.form.groom.province || !this.form.groom.country) {
+            this.message.push("Please fill in Groom birth place.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.groom.age || !this.form.groom.sex || !this.form.groom.citizenship) {
+            this.message.push("Please complete Groom personal info.");
+            this.scrollToError();
+            return;
+          }
+          if (
+            (!this.form.groom.streethousenum && !(this.form.groom.housenum && this.form.groom.street)) ||
+            !this.form.groom.residence
+          ) {
+            this.message.push("Please fill in full Groom residence.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.groom.religion || !this.form.groom.civilStatus) {
+            this.message.push("Please fill in Groom religion and civil status.");
+            this.scrollToError();
+            return;
+          }
+          if (this.form.groom.civilStatus.toLowerCase() !== 'single') {
+            if (!this.form.groom.previousMarriageDissolve || !this.form.groom.dissolvedCityMunicipality) {
+              this.message.push("Please provide Groom dissolution details and place.");
+              this.scrollToError();
+              return;
+            }
+            if (!this.form.groom.dissolvedDay || !this.form.groom.dissolvedMonth || !this.form.groom.dissolvedYear) {
+              this.message.push("Please provide Groom dissolved date (day, month, year).");
+              this.scrollToError();
+              return;
+            }
+            if (!this.isValidFullDate(this.form.groom.dissolvedDay, this.form.groom.dissolvedMonth, this.form.groom.dissolvedYear)) {
+              this.message.push("Invalid Groom dissolved date.");
+              this.scrollToError();
+              return;
+            }
+          }
+          if (!this.form.groom.fatherFirstName || !this.form.groom.fatherLastName || !this.form.groom.fatherCitizenship) {
+            this.message.push("Please complete Groom father's information.");
+            this.scrollToError();
+            return;
+          }
+          if (this.form.groom.fatherCitizenship === 'Others' && !this.form.groom.fatherCitizenshipOther) {
+            this.message.push("Please specify Groom father's citizenship.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.groom.fatherHouseNumStreet || !this.form.groom.fatherResidence) {
+            this.message.push("Please complete Groom father's residence.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.groom.motherMaidenFirstName || !this.form.groom.motherMaidenLastName || !this.form.groom.motherMaidenCitizenship) {
+            this.message.push("Please complete Groom mother's information.");
+            this.scrollToError();
+            return;
+          }
+          if (this.form.groom.motherMaidenCitizenship === 'Others' && !this.form.groom.motherMaidenCitizenshipOther) {
+            this.message.push("Please specify Groom mother's citizenship.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.groom.motherHouseNumStreet || !this.form.groom.motherMaidenResidence) {
+            this.message.push("Please complete Groom mother's residence.");
+            this.scrollToError();
+            return;
+          }
+          if (this.groomRequirement !== "no-need") {
+            if (!this.form.consentSource.groom.citizenship || !this.form.consentSource.groom.relationship) {
+              this.message.push("Please complete Groom consent/advice source info.");
+              this.scrollToError();
+              return;
+            }
+            if (this.form.consentSource.groom.citizenship === 'Others' && !this.form.consentSource.groom.citizenshipOther) {
+              this.message.push("Please specify Groom consent/advice source citizenship.");
+              this.scrollToError();
+              return;
+            }
+            if (!this.form.consentSource.groom.houseNumStreet || !this.form.consentSource.groom.residence) {
+              this.message.push("Please complete Groom consent/advice source residence.");
+              this.scrollToError();
+              return;
+            }
+          }
+        }
+
+        if (this.step === 3) {
+          if (!this.form.bride.firstName || !this.form.bride.lastName) {
+            this.message.push("Please fill in Bride name fields.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.bride.day || !this.form.bride.month || !this.form.bride.year) {
+            this.message.push("Please fill in Bride birth date.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.bride.cityMunicipality || !this.form.bride.province || !this.form.bride.country) {
+            this.message.push("Please fill in Bride birth place.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.bride.age || !this.form.bride.sex || !this.form.bride.citizenship) {
+            this.message.push("Please complete Bride personal info.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.bride.housenum || !this.form.bride.street || !this.form.bride.residence) {
+            this.message.push("Please fill in full Bride residence.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.bride.religion || !this.form.bride.civilStatus) {
+            this.message.push("Please fill in Bride religion and civil status.");
+            this.scrollToError();
+            return;
+          }
+          if (this.form.bride.civilStatus.toLowerCase() !== 'single') {
+            if (!this.form.bride.previousMarriageDissolve || !this.form.bride.dissolvedCityMunicipality) {
+              this.message.push("Please provide Bride dissolution details and place.");
+              this.scrollToError();
+              return;
+            }
+            if (!this.form.bride.dissolvedDay || !this.form.bride.dissolvedMonth || !this.form.bride.dissolvedYear) {
+              this.message.push("Please provide Bride dissolved date (day, month, year).");
+              this.scrollToError();
+              return;
+            }
+            if (!this.isValidFullDate(this.form.bride.dissolvedDay, this.form.bride.dissolvedMonth, this.form.bride.dissolvedYear)) {
+              this.message.push("Invalid Bride dissolved date.");
+              this.scrollToError();
+              return;
+            }
+          }
+          if (!this.form.bride.fatherFirstName || !this.form.bride.fatherLastName || !this.form.bride.fatherCitizenship) {
+            this.message.push("Please complete Bride father's information.");
+            this.scrollToError();
+            return;
+          }
+          if (this.form.bride.fatherCitizenship === 'Others' && !this.form.bride.fatherCitizenshipOther) {
+            this.message.push("Please specify Bride father's citizenship.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.bride.fatherHouseNumStreet || !this.form.bride.fatherResidence) {
+            this.message.push("Please complete Bride father's residence.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.bride.motherMaidenFirstName || !this.form.bride.motherMaidenLastName || !this.form.bride.motherMaidenCitizenship) {
+            this.message.push("Please complete Bride mother's information.");
+            this.scrollToError();
+            return;
+          }
+          if (this.form.bride.motherMaidenCitizenship === 'Others' && !this.form.bride.motherMaidenCitizenshipOther) {
+            this.message.push("Please specify Bride mother's citizenship.");
+            this.scrollToError();
+            return;
+          }
+          if (!this.form.bride.motherHouseNumStreet || !this.form.bride.motherMaidenResidence) {
+            this.message.push("Please complete Bride mother's residence.");
+            this.scrollToError();
+            return;
+          }
+          if (this.brideRequirement !== "no-need") {
+            if (!this.form.consentSource.bride.citizenship || !this.form.consentSource.bride.relationship) {
+              this.message.push("Please complete Bride consent/advice source info.");
+              this.scrollToError();
+              return;
+            }
+            if (this.form.consentSource.bride.citizenship === 'Others' && !this.form.consentSource.bride.citizenshipOther) {
+              this.message.push("Please specify Bride consent/advice source citizenship.");
+              this.scrollToError();
+              return;
+            }
+            if (!this.form.consentSource.bride.houseNumStreet || !this.form.consentSource.bride.residence) {
+              this.message.push("Please complete Bride consent/advice source residence.");
+              this.scrollToError();
+              return;
+            }
+          }
+        }
+
+        if (this.message.length > 0) return;
+
+        const nextStep = Math.min(this.step + 1, this.totalSteps);
+        const progressData = {
+          step: nextStep,
+          groom: { ...this.form.groom, documents: {} },
+          bride: { ...this.form.bride, documents: {} },
+          consentSource: { ...this.form.consentSource },
+          isForeigner: this.isForeigner,
+          type: this.type,
+          groomRequirement: this.groomRequirement,
+          brideRequirement: this.brideRequirement
+        };
+
+        localStorage.setItem('marriage_form_progress', JSON.stringify(progressData));
+        this.step = nextStep;
+        window.scrollTo(0, 0);
+        return;
+      }
+
       let currentRequiredDocs = [];
       let isGroomMissing = false;
       let isBrideMissing = false;
-      // Validation on every step
-      switch (this.step) {
+      // Legacy validation map (kept for non-4-step flows)
+      if (this.totalSteps !== 4) {
+        switch (this.step) {
         /* --- GROOM VALIDATION --- */
         case 1: // CENOMAR
           currentRequiredDocs = ['cenomar'];
@@ -1637,8 +3105,11 @@ export default {
           break;
 
         case 11: // Groom Residence
-          if (!this.form.groom.residence) {
-            this.message.push("Please fill in all required fields.");
+          if (
+            (!this.form.groom.streethousenum && !(this.form.groom.housenum && this.form.groom.street)) ||
+            !this.form.groom.residence
+          ) {
+            this.message.push("Please fill in full groom residence (House no./Street and Barangay to Zip code).");
             this.scrollToError();
             return;
           }
@@ -1658,13 +3129,23 @@ export default {
             this.scrollToError();
             return;
           }
-          // if (!this.form.groom.previousMarriageDissolve) this.form.groom.previousMarriageDissolve = "N/A";
-          // if (!this.form.groom.dissolvedCityMunicipality) this.form.groom.dissolvedCityMunicipality = "N/A";
-          // if (!this.form.groom.dissolvedProvince) this.form.groom.dissolvedProvince = "N/A";
-          // if (!this.form.groom.dissolvedCountry) this.form.groom.dissolvedCountry = "N/A";
-          // if (!this.form.groom.dissolvedDay) this.form.groom.dissolvedDay = "N/A";
-          // if (!this.form.groom.dissolvedMonth) this.form.groom.dissolvedMonth = "N/A";
-          // if (!this.form.groom.dissolvedYear) this.form.groom.dissolvedYear = "N/A";
+          if (this.form.groom.civilStatus && this.form.groom.civilStatus.toLowerCase() !== 'single') {
+            if (!this.form.groom.previousMarriageDissolve || !this.form.groom.dissolvedCityMunicipality) {
+              this.message.push("Please provide the dissolution details and place.");
+              this.scrollToError();
+              return;
+            }
+            if (!this.form.groom.dissolvedDay || !this.form.groom.dissolvedMonth || !this.form.groom.dissolvedYear) {
+              this.message.push("Please provide the complete dissolved date (day, month, year).");
+              this.scrollToError();
+              return;
+            }
+            if (!this.isValidFullDate(this.form.groom.dissolvedDay, this.form.groom.dissolvedMonth, this.form.groom.dissolvedYear)) {
+              this.message.push("Invalid dissolved date. Use a valid day, month name/number, and year.");
+              this.scrollToError();
+              return;
+            }
+          }
           break;
 
         case 14: // Groom Degree
@@ -1677,12 +3158,17 @@ export default {
             this.scrollToError();
             return;
           }
+          if (this.form.groom.fatherCitizenship === 'Others' && !this.form.groom.fatherCitizenshipOther) {
+            this.message.push("Please specify father's citizenship.");
+            this.scrollToError();
+            return;
+          }
           // if (!this.form.groom.fatherMiddleName) this.form.groom.fatherMiddleName = "N/A";
           break;
 
         case 16: // Groom Father Residence
-          if (!this.form.groom.fatherResidence) {
-            this.message.push("Please fill in all required fields.");
+          if (!this.form.groom.fatherHouseNumStreet || !this.form.groom.fatherResidence) {
+            this.message.push("Please fill in father's complete residence.");
             this.scrollToError();
             return;
           }
@@ -1694,12 +3180,17 @@ export default {
             this.scrollToError();
             return;
           }
+          if (this.form.groom.motherMaidenCitizenship === 'Others' && !this.form.groom.motherMaidenCitizenshipOther) {
+            this.message.push("Please specify mother's citizenship.");
+            this.scrollToError();
+            return;
+          }
           // if (!this.form.groom.motherMaidenMiddleName) this.form.groom.motherMaidenMiddleName = "N/A";
           break;
 
         case 18: // Groom Mother Residence
-          if (!this.form.groom.motherMaidenResidence) {
-            this.message.push("Please fill in all required fields.");
+          if (!this.form.groom.motherHouseNumStreet || !this.form.groom.motherMaidenResidence) {
+            this.message.push("Please fill in mother's complete residence.");
             this.scrollToError();
             return;
           }
@@ -1712,12 +3203,20 @@ export default {
               this.scrollToError();
               return;
             }
+            if (this.form.consentSource.groom.citizenship === 'Others' && !this.form.consentSource.groom.citizenshipOther) {
+              this.message.push("Please specify consent/advice source citizenship.");
+              this.scrollToError();
+              return;
+            }
           }
           break;
 
         case 20: // Groom consent/advice source residence
-          if (this.groomRequirement !== "no-need" && !this.form.consentSource.groom.residence) {
-            this.message.push("Please fill in groom consent/advice source residence.");
+          if (
+            this.groomRequirement !== "no-need" &&
+            (!this.form.consentSource.groom.houseNumStreet || !this.form.consentSource.groom.residence)
+          ) {
+            this.message.push("Please fill in groom consent/advice source complete residence.");
             this.scrollToError();
             return;
           }
@@ -1781,8 +3280,8 @@ export default {
           break;
 
         case 26: // Bride Residence
-          if (!this.form.bride.residence) {
-            this.message.push("Please fill in all required fields.");
+          if (!this.form.bride.housenum || !this.form.bride.street || !this.form.bride.residence) {
+            this.message.push("Please fill in full bride residence (House no., Street, and Barangay to Zip code).");
             this.scrollToError();
             return;
           }
@@ -1802,13 +3301,23 @@ export default {
             this.scrollToError();
             return;
           }
-          // if (!this.form.bride.previousMarriageDissolve) this.form.bride.previousMarriageDissolve = "N/A";
-          // if (!this.form.bride.dissolvedCityMunicipality) this.form.bride.dissolvedCityMunicipality = "N/A";
-          // if (!this.form.bride.dissolvedProvince) this.form.bride.dissolvedProvince = "N/A";
-          // if (!this.form.bride.dissolvedCountry) this.form.bride.dissolvedCountry = "N/A";
-          // if (!this.form.bride.dissolvedDay) this.form.bride.dissolvedDay = "N/A";
-          // if (!this.form.bride.dissolvedMonth) this.form.bride.dissolvedMonth = "N/A";
-          // if (!this.form.bride.dissolvedYear) this.form.bride.dissolvedYear = "N/A";
+          if (this.form.bride.civilStatus && this.form.bride.civilStatus.toLowerCase() !== 'single') {
+            if (!this.form.bride.previousMarriageDissolve || !this.form.bride.dissolvedCityMunicipality) {
+              this.message.push("Please provide the dissolution details and place.");
+              this.scrollToError();
+              return;
+            }
+            if (!this.form.bride.dissolvedDay || !this.form.bride.dissolvedMonth || !this.form.bride.dissolvedYear) {
+              this.message.push("Please provide the complete dissolved date (day, month, year).");
+              this.scrollToError();
+              return;
+            }
+            if (!this.isValidFullDate(this.form.bride.dissolvedDay, this.form.bride.dissolvedMonth, this.form.bride.dissolvedYear)) {
+              this.message.push("Invalid dissolved date. Use a valid day, month name/number, and year.");
+              this.scrollToError();
+              return;
+            }
+          }
           break;
 
         case 29: // Bride Degree
@@ -1821,12 +3330,17 @@ export default {
             this.scrollToError();
             return;
           }
+          if (this.form.bride.fatherCitizenship === 'Others' && !this.form.bride.fatherCitizenshipOther) {
+            this.message.push("Please specify father's citizenship.");
+            this.scrollToError();
+            return;
+          }
           // if (!this.form.bride.fatherMiddleName) this.form.bride.fatherMiddleName = "N/A";
           break;
 
         case 31: // Bride Father Residence
-          if (!this.form.bride.fatherResidence) {
-            this.message.push("Please fill in all required fields.");
+          if (!this.form.bride.fatherHouseNumStreet || !this.form.bride.fatherResidence) {
+            this.message.push("Please fill in father's complete residence.");
             this.scrollToError();
             return;
           }
@@ -1838,12 +3352,17 @@ export default {
             this.scrollToError();
             return;
           }
+          if (this.form.bride.motherMaidenCitizenship === 'Others' && !this.form.bride.motherMaidenCitizenshipOther) {
+            this.message.push("Please specify mother's citizenship.");
+            this.scrollToError();
+            return;
+          }
           // if (!this.form.bride.motherMaidenMiddleName) this.form.bride.motherMaidenMiddleName = "N/A";
           break;
 
         case 33: // Bride Mother Residence
-          if (!this.form.bride.motherMaidenResidence) {
-            this.message.push("Please fill in all required fields.");
+          if (!this.form.bride.motherHouseNumStreet || !this.form.bride.motherMaidenResidence) {
+            this.message.push("Please fill in mother's complete residence.");
             this.scrollToError();
             return;
           }
@@ -1856,19 +3375,28 @@ export default {
               this.scrollToError();
               return;
             }
+            if (this.form.consentSource.bride.citizenship === 'Others' && !this.form.consentSource.bride.citizenshipOther) {
+              this.message.push("Please specify bride consent/advice source citizenship.");
+              this.scrollToError();
+              return;
+            }
           }
           break;
 
         case 35: // Bride consent/advice source residence
-          if (this.brideRequirement !== "no-need" && !this.form.consentSource.bride.residence) {
-            this.message.push("Please fill in bride consent/advice source residence.");
+          if (
+            this.brideRequirement !== "no-need" &&
+            (!this.form.consentSource.bride.houseNumStreet || !this.form.consentSource.bride.residence)
+          ) {
+            this.message.push("Please fill in bride consent/advice source complete residence.");
             this.scrollToError();
             return;
           }
           break;
 
-        default:
-          break;
+          default:
+            break;
+        }
       }
 
       // 2. If there are error messages, stop here!
@@ -1920,66 +3448,27 @@ export default {
       window.scrollTo(0, 0);
     },  
     handlePersonValidation(person, type) {
-      const today = new Date();
-      const currentYear = today.getFullYear();
       const selectedRequirement = type === 'groom' ? this.groomRequirement : this.brideRequirement;
-      const { min: minAllowedAge, max: maxAllowedAge } = this.getAgeLimits(selectedRequirement);
-      
-      // 1. Force Basic Bounds (Day/Month)
-      if (person.day > 31) person.day = 31;
-      if (person.month > 12) person.month = 12;
+      const personLabel = type === 'groom' ? 'groom' : 'bride';
 
-      // 2. Strict Year Handling
-      if (person.year) {
-        let yearStr = person.year.toString();
+      if (!person.day || !person.month || !person.year) {
+        person.age = '';
+        this.setAgeError(type, '');
+      } else if (!this.isValidCalendarDate(person.day, person.month, person.year)) {
+        person.age = '';
+        this.setAgeError(type, 'Please select a valid calendar date.');
+      } else {
+        const calculatedAge = this.calculateAge(person.day, person.month, person.year);
+        person.age = calculatedAge;
 
-        // Prevent typing more than 4 digits
-        if (yearStr.length > 4) {
-          person.year = parseInt(yearStr.substring(0, 4));
-          return; // Stop here and let the watcher re-run with the 4-digit year
-        }
-
-        // Only validate once they've finished typing all 4 digits
-        if (yearStr.length === 4) {
-          const minAgeYear = currentYear - minAllowedAge;
-          const maxAgeYear = currentYear - maxAllowedAge;
-
-          // Correct out-of-bounds years
-          if (person.year > minAgeYear) {
-            person.year = minAgeYear;
-            if (selectedRequirement === 'no-need') {
-              alert("Selected age bracket is 25+, so year was adjusted to keep age at least 25.");
-            } else {
-              alert(`Selected age bracket is ${this.getRequirementLabel(selectedRequirement)}, so year was adjusted.`);
-            }
-          } else if (person.year < maxAgeYear) {
-            person.year = maxAgeYear;
-            alert(`Selected age bracket is ${this.getRequirementLabel(selectedRequirement)}, so year was adjusted.`);
-          }
-
-          // 3. Auto-Calculate Age
-          const birthDate = new Date(person.year, (person.month || 1) - 1, person.day || 1);
-          let calculatedAge = today.getFullYear() - birthDate.getFullYear();
-          const m = today.getMonth() - birthDate.getMonth();
-          if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            calculatedAge--;
-          }
-          person.age = calculatedAge;
-        } else {
-          // Clear age if the year is incomplete (e.g., user is still typing)
-          person.age = '';
-        }
+        const ageError = this.getAgeRangeValidationError(calculatedAge, selectedRequirement, personLabel);
+        this.setAgeError(type, ageError || '');
       }
 
       // For previously married logic
-      if(type === 'groom' && person.civilStatus && person.civilStatus.toLowerCase() !== 'single') {
-        this.isPreviouslyMarried = true;
-      } else if(type === 'bride' && person.civilStatus && person.civilStatus.toLowerCase() !== 'single') {
-        this.isPreviouslyMarried = true;
-      } else {
-        this.isPreviouslyMarried = false;
-      }
-
+      const groomMarried = this.form.groom.civilStatus && this.form.groom.civilStatus.toLowerCase() !== 'single';
+      const brideMarried = this.form.bride.civilStatus && this.form.bride.civilStatus.toLowerCase() !== 'single';
+      this.isPreviouslyMarried = !!(groomMarried || brideMarried);
     },
 
     async submitForm() {
@@ -2084,14 +3573,11 @@ export default {
         this.form.groom.citizenship = 'Filipino';
         this.form.bride.citizenship = 'Filipino';
     } else if (this.type === 'groom') {
-        this.form.groom.citizenship = 'Foreign National';
+        this.form.groom.citizenship = 'Others';
         this.form.bride.citizenship = 'Filipino';
     } else if (this.type === 'bride') {
         this.form.groom.citizenship = 'Filipino';
-        this.form.bride.citizenship = 'Foreign National';
-    } else if (this.type === 'both') {
-        this.form.groom.citizenship = 'Foreign National';
-        this.form.bride.citizenship = 'Foreign National';
+        this.form.bride.citizenship = 'Others';
     }
 
     // For ager requirements
@@ -2121,6 +3607,77 @@ export default {
         color: '#fff'
       });
 
+    }
+  },
+  beforeUnmount() {
+    if (this.groomCityDebounceTimer) {
+      clearTimeout(this.groomCityDebounceTimer);
+    }
+    if (this.groomCityBlurTimer) {
+      clearTimeout(this.groomCityBlurTimer);
+    }
+    if (this.groomCityAbortController) {
+      this.groomCityAbortController.abort();
+    }
+    if (this.groomResidenceDebounceTimer) {
+      clearTimeout(this.groomResidenceDebounceTimer);
+    }
+    if (this.groomResidenceBlurTimer) {
+      clearTimeout(this.groomResidenceBlurTimer);
+    }
+    if (this.groomResidenceAbortController) {
+      this.groomResidenceAbortController.abort();
+    }
+    if (this.groomRelatedResidenceDebounceTimer) {
+      clearTimeout(this.groomRelatedResidenceDebounceTimer);
+    }
+    if (this.groomRelatedResidenceBlurTimer) {
+      clearTimeout(this.groomRelatedResidenceBlurTimer);
+    }
+    if (this.groomRelatedResidenceAbortController) {
+      this.groomRelatedResidenceAbortController.abort();
+    }
+    if (this.groomDissolvedPlaceDebounceTimer) {
+      clearTimeout(this.groomDissolvedPlaceDebounceTimer);
+    }
+    if (this.groomDissolvedPlaceBlurTimer) {
+      clearTimeout(this.groomDissolvedPlaceBlurTimer);
+    }
+    if (this.groomDissolvedPlaceAbortController) {
+      this.groomDissolvedPlaceAbortController.abort();
+    }
+    if (this.brideRelatedResidenceDebounceTimer) {
+      clearTimeout(this.brideRelatedResidenceDebounceTimer);
+    }
+    if (this.brideRelatedResidenceBlurTimer) {
+      clearTimeout(this.brideRelatedResidenceBlurTimer);
+    }
+    if (this.brideRelatedResidenceAbortController) {
+      this.brideRelatedResidenceAbortController.abort();
+    }
+    if (this.brideResidenceDebounceTimer) {
+      clearTimeout(this.brideResidenceDebounceTimer);
+    }
+    if (this.brideResidenceBlurTimer) {
+      clearTimeout(this.brideResidenceBlurTimer);
+    }
+    if (this.brideResidenceAbortController) {
+      this.brideResidenceAbortController.abort();
+    }
+    if (this.brideCityDebounceTimer) {
+      clearTimeout(this.brideCityDebounceTimer);
+    }
+    if (this.brideCityBlurTimer) {
+      clearTimeout(this.brideCityBlurTimer);
+    }
+    if (this.brideCityAbortController) {
+      this.brideCityAbortController.abort();
+    }
+    if (this.brideDissolvedPlaceDebounceTimer) {
+      clearTimeout(this.brideDissolvedPlaceDebounceTimer);
+    }
+    if (this.brideDissolvedPlaceAbortController) {
+      this.brideDissolvedPlaceAbortController.abort();
     }
   }
 }
@@ -2390,5 +3947,50 @@ small.text-white-50 {
 .italic {
   font-style: italic;
 }
-</style>
 
+.city-suggestion-menu {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid rgba(13, 110, 253, 0.25);
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+}
+
+.city-suggestion-item {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: #fff;
+  text-align: left;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.city-suggestion-item:last-child {
+  border-bottom: 0;
+}
+
+.city-suggestion-item:hover {
+  background: rgba(13, 110, 253, 0.08);
+}
+
+.city-suggestion-name {
+  color: #1f2937;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.city-suggestion-context {
+  color: #6b7280;
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+</style>

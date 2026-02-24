@@ -15,9 +15,11 @@
             <h1 class="display-2 fw-bolder text-white mb-3 text-shadow-heavy">
               {{ stepHeading }}
             </h1>
-            <p class="lead text-white fw-medium mb-4 text-shadow-medium opacity-90 mx-auto" style="max-width: 700px;">
-              {{ stepSubtext }}
-            </p>
+            <p
+              class="lead text-white fw-medium mb-4 text-shadow-medium opacity-90 mx-auto"
+              style="max-width: 700px;"
+              v-html="stepSubtext"
+            ></p>
           </div>
         </div>
 
@@ -43,6 +45,8 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
+
 export default {
   name: 'MarriageLicenseScreening',
   data() {
@@ -63,7 +67,11 @@ export default {
       return `How old is the ${this.currentPerson}?`;
     },
     stepSubtext() {
-      if (this.step === 1) return 'For at least 5 years prior to application.';
+      if (this.step === 1) {
+        // Wrap these in braces so 'inside' is available to the return statement
+        let inside = `<span class="fst-italic">(Lumon)</span>`;
+        return `Cohabitation ${inside} means: living together as husband and wife without the benefit of marriage`;
+      } 
       if (this.step === 2) return 'Select if the groom or bride is a foreign national.';
       return `Select the age bracket for the ${this.currentPerson}.`;
     },
@@ -84,9 +92,9 @@ export default {
       }
 
       return [
-        { key: 'age-18-21', title: '18-21 years old', icon: '18', description: 'Needs parental consent.', gradient: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', value: 'parental-consent' },
-        { key: 'age-21-25', title: '21-25 years old', icon: '21', description: 'Needs parental advice.', gradient: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', value: 'parental-advise' },
-        { key: 'age-25-up', title: '25 years old or over', icon: '25+', description: 'No parental requirement.', gradient: 'linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)', value: 'no-need' }
+        { key: 'age-18-21', title: '18 to less than 21 years old', icon: '18', description: 'Needs parental consent.', gradient: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', value: 'parental-consent' },
+        { key: 'age-21-25', title: '21 to less than 25 years old', icon: '21', description: 'Needs parental advice.', gradient: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', value: 'parental-advise' },
+        { key: 'age-25-up', title: '25 years old or over', icon: '25+', description: 'No parental advice / consent required.', gradient: 'linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)', value: 'no-need' }
       ];
     }
   },
@@ -109,8 +117,32 @@ export default {
         this.isCohabiting = option.value;
 
         if (option.value === true) {
-          sessionStorage.setItem('isCohabiting', true);
-          this.$router.push('/home');
+          Swal.fire({
+            title: 'How long have you been cohabiting?',
+            icon: 'question',
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: 'Less than 5 years',
+            denyButtonText: '5 years and above',
+            confirmButtonColor: '#3085d6',
+            denyButtonColor: '#198754'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Less than 5 years: continue the normal screening flow.
+              sessionStorage.setItem('cohabitingDuration', 'less_than_5');
+              this.isCohabiting = false;
+              this.step = 2;
+              window.scrollTo(0, 0);
+              return;
+            }
+
+            if (result.isDenied) {
+              // Eligible for cohabitation exemption: return to home.
+              sessionStorage.setItem('cohabitingDuration', '5_or_more');
+              sessionStorage.setItem('isCohabiting', true);
+              this.$router.push('/home');
+            }
+          });
           return;
         }
 
