@@ -23,6 +23,46 @@ class MarriageApplicationController extends Controller
                 'groom' => $request->input('groomRequirement'),
                 'bride' => $request->input('brideRequirement'),
             ];
+            $monthNames = [
+                1 => 'January',
+                2 => 'February',
+                3 => 'March',
+                4 => 'April',
+                5 => 'May',
+                6 => 'June',
+                7 => 'July',
+                8 => 'August',
+                9 => 'September',
+                10 => 'October',
+                11 => 'November',
+                12 => 'December',
+            ];
+            $normalizeMonth = function ($value) use ($monthNames) {
+                if ($value === null) return null;
+                $raw = trim((string) $value);
+                if ($raw === '') return null;
+                if (ctype_digit($raw)) {
+                    $index = (int) $raw;
+                    return $monthNames[$index] ?? $raw;
+                }
+                return ucfirst(strtolower($raw));
+            };
+            $joinAddress = function (...$parts) {
+                $segments = array_values(array_filter(array_map(function ($value) {
+                    if ($value === null) return null;
+                    $trimmed = trim((string) $value);
+                    return $trimmed === '' ? null : $trimmed;
+                }, $parts)));
+
+                return empty($segments) ? null : implode(', ', $segments);
+            };
+            $resolveCitizenship = function (array $payload, string $key, ?string $otherKey = null) {
+                $value = $payload[$key] ?? null;
+                if ($value === 'Others' && $otherKey && !empty($payload[$otherKey])) {
+                    return $payload[$otherKey];
+                }
+                return $value;
+            };
 
             // 1. Generate Control Number
             do {
@@ -40,8 +80,26 @@ class MarriageApplicationController extends Controller
 
             // 3. Process Groom and Bride Data
             foreach (['groom', 'bride'] as $role) {
-                $data = json_decode($request->input($role), true);
+                $data = json_decode($request->input($role, '{}'), true) ?? [];
                 $source = $consentSource[$role] ?? [];
+                $residenceAddress = $joinAddress(
+                    $data['streethousenum'] ?? null,
+                    $data['housenum'] ?? null,
+                    $data['street'] ?? null,
+                    $data['residence'] ?? null
+                );
+                $fatherResidence = $joinAddress(
+                    $data['fatherHouseNumStreet'] ?? null,
+                    $data['fatherResidence'] ?? null
+                );
+                $motherResidence = $joinAddress(
+                    $data['motherHouseNumStreet'] ?? null,
+                    $data['motherMaidenResidence'] ?? null
+                );
+                $sourceResidence = $joinAddress(
+                    $source['houseNumStreet'] ?? null,
+                    $source['residence'] ?? null
+                );
 
                 // Insert Applicant Info using Query Builder
                 DB::table('applicants')->insert([
@@ -51,22 +109,22 @@ class MarriageApplicationController extends Controller
                     'middle_name'        => $data['middleName'] ?? null,
                     'last_name'          => $data['lastName'] ?? null,
                     'day'                => $data['day'] ?? null,
-                    'month'              => $data['month'] ?? null,
+                    'month'              => $normalizeMonth($data['month'] ?? null),
                     'year'               => $data['year'] ?? null,
                     'birth_city'         => $data['cityMunicipality'] ?? null,
                     'birth_province'     => $data['province'] ?? null,
                     'birth_country'      => $data['country'] ?? null,
                     'age'                => $data['age'] ?? null,
                     'sex'                => $data['sex'] ?? null,
-                    'citizenship'        => $data['citizenship'] ?? null,
+                    'citizenship'        => $resolveCitizenship($data, 'citizenship', 'citizenshipOther'),
                     'religion'           => $data['religion'] ?? null,
                     'civil_status'       => $data['civilStatus'] ?? null,
-                    'residence_address'  => $data['residence'] ?? null,
+                    'residence_address'  => $residenceAddress,
                     // Dissolution Info (If not Single)
                     'dissolution_details' => $data["previousMarriageDissolve"] ?? null,
-                    'dissolution_place' => $data["previousMarriageDissolve"] ?? null,
+                    'dissolution_place' => $data["dissolvedCityMunicipality"] ?? null,
                     'dissolution_day' => $data['dissolvedDay'] ?? null,
-                    'dissolution_month' => $data['dissolvedMonth'] ?? null,
+                    'dissolution_month' => $normalizeMonth($data['dissolvedMonth'] ?? null),
                     'dissolution_year' => $data['dissolvedYear'] ?? null,
 
                     "relationship_degree" => $data['degree'] ?? null,
@@ -75,22 +133,22 @@ class MarriageApplicationController extends Controller
                     'father_first_name'  => $data['fatherFirstName'] ?? null,
                     'father_middle_name'  => $data['fatherMiddleName'] ?? null,
                     'father_last_name'   => $data['fatherLastName'] ?? null,
-                    'father_citizenship' => $data['fatherCitizenship'] ?? null,
-                    'father_residence'   => $data['fatherResidence'] ?? null,
+                    'father_citizenship' => $resolveCitizenship($data, 'fatherCitizenship', 'fatherCitizenshipOther'),
+                    'father_residence'   => $fatherResidence,
                     'mother_first_name'  => $data['motherMaidenFirstName'] ?? null,
-                    'mother_middle_name'  => $data['motherMiddleName'] ?? null,
+                    'mother_middle_name'  => $data['motherMaidenMiddleName'] ?? null,
                     'mother_last_name'   => $data['motherMaidenLastName'] ?? null,
-                    'mother_citizenship' => $data['motherMaidenCitizenship'] ?? null,
-                    'mother_residence'   => $data['motherMaidenResidence'] ?? null,
+                    'mother_citizenship' => $resolveCitizenship($data, 'motherMaidenCitizenship', 'motherMaidenCitizenshipOther'),
+                    'mother_residence'   => $motherResidence,
 
                     // Consent/Advice source info per applicant (if required by age bracket)
                     'parental_requirement' => $requirements[$role] ?? null,
                     'source_first_name'    => $source['firstName'] ?? null,
                     'source_middle_name'   => $source['middleName'] ?? null,
                     'source_last_name'     => $source['lastName'] ?? null,
-                    'source_citizenship'   => $source['citizenship'] ?? null,
+                    'source_citizenship'   => $resolveCitizenship($source, 'citizenship', 'citizenshipOther'),
                     'source_relationship'  => $source['relationship'] ?? null,
-                    'source_residence'     => $source['residence'] ?? null,
+                    'source_residence'     => $sourceResidence,
 
                     'created_at'         => Carbon::now(),
                     'updated_at'         => Carbon::now(),
@@ -521,10 +579,35 @@ class MarriageApplicationController extends Controller
             })));
         };
 
-        $formatDate = function ($day, $month, $year, $withComma = false) {
+        $monthNames = [
+            1 => 'January',
+            2 => 'February',
+            3 => 'March',
+            4 => 'April',
+            5 => 'May',
+            6 => 'June',
+            7 => 'July',
+            8 => 'August',
+            9 => 'September',
+            10 => 'October',
+            11 => 'November',
+            12 => 'December',
+        ];
+        $normalizeMonth = function ($value) use ($monthNames) {
+            if ($value === null) return null;
+            $raw = trim((string) $value);
+            if ($raw === '') return null;
+            if (ctype_digit($raw)) {
+                $index = (int) $raw;
+                return $monthNames[$index] ?? $raw;
+            }
+            return ucfirst(strtolower($raw));
+        };
+        $formatDate = function ($day, $month, $year, $withComma = false) use ($normalizeMonth) {
             if ($day === null && $month === null && $year === null) {
                 return null;
             }
+            $month = $normalizeMonth($month);
             if ($withComma && $day && $month && $year) {
                 return trim($day . ' ' . $month . ', ' . $year);
             }
