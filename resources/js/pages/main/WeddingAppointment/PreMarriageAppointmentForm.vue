@@ -184,7 +184,7 @@ export default {
             </div>
         `,
                 showConfirmButton: true,
-                confirmButtonText: 'I have screenshotted it',
+                confirmButtonText: 'Done',
                 confirmButtonColor: '#198754',
                 width: '90%', // Makes it responsive on mobile
                 maxWidth: '400px', // Prevents it from getting too wide on desktop

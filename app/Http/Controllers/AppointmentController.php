@@ -146,10 +146,6 @@ class AppointmentController extends Controller
             $result = DB::transaction(function () use ($request, $validated) {
                 $rawAppointmentType = $validated['appointment_type'] ?? 'PMOC';
                 $appointmentType = $rawAppointmentType === 'CIVIL_WEDDING' ? 'Civil Wedding' : $rawAppointmentType;
-                $controlPrefix = $appointmentType === 'Civil Wedding'
-                    ? 'LCROCWE-'
-                    : ($appointmentType === 'PMO' ? 'LCROPMO-' : 'LCROPMOC-');
-
                 if ($appointmentType === 'Civil Wedding') {
                     $targetDate = Carbon::parse($validated['requested_date'])->startOfDay();
                     $legacyDate = $targetDate->copy()->subDay();
@@ -177,7 +173,7 @@ class AppointmentController extends Controller
                 }
                 
                 do {
-                    $controlNo = $controlPrefix . strtoupper(Str::random(8));
+                    $controlNo = strtoupper(Str::random(5));
                 } while (Appointment::where('control_number', $controlNo)->exists());
 
                 $appointment = Appointment::create([

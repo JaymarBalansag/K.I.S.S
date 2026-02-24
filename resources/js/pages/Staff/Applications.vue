@@ -7,7 +7,8 @@
             <!-- For title -->
             <div class="row justify-content-center text-center mb-5 mt-4">
                 <div class="col-lg-9 col-xl-8">
-                    <span class="badge bg-primary bg-opacity-75 rounded-pill px-4 py-2 mb-3 shadow-sm text-uppercase fw-bold animate__animated animate__fadeInDown">
+                    <span
+                        class="badge bg-primary bg-opacity-75 rounded-pill px-4 py-2 mb-3 shadow-sm text-uppercase fw-bold animate__animated animate__fadeInDown">
                         Marriage License Applications
                     </span>
                     <h2 class="text-white fw-bold text-shadow-heavy">Application Registry</h2>
@@ -21,12 +22,8 @@
                         <span class="input-group-text bg-white border-end-0 text-muted">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input 
-                            type="text" 
-                            v-model="search" 
-                            class="form-control border-start-0 ps-0" 
-                            placeholder="Search by Groom, Bride, or Control Number..."
-                        >
+                        <input type="text" v-model="search" class="form-control border-start-0 ps-0"
+                            placeholder="Search by Groom, Bride, or Control Number...">
                     </div>
                 </div>
 
@@ -74,13 +71,13 @@
                                     <td class="px-4 fw-bold text-white border-0 rounded-start-4">
                                         <div class="d-flex align-items-center">
                                             <i class="bi bi-file-earmark-check text-danger me-2 small"></i>
-                                            {{app.control_number}}
+                                            {{ app.control_number }}
                                         </div>
                                     </td>
                                     <td class="px-4 fw-bold text-white border-0 ">
                                         <div class="d-flex align-items-center">
                                             <i class="bi bi-heart-fill text-danger me-2 small"></i>
-                                            {{app.coupleNames}}
+                                            {{ app.coupleNames }}
                                         </div>
                                     </td>
                                     <td class="text-white opacity-75 border-0">{{ app.dateApplied }}</td>
@@ -89,26 +86,30 @@
                                     </td>
                                     <td class="text-center border-0 rounded-end-4 px-4">
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button @click="openViewApplicants(app)" class="btn btn-action-glass text-white">
+                                            <button @click="openViewApplicants(app)"
+                                                class="btn btn-action-glass text-white">
                                                 <i class="bi bi-eye-fill me-1"></i> View
                                             </button>
 
-                                            <button v-if="app.status === 'pending'" @click="validateApproval(app, 'approved')" class="btn btn-action-glass text-success">
+                                            <button v-if="app.status === 'pending'"
+                                                @click="validateApproval(app, 'approved')"
+                                                class="btn btn-action-glass text-success">
                                                 <i class="bi bi-check-circle-fill me-1"></i> Approve
                                             </button>
-                                            <button v-if="app.status === 'pending'" @click="validateApproval(app, 'rejected')" class="btn btn-action-glass text-danger">
+                                            <button v-if="app.status === 'pending'"
+                                                @click="validateApproval(app, 'rejected')"
+                                                class="btn btn-action-glass text-danger">
                                                 <i class="bi bi-x-circle-fill me-1"></i> Reject
                                             </button>
 
-                                            <button v-if="app.status === 'approved'" @click="validateApproval(app, 'issued')" class="btn btn-action-glass text-info">
+                                            <button v-if="app.status === 'approved'"
+                                                @click="validateApproval(app, 'issued')"
+                                                class="btn btn-action-glass text-info">
                                                 <i class="bi bi-patch-check-fill me-1"></i> Issue
                                             </button>
 
-                                            <button 
-                                                v-if="app.status === 'issued'" 
-                                                @click="downloadMarriageLicense(app)" 
-                                                class="btn btn-action-glass text-warning"
-                                            >
+                                            <button v-if="app.status === 'issued'" @click="openPrintModal(app)"
+                                                class="btn btn-action-glass text-warning">
                                                 <i class="bi bi-printer-fill me-1"></i> Print
                                             </button>
 
@@ -120,7 +121,8 @@
                     </div>
 
                     <div class="d-md-none px-2">
-                        <div v-for="app in applications" :key="'mob-' + app.id" class="mobile-staff-card glass-row rounded-4 p-4 mb-3">
+                        <div v-for="app in applications" :key="'mob-' + app.id"
+                            class="mobile-staff-card glass-row rounded-4 p-4 mb-3">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h6 class="text-white fw-bold mb-0 pe-2">{{ app.coupleNames }}</h6>
                                 <span :class="getStatusClass(app.status)">{{ app.status }}</span>
@@ -129,30 +131,34 @@
                             <p class="small text-white opacity-50 mb-4">Ref: {{ app.control_number }}</p>
 
                             <div class="d-flex gap-2">
-                                <button @click="openViewApplicants(app)" class="btn btn-action-glass text-info flex-grow-1">
+                                <button @click="openViewApplicants(app)"
+                                    class="btn btn-action-glass text-info flex-grow-1">
                                     <i class="bi bi-eye-fill me-1"></i> View
                                 </button>
 
                                 <template v-if="app.status === 'pending'">
-                                    <button @click="validateApproval(app, 'approved')" class="btn btn-action-glass text-success">
+                                    <button @click="validateApproval(app, 'approved')"
+                                        class="btn btn-action-glass text-success">
                                         <i class="bi bi-check-circle-fill"></i>
                                     </button>
-                                    <button @click="validateApproval(app, 'rejected')" class="btn btn-action-glass text-danger">
+                                    <button @click="validateApproval(app, 'rejected')"
+                                        class="btn btn-action-glass text-danger">
                                         <i class="bi bi-x-circle-fill"></i>
                                     </button>
                                 </template>
 
-                                <button v-if="app.status === 'approved'" @click="validateApproval(app, 'issued')" class="btn btn-action-glass text-warning flex-grow-1">
+                                <button v-if="app.status === 'approved'" @click="validateApproval(app, 'issued')"
+                                    class="btn btn-action-glass text-warning flex-grow-1">
                                     <i class="bi bi-patch-check-fill me-1"></i> Issue
                                 </button>
-                                
-                                 
+
+
                             </div>
                         </div>
                     </div>
 
                     <tr v-for="app in applications" :key="app.id" class="glass-row transition">
-                        </tr>
+                    </tr>
 
                     <nav v-if="totalPages > 1" class="d-flex flex-column align-items-center mt-4">
                         <p class="text-white-50 x-small mb-2">
@@ -164,10 +170,10 @@
                                     <i class="bi bi-chevron-left"></i>
                                 </button>
                             </li>
-                            
-                            <li v-for="p in totalPages" :key="p" 
-                                v-show="p === 1 || p === totalPages || Math.abs(p - page) <= 1"
-                                class="page-item" :class="{ active: page === p }">
+
+                            <li v-for="p in totalPages" :key="p"
+                                v-show="p === 1 || p === totalPages || Math.abs(p - page) <= 1" class="page-item"
+                                :class="{ active: page === p }">
                                 <button class="page-link" @click="changePage(p)">{{ p }}</button>
                             </li>
 
@@ -185,7 +191,8 @@
                         <i class="bi bi-folder2-open display-1 text-white opacity-25"></i>
                     </div>
                     <h4 class="text-white opacity-75">No Applications Found</h4>
-                    <p class="text-white opacity-50">There are currently no marriage license applications to display.</p>
+                    <p class="text-white opacity-50">There are currently no marriage license applications to display.
+                    </p>
                 </div>
             </div>
         </div>
@@ -193,24 +200,27 @@
 
     <div v-if="showApplicantsModal" class="modal-overlay-custom animate__animated animate__fadeIn">
         <div class="modal-body-custom rounded-5 shadow-2xl p-0 border border-white border-opacity-20">
-            
+
             <div class="modal-glass-header p-4 d-flex justify-content-between align-items-center">
                 <div>
-                    <span class="badge bg-info bg-opacity-10 text-info text-uppercase mb-2 x-small ls-1 px-3 border border-info border-opacity-20">Official Registry Record</span>
+                    <span
+                        class="badge bg-info bg-opacity-10 text-info text-uppercase mb-2 x-small ls-1 px-3 border border-info border-opacity-20">Official
+                        Registry Record</span>
                     <h4 class="fw-bold mb-0 text-white">Marriage License Application</h4>
                     <p class="text-info small mb-0 opacity-75 fw-bold mt-1">
                         <i class="bi bi-qr-code-scan me-1"></i> {{ control_number }}
                     </p>
                 </div>
-                <button class="btn-close btn-close-white opacity-50 hover-opacity-100" @click="closeViewApplicants"></button>
+                <button class="btn-close btn-close-white opacity-50 hover-opacity-100"
+                    @click="closeViewApplicants"></button>
             </div>
 
             <div class="p-4 pt-2">
                 <div class="row g-4" v-if="applicant">
                     <div v-for="person in applicant" :key="person.id" class="col-md-6">
-                        <div class="applicant-glass-card h-100 p-4 rounded-4" 
+                        <div class="applicant-glass-card h-100 p-4 rounded-4"
                             :class="person.applicant_type === 'groom' ? 'groom-accent' : 'bride-accent'">
-                            
+
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <span class="type-pill px-3 py-1 rounded-pill x-small fw-bold text-uppercase">
                                     {{ person.applicant_type }}
@@ -221,14 +231,17 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="x-small text-white opacity-40 text-uppercase ls-1 d-block mb-1">Legal Full Name</label>
-                                <h5 class="fw-bold mb-0">{{ person.first_name }} {{ person.middle_name }} {{ person.last_name }}</h5>
+                                <label class="x-small text-white opacity-40 text-uppercase ls-1 d-block mb-1">Legal Full
+                                    Name</label>
+                                <h5 class="fw-bold mb-0">{{ person.first_name }} {{ person.middle_name }} {{
+                                    person.last_name }}</h5>
                             </div>
 
                             <div class="row g-3 mb-4">
                                 <div class="col-6">
                                     <label class="x-small text-white opacity-40 d-block">Birth Date</label>
-                                    <span class="small">{{ person.month }}/{{ person.day }}/{{ person.year }} (Age: {{ person.age }})</span>
+                                    <span class="small">{{ person.month }}/{{ person.day }}/{{ person.year }} (Age: {{
+                                        person.age }})</span>
                                 </div>
                                 <div class="col-6">
                                     <label class="x-small text-white opacity-40 d-block">Citizenship/Religion</label>
@@ -236,7 +249,8 @@
                                 </div>
                                 <div class="col-12">
                                     <label class="x-small text-white opacity-40 d-block">Birthplace</label>
-                                    <span class="small">{{ person.birth_city }}, {{ person.birth_province }}, {{ person.birth_country }}</span>
+                                    <span class="small">{{ person.birth_city }}, {{ person.birth_province }}, {{
+                                        person.birth_country }}</span>
                                 </div>
                                 <div class="col-12">
                                     <label class="x-small text-white opacity-40 d-block">Current Residence</label>
@@ -244,38 +258,51 @@
                                 </div>
                             </div>
 
-                            <div class="p-3 rounded-4 bg-secondary bg-opacity-5 border border-white border-opacity-5 mb-3">
-                                <h6 class="x-small text-white opacity-30 text-uppercase fw-bold mb-3 ls-1">Parental Information</h6>
+                            <div
+                                class="p-3 rounded-4 bg-secondary bg-opacity-5 border border-white border-opacity-5 mb-3">
+                                <h6 class="x-small text-white opacity-30 text-uppercase fw-bold mb-3 ls-1">Parental
+                                    Information</h6>
                                 <div class="mb-3">
                                     <label class="x-small text-white opacity-40 d-block">Father</label>
-                                    <span class="small d-block fw-semibold">{{ person.father_first_name }} {{ person.father_middle_name }} {{ person.father_last_name }}</span>
-                                    <span class="x-small opacity-50">{{ person.father_citizenship }} — {{ person.father_residence }}</span>
+                                    <span class="small d-block fw-semibold">{{ person.father_first_name }} {{
+                                        person.father_middle_name }} {{ person.father_last_name }}</span>
+                                    <span class="x-small opacity-50">{{ person.father_citizenship }} — {{
+                                        person.father_residence }}</span>
                                 </div>
                                 <div class="mb-0">
                                     <label class="x-small text-white opacity-40 d-block">Mother</label>
-                                    <span class="small d-block fw-semibold">{{ person.mother_first_name }} {{ person.mother_middle_name }} {{ person.mother_last_name }}</span>
-                                    <span class="x-small opacity-50">{{ person.mother_citizenship }} — {{ person.mother_residence }}</span>
+                                    <span class="small d-block fw-semibold">{{ person.mother_first_name }} {{
+                                        person.mother_middle_name }} {{ person.mother_last_name }}</span>
+                                    <span class="x-small opacity-50">{{ person.mother_citizenship }} — {{
+                                        person.mother_residence }}</span>
                                 </div>
                             </div>
 
-                            <div v-if="person.parental_requirement && person.parental_requirement !== 'no-need'" class="p-3 rounded-4 bg-secondary bg-opacity-5 border border-white border-opacity-5 mb-3">
-                                <h6 class="x-small text-white opacity-30 text-uppercase fw-bold mb-3 ls-1">Consent/Advice Source</h6>
+                            <div v-if="person.parental_requirement && person.parental_requirement !== 'no-need'"
+                                class="p-3 rounded-4 bg-secondary bg-opacity-5 border border-white border-opacity-5 mb-3">
+                                <h6 class="x-small text-white opacity-30 text-uppercase fw-bold mb-3 ls-1">
+                                    Consent/Advice
+                                    Source</h6>
                                 <div class="mb-2">
                                     <label class="x-small text-white opacity-40 d-block">Requirement</label>
                                     <span class="small fw-semibold text-capitalize">
-                                        {{ person.parental_requirement === 'parental-consent' ? 'Parental Consent' : 'Parental Advice' }}
+                                        {{ person.parental_requirement === 'parental-consent' ? 'Parental Consent' :
+                                        'Parental Advice' }}
                                     </span>
                                 </div>
                                 <div class="mb-2">
                                     <label class="x-small text-white opacity-40 d-block">Name</label>
                                     <span class="small d-block fw-semibold">
-                                        {{ person.source_first_name || 'N/A' }} {{ person.source_middle_name || '' }} {{ person.source_last_name || '' }}
+                                        {{ person.source_first_name || 'N/A' }} {{ person.source_middle_name || '' }} {{
+                                        person.source_last_name || '' }}
                                     </span>
                                 </div>
                                 <div class="mb-2">
-                                    <label class="x-small text-white opacity-40 d-block">Citizenship / Relationship</label>
+                                    <label class="x-small text-white opacity-40 d-block">Citizenship /
+                                        Relationship</label>
                                     <span class="small d-block">
-                                        {{ person.source_citizenship || 'N/A' }} | {{ person.source_relationship || 'N/A' }}
+                                        {{ person.source_citizenship || 'N/A' }} | {{ person.source_relationship ||
+                                        'N/A' }}
                                     </span>
                                 </div>
                                 <div class="mb-0">
@@ -284,11 +311,17 @@
                                 </div>
                             </div>
 
-                            <div v-if="person.civil_status !== 'Single'" class="p-2 rounded-3 border border-warning border-opacity-20 bg-secondary bg-opacity-5 mt-2">
-                                <label class="x-small text-white opacity-75 d-block text-uppercase fw-bold">Previous Marriage Details</label>
-                                <div class="x-small text-white">{{ person.dissolution_details !== "N/A" ? person.dissolution_details : "Not applicable" }} — {{ person.dissolution_place }}</div>
-                                <div class="x-small text-white">{{ person.dissolution_day !== "N/A  " ? person.dissolution_day : "Not applicable" }}/{{ person.dissolution_month }}/{{ person.dissolution_year }}</div>
-                            </div>  
+                            <div v-if="person.civil_status !== 'Single'"
+                                class="p-2 rounded-3 border border-warning border-opacity-20 bg-secondary bg-opacity-5 mt-2">
+                                <label class="x-small text-white opacity-75 d-block text-uppercase fw-bold">Previous
+                                    Marriage Details</label>
+                                <div class="x-small text-white">{{ person.dissolution_details !== "N/A" ?
+                                    person.dissolution_details : "Not applicable" }} — {{ person.dissolution_place }}
+                                </div>
+                                <div class="x-small text-white">{{ person.dissolution_day !== "N/A " ?
+                                    person.dissolution_day : "Not applicable" }}/{{ person.dissolution_month }}/{{
+                                    person.dissolution_year }}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -297,7 +330,8 @@
             <div class="p-4 bg-black bg-opacity-20 d-flex justify-content-between align-items-center mt-auto">
                 <div>
                     <p class="x-small text-secondary opacity-40 mb-0">Record Created: {{ applicant[0].created_at }}</p>
-                    <p class="x-small text-secondary opacity-40 mb-0">Data Submitted: {{ applicant[0].submitted_at }}</p>
+                    <p class="x-small text-secondary opacity-40 mb-0">Data Submitted: {{ applicant[0].submitted_at }}
+                    </p>
                 </div>
                 <div class="d-flex gap-2">
                     <button class="btn btn-action-glass text-info px-4" @click="openDocumentModal">
@@ -310,36 +344,42 @@
     </div>
     <div v-if="showApplicantDocuments" class="modal-overlay-custom animate__animated animate__fadeIn">
         <div class="modal-body-custom rounded-5 shadow-2xl p-0 border border-white border-opacity-20">
-            
+
             <div class="modal-glass-header p-4 d-flex justify-content-between align-items-center">
                 <div>
-                    <span class="badge bg-info bg-opacity-10 text-info text-uppercase mb-2 x-small ls-1 px-3 border border-info border-opacity-20">Official Registry Record</span>
+                    <span
+                        class="badge bg-info bg-opacity-10 text-info text-uppercase mb-2 x-small ls-1 px-3 border border-info border-opacity-20">Official
+                        Registry Record</span>
                     <h4 class="fw-bold mb-0 text-white">Marriage License Application</h4>
                     <p class="text-info small mb-0 opacity-75 fw-bold mt-1">
                         <i class="bi bi-qr-code-scan me-1"></i> {{ control_number }}
                     </p>
                 </div>
-                <button class="btn-close btn-close-white opacity-50 hover-opacity-100" @click="closeDocumentModal"></button>
+                <button class="btn-close btn-close-white opacity-50 hover-opacity-100"
+                    @click="closeDocumentModal"></button>
             </div>
 
             <div class="p-4">
-                <div class="nav-glass-tabs d-flex p-1 mb-4 rounded-3 bg-white bg-opacity-5" style="max-width: 400px; margin: 0 auto;">
-                    <button class="flex-fill btn btn-sm py-2 rounded-2 transition-all" 
-                            :class="activeTab === 'groom' ? 'btn-info text-white shadow-sm' : 'text-secondary border-0'"
-                            @click="activeTab = 'groom'">
+                <div class="nav-glass-tabs d-flex p-1 mb-4 rounded-3 bg-white bg-opacity-5"
+                    style="max-width: 400px; margin: 0 auto;">
+                    <button class="flex-fill btn btn-sm py-2 rounded-2 transition-all"
+                        :class="activeTab === 'groom' ? 'btn-info text-white shadow-sm' : 'text-secondary border-0'"
+                        @click="activeTab = 'groom'">
                         <i class="bi bi-gender-male me-2"></i>Groom's Files
                     </button>
-                    <button class="flex-fill btn btn-sm py-2 rounded-2 transition-all" 
-                            :class="activeTab === 'bride' ? 'btn-info text-white shadow-sm' : 'text-secondary border-0'"
-                            @click="activeTab = 'bride'">
+                    <button class="flex-fill btn btn-sm py-2 rounded-2 transition-all"
+                        :class="activeTab === 'bride' ? 'btn-info text-white shadow-sm' : 'text-secondary border-0'"
+                        @click="activeTab = 'bride'">
                         <i class="bi bi-gender-female me-2"></i>Bride's Files
                     </button>
                 </div>
 
                 <div class="document-grid animate__animated animate__fadeIn" v-if="activeTab === 'groom'">
                     <h6 class="text-white-50 x-small text-uppercase ls-1 mb-3">Required Credentials</h6>
-                    <h4 class="fw-bold mb-0 text-white mb-3">{{ activeTab === "groom" ? applicant[0].first_name + " " + applicant[0].last_name : applicant[1].first_name + " " + applicant[1].last_name }}</h4>
-                    <div v-for="doc in groomDocuments" :key="doc.id" class="doc-item-glass d-flex align-items-center p-3 mb-2 rounded-4 border border-white border-opacity-10">
+                    <h4 class="fw-bold mb-0 text-white mb-3">{{ activeTab === "groom" ? applicant[0].first_name + " " +
+                        applicant[0].last_name : applicant[1].first_name + " " + applicant[1].last_name }}</h4>
+                    <div v-for="doc in groomDocuments" :key="doc.id"
+                        class="doc-item-glass d-flex align-items-center p-3 mb-2 rounded-4 border border-white border-opacity-10">
                         <div class="doc-icon me-3">
                             <i class="bi bi-file-earmark-pdf fs-4 text-info"></i>
                         </div>
@@ -347,13 +387,16 @@
                             <div class="text-white small fw-bold">{{ doc.doc_type }}</div>
                             <div class="x-small text-secondary fw-semibold">Uploaded: {{ doc.created_at }}</div>
                         </div>
-                        <button @click="openCurrentDocument(doc.document_url)" class="btn btn-sm btn-outline-info rounded-pill px-3">View</button>
+                        <button @click="openCurrentDocument(doc.document_url)"
+                            class="btn btn-sm btn-outline-info rounded-pill px-3">View</button>
                     </div>
                 </div>
                 <div class="document-grid animate__animated animate__fadeIn" v-else-if="activeTab === 'bride'">
                     <h6 class="text-white-50 x-small text-uppercase ls-1 mb-3">Required Credentials</h6>
-                    <h4 class="fw-bold mb-0 text-white mb-3">{{ activeTab === "groom" ? applicant[0].first_name + " " + applicant[0].last_name : applicant[1].first_name + " " + applicant[1].last_name }}</h4>
-                    <div v-for="doc in brideDocuments" :key="doc.id" class="doc-item-glass d-flex align-items-center p-3 mb-2 rounded-4 border border-white border-opacity-10">
+                    <h4 class="fw-bold mb-0 text-white mb-3">{{ activeTab === "groom" ? applicant[0].first_name + " " +
+                        applicant[0].last_name : applicant[1].first_name + " " + applicant[1].last_name }}</h4>
+                    <div v-for="doc in brideDocuments" :key="doc.id"
+                        class="doc-item-glass d-flex align-items-center p-3 mb-2 rounded-4 border border-white border-opacity-10">
                         <div class="doc-icon me-3">
                             <i class="bi bi-file-earmark-pdf fs-4 text-info"></i>
                         </div>
@@ -361,18 +404,20 @@
                             <div class="text-white small fw-bold">{{ doc.doc_type }}</div>
                             <div class="x-small text-secondary fw-semibold">Uploaded: {{ doc.created_at }}</div>
                         </div>
-                        <button @click="openCurrentDocument(doc.document_url)" class="btn btn-sm btn-outline-info rounded-pill px-3">View</button>
+                        <button @click="openCurrentDocument(doc.document_url)"
+                            class="btn btn-sm btn-outline-info rounded-pill px-3">View</button>
                     </div>
                 </div>
-                
+
             </div>
 
-            
+
 
             <div class="p-4 bg-black bg-opacity-20 d-flex justify-content-between align-items-center mt-auto">
                 <div>
                     <p class="x-small text-secondary opacity-40 mb-0">Record Created: {{ applicant[0].created_at }}</p>
-                    <p class="x-small text-secondary opacity-40 mb-0">Data Submitted: {{ applicant[0].submitted_at }}</p>
+                    <p class="x-small text-secondary opacity-40 mb-0">Data Submitted: {{ applicant[0].submitted_at }}
+                    </p>
                 </div>
                 <div class="d-flex gap-2">
                     <button class="btn btn-action-glass text-secondary" @click="closeDocumentModal">Close</button>
@@ -381,9 +426,11 @@
         </div>
     </div>
     <div v-if="showDocument" class="modal-overlay-custom animate__animated animate__fadeIn">
-        <div class="modal-body-custom preview-large rounded-4 shadow-2xl p-0 border border-white border-opacity-20 bg-dark">
-            
-            <div class="modal-glass-header p-3 d-flex justify-content-between align-items-center border-bottom border-white border-opacity-10">
+        <div
+            class="modal-body-custom preview-large rounded-4 shadow-2xl p-0 border border-white border-opacity-20 bg-dark">
+
+            <div
+                class="modal-glass-header p-3 d-flex justify-content-between align-items-center border-bottom border-white border-opacity-10">
                 <div class="d-flex align-items-center">
                     <div class="icon-box bg-info bg-opacity-10 p-2 rounded-3 me-3">
                         <i class="bi bi-file-earmark-text text-info fs-4"></i>
@@ -396,17 +443,21 @@
                 <button class="btn-close btn-close-white" @click="closeCurrentDocument"></button>
             </div>
 
-            <div class="document-viewer-content bg-black bg-opacity-40 p-2 d-flex justify-content-center align-items-center">
-                
+            <div
+                class="document-viewer-content bg-black bg-opacity-40 p-2 d-flex justify-content-center align-items-center">
+
                 <iframe v-if="currentFileIsPDF" :src="currentFilePath" class="w-100 h-100 rounded-3 border-0"></iframe>
 
-                <div v-else class="image-zoom-container w-100 h-100 d-flex justify-content-center align-items-center overflow-auto">
-                    <img :src="currentFilePath" class="img-fluid rounded-2 shadow" style="max-height: 100%; object-fit: contain;" alt="Document Preview">
+                <div v-else
+                    class="image-zoom-container w-100 h-100 d-flex justify-content-center align-items-center overflow-auto">
+                    <img :src="currentFilePath" class="img-fluid rounded-2 shadow"
+                        style="max-height: 100%; object-fit: contain;" alt="Document Preview">
                 </div>
 
             </div>
 
-            <div class="p-3 bg-black bg-opacity-40 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center">
+            <div
+                class="p-3 bg-black bg-opacity-40 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center">
                 <div class="d-flex gap-4">
                     <div class="timestamp-group">
                         <span class="x-small text-secondary text-uppercase d-block opacity-50">Reference</span>
@@ -414,7 +465,8 @@
                     </div>
                 </div>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-action-glass text-white border-white border-opacity-25 px-4" @click="closeCurrentDocument">
+                    <button class="btn btn-action-glass text-white border-white border-opacity-25 px-4"
+                        @click="closeCurrentDocument">
                         <i class="bi bi-arrow-left me-2"></i>Back to List
                     </button>
                     <a :href="currentFilePath" target="_blank" class="btn btn-info text-white px-4">
@@ -424,7 +476,23 @@
             </div>
         </div>
     </div>
-
+    <div v-if="showPrintModal" class="modal-overlay">
+        <div class="modal-content">
+            <iframe
+                ref="printFrame"
+                :src="`${trialPdfUrl}#toolbar=0&navpanes=0&view=FitH`"
+                class="print-pdf-frame"
+            ></iframe>
+            <div class="print-modal-actions">
+                <button class="btn btn-warning fw-bold px-4" @click="printIframe">
+                    <i class="bi bi-printer-fill me-1"></i> Print
+                </button>
+                <button class="btn btn-outline-light fw-bold px-4" @click="closePrintModal">
+                    <i class="bi bi-x-circle me-1"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -454,6 +522,8 @@ export default {
             showDocument: false,
             currentFilePath: '',
             currentFileIsPDF: false,
+            showPrintModal: false,
+            trialPdfUrl: '/api/pdf/trial-preview-pdf',
         };
     },
     computed: {
@@ -466,7 +536,7 @@ export default {
         async openViewApplicants(app) {
 
             const response = await viewApplicants(app.id, app.control_number)
-            
+
             // console.log(response.applicants[0])
             this.applicant = response.data.applicants;
             this.control_number = response.data.applicants[0].control_number;
@@ -479,25 +549,25 @@ export default {
             this.showApplicantsModal = true;
         },
         closeViewApplicants() {
-            this.showApplicantsModal = false; 
+            this.showApplicantsModal = false;
         },
 
-        openDocumentModal(){
+        openDocumentModal() {
             this.showApplicantsModal = false;
             this.showApplicantDocuments = true;
         },
-        closeDocumentModal(){
+        closeDocumentModal() {
             this.showApplicantDocuments = false;
             this.showApplicantsModal = true;
         },
 
-        openCurrentDocument(path){
+        openCurrentDocument(path) {
             this.currentFilePath = path;
             // Simple check to see if it's a PDF
             this.currentFileIsPDF = path.toLowerCase().endsWith('.pdf');
             this.showDocument = true
         },
-        closeCurrentDocument(){
+        closeCurrentDocument() {
             this.showDocument = false;
             this.currentFilePath = '';
         },
@@ -507,14 +577,14 @@ export default {
             try {
                 // Ensure 'this.order' is passed here
                 const response = await getApplicants(this.status, this.search, this.page, this.order);
-                
+
                 // Map data directly to applications
                 this.applications = response.data.data.data.map(app => ({
                     id: app.id,
                     control_number: app.control_number,
                     status: app.status,
-                    dateApplied: app.created_at, 
-                    coupleNames: app.applicant_names 
+                    dateApplied: app.created_at,
+                    coupleNames: app.applicant_names
                 }));
 
                 // Update pagination metadata from Laravel
@@ -550,28 +620,28 @@ export default {
             if (s === 'rejected') return base + "status-rejected"; // Add a red color
             return base + "status-pending";
         },
-        
-        validateApproval(app, action){
 
-            let userAction ;
+        validateApproval(app, action) {
+
+            let userAction;
 
             switch (action) {
                 case "approved":
                     userAction = "Approve"
                     break;
-                
+
                 case "rejected":
                     userAction = "Reject"
                     break;
-                
+
                 case "issued":
                     userAction = "Issue"
                     break;
-                
+
                 default:
                     break;
             }
-            
+
             Swal.fire({
                 title: 'Are you sure?',
                 text: `You are about to ${userAction} this marriage application.`,
@@ -593,10 +663,10 @@ export default {
             });
         },
 
-        async validateAction(app, action){
+        async validateAction(app, action) {
             try {
                 const response = await ApplicationAction(app.control_number, app.id, action)
-    
+
                 // 4. Success Alert
                 await Swal.fire({
                     title: 'Success!',
@@ -607,7 +677,7 @@ export default {
                 });
 
                 this.fetchApplications();
-                
+
             } catch (error) {
                 Swal.fire({
                     title: 'Request Failed',
@@ -619,31 +689,22 @@ export default {
             }
         },
 
-        // In your Vue methods
-        async downloadMarriageLicense(app) {
-            try {
-                // Axios automatically attaches your Bearer Token if configured
-                const response = await axios.get(`/api/applications/print/${app.id}/${app.control_number}`, {
-                    responseType: 'blob', // Tells browser to treat response as binary file
-                });
-
-                // Create a temporary 'virtual' link to the file in browser memory
-                const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                const url = window.URL.createObjectURL(blob);
-                
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', `Marriage_App_${app.control_number}.xlsx`);
-                
-                document.body.appendChild(link);
-                link.click();
-                
-                // Clean up memory and remove the link
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
-            } catch (error) {
-                console.error("Download failed", error);
-                Swal.fire('Error', 'Could not generate the form. Session may have expired.', 'error');
+        openPrintModal(app) {
+            if (app?.id && app?.control_number) {
+                this.trialPdfUrl = `/api/pdf/trial-preview-pdf?application_id=${app.id}&control_number=${encodeURIComponent(app.control_number)}`;
+            } else {
+                this.trialPdfUrl = '/api/pdf/trial-preview-pdf';
+            }
+            this.showPrintModal = true;
+        },
+        closePrintModal() {
+            this.showPrintModal = false;
+        },
+        printIframe() {
+            const iframe = this.$refs.printFrame;
+            if (iframe?.contentWindow) {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
             }
         }
     },
@@ -657,7 +718,7 @@ export default {
             this.fetchApplications();
         },
         order() {
-            this.page = 1; 
+            this.page = 1;
             this.fetchApplications();
         },
         search() {
@@ -699,6 +760,7 @@ export default {
     background: rgba(255, 255, 255, 0.2);
     color: white;
 }
+
 /* BACKGROUND SETTINGS */
 .management-page {
     min-height: 100vh;
@@ -721,6 +783,43 @@ export default {
     /* Ensure the table itself doesn't trap the menu */
     position: relative;
     z-index: 1;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2100;
+}
+
+.modal-content {
+    width: min(95vw, 980px);
+    background: rgba(30, 41, 59, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+}
+
+.print-pdf-frame {
+    width: 100%;
+    height: min(72vh, 820px);
+    border: none;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.print-modal-actions {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 8px 4px 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .glass-row {
@@ -770,12 +869,14 @@ export default {
 }
 
 .status-issued {
-    color: #0d6efd; /* Official Blue */
+    color: #0d6efd;
+    /* Official Blue */
     border: 1px solid rgba(13, 110, 253, 0.3);
 }
 
 .status-rejected {
-    color: #ff4d4d; /* Sharp Red */
+    color: #ff4d4d;
+    /* Sharp Red */
     border: 1px solid rgba(255, 77, 77, 0.3);
 }
 
@@ -803,17 +904,25 @@ export default {
 /* Deep Blur Overlay */
 .modal-overlay-custom {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(15, 23, 42, 0.7); /* Darker, more professional overlay */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.7);
+    /* Darker, more professional overlay */
     backdrop-filter: blur(12px);
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 2000;
 }
 
 /* The Main Container */
 .modal-body-custom {
-    background: rgba(255, 255, 255, 0.05); /* Very faint white */
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Thin 'ice' edge */
+    background: rgba(255, 255, 255, 0.05);
+    /* Very faint white */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Thin 'ice' edge */
     width: 95%;
     max-width: 900px;
     max-height: 90vh;
@@ -831,8 +940,10 @@ export default {
 
 /* Muted Blue for Groom */
 .groom-accent {
-    border-left: 4px solid #60a5fa !important; /* Soft Sky Blue */
+    border-left: 4px solid #60a5fa !important;
+    /* Soft Sky Blue */
 }
+
 .groom-accent .type-pill {
     background: rgba(96, 165, 250, 0.15);
     color: #93c5fd;
@@ -840,8 +951,10 @@ export default {
 
 /* Muted Rose for Bride */
 .bride-accent {
-    border-left: 4px solid #f472b6 !important; /* Soft Rose */
+    border-left: 4px solid #f472b6 !important;
+    /* Soft Rose */
 }
+
 .bride-accent .type-pill {
     background: rgba(244, 114, 182, 0.15);
     color: #fbcfe8;
@@ -862,6 +975,7 @@ export default {
 .modal-body-custom::-webkit-scrollbar {
     width: 6px;
 }
+
 .modal-body-custom::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 10px;
@@ -869,10 +983,12 @@ export default {
 
 /* Glass Dropdown Styling */
 .glass-dropdown {
-    background: rgba(30, 41, 59, 0.95) !important; /* Slightly more opaque for focus */
+    background: rgba(30, 41, 59, 0.95) !important;
+    /* Slightly more opaque for focus */
     backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    z-index: 10000 !important; /* Extremely high to beat any row layering */
+    z-index: 10000 !important;
+    /* Extremely high to beat any row layering */
 }
 
 .glass-dropdown .dropdown-item {
@@ -887,8 +1003,9 @@ export default {
 }
 
 .table-responsive {
-    overflow: visible !important; 
-    padding-bottom: 60px; /* Buffer for the bottom-most row dropdown */
+    overflow: visible !important;
+    padding-bottom: 60px;
+    /* Buffer for the bottom-most row dropdown */
 }
 
 .glass-table {
@@ -899,5 +1016,4 @@ export default {
     position: relative;
     z-index: 1;
 }
-
 </style>
