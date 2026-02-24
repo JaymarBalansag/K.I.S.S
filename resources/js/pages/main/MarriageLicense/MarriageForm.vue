@@ -961,13 +961,9 @@
                                             <div class="col-md-12">
                                                 <label class="form-label">Full Address</label>
                                                 <div class="row g-2">
-                                                    <div class="col-md-2">
-                                                        <input class="form-control" v-model="form.bride.housenum"
-                                                            autocomplete="off" placeholder="House no.">
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input class="form-control" v-model="form.bride.street"
-                                                            autocomplete="off" placeholder="Street.">
+                                                    <div class="col-md-5">
+                                                        <input class="form-control" v-model="form.bride.houseNumStreet"
+                                                            autocomplete="off" placeholder="House no., Street">
                                                     </div>
                                                     <div class="col-md-8">
                                                         <div class="position-relative">
@@ -1417,7 +1413,7 @@ export default {
             brideRequirement: null,
             ageRequirements: null,
             message: [],
-            step: 1,
+            step: 3,
             totalSteps: 4,
             groomAgeError: '',
             brideAgeError: '',
