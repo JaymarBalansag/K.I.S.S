@@ -62,10 +62,74 @@
                                             </div>
 
                                             <div class="col-md-6 border-md-end border-white-10">
-                                                <div class="glass-upload-container position-relative">
+                                                <div v-if="doc === 'govtIssuedId'" class="mt-3 govt-id-meta-card p-3">
+                                                    <div
+                                                        class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                                                        <div>
+                                                            <p class="mb-1 text-white fw-semibold smallest text-uppercase letter-spaced">
+                                                                Step 1 of 2: Valid ID Details
+                                                            </p>
+                                                            <p class="mb-0 text-white-50 smallest">
+                                                                Enter details exactly as shown on the selected ID.
+                                                            </p>
+                                                        </div>
+                                                        <span class="govt-id-progress-chip">
+                                                            {{ getGovtIdProgress('groom') }}/4 completed
+                                                        </span>
+                                                    </div>
+                                                    <div class="mb-2">
+                                                        <label class="form-label fw-bold small text-info text-uppercase">
+                                                            ID Type <span class="text-danger">*</span>
+                                                        </label>
+                                                        <select class="form-control"
+                                                            v-model="form.groom.govtIssuedIdType">
+                                                            <option value="" disabled>Select ID type</option>
+                                                            <option value="Passport">Passport</option>
+                                                            <option value="Driver's License">Driver's License</option>
+                                                            <option value="UMID">UMID</option>
+                                                            <option value="PhilSys ID">PhilSys ID</option>
+                                                            <option value="Postal ID">Postal ID</option>
+                                                            <option value="Voter's ID">Voter's ID</option>
+                                                            <option value="PRC ID">PRC ID</option>
+                                                            <option value="Senior Citizen ID">Senior Citizen ID</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-2">
+                                                        <label class="form-label fw-bold small text-info text-uppercase">
+                                                            ID Number <span class="text-danger">*</span>
+                                                        </label>
+                                                        <input class="form-control"
+                                                            v-model="form.groom.govtIssuedIdNumber"
+                                                            placeholder="Enter ID number">
+                                                    </div>
+                                                    <div class="row g-2">
+                                                        <div class="col-md-6">
+                                                            <label
+                                                                class="form-label fw-bold small text-info text-uppercase">
+                                                                Issued At <span class="text-danger">*</span>
+                                                            </label>
+                                                            <input class="form-control"
+                                                                v-model="form.groom.govtIssuedIdIssuedAt"
+                                                                placeholder="City / agency branch">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label
+                                                                class="form-label fw-bold small text-info text-uppercase">
+                                                                Issued On <span class="text-danger">*</span>
+                                                            </label>
+                                                            <input type="date" class="form-control"
+                                                                :min="getGovtIdMinDateString()"
+                                                                :max="getTodayDateString()"
+                                                                v-model="form.groom.govtIssuedIdIssuedOn">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div v-if="doc !== 'govtIssuedId' || isGovtIdDetailsComplete('groom')"
+                                                    class="glass-upload-container position-relative"
+                                                    :class="{ 'mt-3': doc === 'govtIssuedId' }">
                                                     <input type="file" class="file-input-overlay"
                                                         @change="handleFileUpload($event, 'groom', doc)"
-                                                        accept="image/*,.pdf" />
+                                                        accept=".pdf,application/pdf" />
                                                     <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
                                                         :class="{ 'has-file': previews.groom[doc] }">
                                                         <div v-if="!previews.groom[doc]">
@@ -76,6 +140,16 @@
                                                         <div v-else class="animate-fade-in">
                                                             <img v-if="isImage('groom', doc)" :src="previews.groom[doc]"
                                                                 class="img-fluid rounded-2 glass-preview-img-sm" />
+                                                            <button v-else-if="isPdf('groom', doc)" type="button"
+                                                                class="btn btn-sm btn-outline-info preview-trigger-btn"
+                                                                @click.stop="openPreviewModal(previews.groom[doc], `Groom ${getDocumentDisplayLabel(doc)}`)">
+                                                                Preview
+                                                            </button>
+                                                            <button v-if="previews.groom[doc]" type="button"
+                                                                class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
+                                                                @click.stop="triggerReplaceFromButton($event)">
+                                                                Replace
+                                                            </button>
                                                             <div v-else class="py-2"><i
                                                                     class="bi bi-file-earmark-pdf fs-2 text-info"></i>
                                                             </div>
@@ -83,12 +157,81 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div v-else-if="doc === 'govtIssuedId'"
+                                                    class="smallest text-warning mt-2 govt-id-upload-hint">
+                                                    <i class="bi bi-lock me-1"></i> Step 2 of 2 will unlock after
+                                                    completing all ID details.
+                                                </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <div class="glass-upload-container position-relative">
+                                                <div v-if="doc === 'govtIssuedId'" class="mt-3 govt-id-meta-card p-3">
+                                                    <div
+                                                        class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                                                        <div>
+                                                            <p class="mb-1 text-white fw-semibold smallest text-uppercase letter-spaced">
+                                                                Step 1 of 2: Valid ID Details
+                                                            </p>
+                                                            <p class="mb-0 text-white-50 smallest">
+                                                                Enter details exactly as shown on the selected ID.
+                                                            </p>
+                                                        </div>
+                                                        <span class="govt-id-progress-chip">
+                                                            {{ getGovtIdProgress('bride') }}/4 completed
+                                                        </span>
+                                                    </div>
+                                                    <div class="mb-2">
+                                                        <label class="form-label fw-bold small text-info text-uppercase">
+                                                            ID Type <span class="text-danger">*</span>
+                                                        </label>
+                                                        <select class="form-control"
+                                                            v-model="form.bride.govtIssuedIdType">
+                                                            <option value="" disabled>Select ID type</option>
+                                                            <option value="Passport">Passport</option>
+                                                            <option value="Driver's License">Driver's License</option>
+                                                            <option value="UMID">UMID</option>
+                                                            <option value="PhilSys ID">PhilSys ID</option>
+                                                            <option value="Postal ID">Postal ID</option>
+                                                            <option value="Voter's ID">Voter's ID</option>
+                                                            <option value="PRC ID">PRC ID</option>
+                                                            <option value="Senior Citizen ID">Senior Citizen ID</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-2">
+                                                        <label class="form-label fw-bold small text-info text-uppercase">
+                                                            ID Number <span class="text-danger">*</span>
+                                                        </label>
+                                                        <input class="form-control"
+                                                            v-model="form.bride.govtIssuedIdNumber"
+                                                            placeholder="Enter ID number">
+                                                    </div>
+                                                    <div class="row g-2">
+                                                        <div class="col-md-6">
+                                                            <label
+                                                                class="form-label fw-bold small text-info text-uppercase">
+                                                                Issued At <span class="text-danger">*</span>
+                                                            </label>
+                                                            <input class="form-control"
+                                                                v-model="form.bride.govtIssuedIdIssuedAt"
+                                                                placeholder="City / agency branch">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label
+                                                                class="form-label fw-bold small text-info text-uppercase">
+                                                                Issued On <span class="text-danger">*</span>
+                                                            </label>
+                                                            <input type="date" class="form-control"
+                                                                :min="getGovtIdMinDateString()"
+                                                                :max="getTodayDateString()"
+                                                                v-model="form.bride.govtIssuedIdIssuedOn">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div v-if="doc !== 'govtIssuedId' || isGovtIdDetailsComplete('bride')"
+                                                    class="glass-upload-container position-relative"
+                                                    :class="{ 'mt-3': doc === 'govtIssuedId' }">
                                                     <input type="file" class="file-input-overlay"
                                                         @change="handleFileUpload($event, 'bride', doc)"
-                                                        accept="image/*,.pdf" />
+                                                        accept=".pdf,application/pdf" />
                                                     <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
                                                         :class="{ 'has-file': previews.bride[doc] }">
                                                         <div v-if="!previews.bride[doc]">
@@ -99,12 +242,27 @@
                                                         <div v-else class="animate-fade-in">
                                                             <img v-if="isImage('bride', doc)" :src="previews.bride[doc]"
                                                                 class="img-fluid rounded-2 glass-preview-img-sm" />
+                                                            <button v-else-if="isPdf('bride', doc)" type="button"
+                                                                class="btn btn-sm btn-outline-info preview-trigger-btn"
+                                                                @click.stop="openPreviewModal(previews.bride[doc], `Bride ${getDocumentDisplayLabel(doc)}`)">
+                                                                Preview
+                                                            </button>
+                                                            <button v-if="previews.bride[doc]" type="button"
+                                                                class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
+                                                                @click.stop="triggerReplaceFromButton($event)">
+                                                                Replace
+                                                            </button>
                                                             <div v-else class="py-2"><i
                                                                     class="bi bi-file-earmark-pdf fs-2 text-info"></i>
                                                             </div>
                                                             <div class="glass-badge-sm">Selected</div>
                                                         </div>
                                                     </div>
+                                                </div>
+                                                <div v-else-if="doc === 'govtIssuedId'"
+                                                    class="smallest text-warning mt-2 govt-id-upload-hint">
+                                                    <i class="bi bi-lock me-1"></i> Step 2 of 2 will unlock after
+                                                    completing all ID details.
                                                 </div>
                                             </div>
                                         </div>
@@ -125,7 +283,7 @@
                                                         <div class="glass-upload-container position-relative">
                                                             <input type="file" class="file-input-overlay"
                                                                 @change="handleFileUpload($event, 'groom', 'parentalConsent')"
-                                                                accept="image/*,.pdf" />
+                                                                accept=".pdf,application/pdf" />
                                                             <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
                                                                 :class="{ 'has-file': previews.groom.parentalConsent }">
                                                                 <div v-if="!previews.groom.parentalConsent">
@@ -133,7 +291,22 @@
                                                                         class="bi bi-file-earmark-arrow-up text-white-50"></i>
                                                                     <p class="smallest text-white-50">Upload Consent</p>
                                                                 </div>
-                                                                <div v-else class="text-info small">Consent Loaded</div>
+                                                                <div v-else class="animate-fade-in">
+                                                                    <button
+                                                                        v-if="isPdf('groom', 'parentalConsent')"
+                                                                        type="button" class="btn btn-sm btn-outline-info preview-trigger-btn"
+                                                                        @click.stop="openPreviewModal(previews.groom.parentalConsent, 'Groom Parental Consent')">
+                                                                        Preview
+                                                                    </button>
+                                                                    <button v-if="previews.groom.parentalConsent"
+                                                                        type="button"
+                                                                        class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
+                                                                        @click.stop="triggerReplaceFromButton($event)">
+                                                                        Replace
+                                                                    </button>
+                                                                    <div v-else class="text-info small">Consent Loaded</div>
+                                                                    <div class="glass-badge-sm">Selected</div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -145,7 +318,7 @@
                                                         <div class="glass-upload-container position-relative">
                                                             <input type="file" class="file-input-overlay"
                                                                 @change="handleFileUpload($event, 'groom', 'parentalAdvise')"
-                                                                accept="image/*,.pdf" />
+                                                                accept=".pdf,application/pdf" />
                                                             <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
                                                                 :class="{ 'has-file': previews.groom.parentalAdvise }">
                                                                 <div v-if="!previews.groom.parentalAdvise">
@@ -153,7 +326,22 @@
                                                                         class="bi bi-file-earmark-arrow-up text-white-50"></i>
                                                                     <p class="smallest text-white-50">Upload Advice</p>
                                                                 </div>
-                                                                <div v-else class="text-info small">Advice Loaded</div>
+                                                                <div v-else class="animate-fade-in">
+                                                                    <button
+                                                                        v-if="isPdf('groom', 'parentalAdvise')"
+                                                                        type="button" class="btn btn-sm btn-outline-info preview-trigger-btn"
+                                                                        @click.stop="openPreviewModal(previews.groom.parentalAdvise, 'Groom Parental Advice')">
+                                                                        Preview
+                                                                    </button>
+                                                                    <button v-if="previews.groom.parentalAdvise"
+                                                                        type="button"
+                                                                        class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
+                                                                        @click.stop="triggerReplaceFromButton($event)">
+                                                                        Replace
+                                                                    </button>
+                                                                    <div v-else class="text-info small">Advice Loaded</div>
+                                                                    <div class="glass-badge-sm">Selected</div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -168,7 +356,7 @@
                                                         <div class="glass-upload-container position-relative">
                                                             <input type="file" class="file-input-overlay"
                                                                 @change="handleFileUpload($event, 'bride', 'parentalConsent')"
-                                                                accept="image/*,.pdf" />
+                                                                accept=".pdf,application/pdf" />
                                                             <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
                                                                 :class="{ 'has-file': previews.bride.parentalConsent }">
                                                                 <div v-if="!previews.bride.parentalConsent">
@@ -176,7 +364,22 @@
                                                                         class="bi bi-file-earmark-arrow-up text-white-50"></i>
                                                                     <p class="smallest text-white-50">Upload Consent</p>
                                                                 </div>
-                                                                <div v-else class="text-info small">Consent Loaded</div>
+                                                                <div v-else class="animate-fade-in">
+                                                                    <button
+                                                                        v-if="isPdf('bride', 'parentalConsent')"
+                                                                        type="button" class="btn btn-sm btn-outline-info preview-trigger-btn"
+                                                                        @click.stop="openPreviewModal(previews.bride.parentalConsent, 'Bride Parental Consent')">
+                                                                        Preview
+                                                                    </button>
+                                                                    <button v-if="previews.bride.parentalConsent"
+                                                                        type="button"
+                                                                        class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
+                                                                        @click.stop="triggerReplaceFromButton($event)">
+                                                                        Replace
+                                                                    </button>
+                                                                    <div v-else class="text-info small">Consent Loaded</div>
+                                                                    <div class="glass-badge-sm">Selected</div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -188,7 +391,7 @@
                                                         <div class="glass-upload-container position-relative">
                                                             <input type="file" class="file-input-overlay"
                                                                 @change="handleFileUpload($event, 'bride', 'parentalAdvise')"
-                                                                accept="image/*,.pdf" />
+                                                                accept=".pdf,application/pdf" />
                                                             <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
                                                                 :class="{ 'has-file': previews.bride.parentalAdvise }">
                                                                 <div v-if="!previews.bride.parentalAdvise">
@@ -196,7 +399,22 @@
                                                                         class="bi bi-file-earmark-arrow-up text-white-50"></i>
                                                                     <p class="smallest text-white-50">Upload Advice</p>
                                                                 </div>
-                                                                <div v-else class="text-info small">Advice Loaded</div>
+                                                                <div v-else class="animate-fade-in">
+                                                                    <button
+                                                                        v-if="isPdf('bride', 'parentalAdvise')"
+                                                                        type="button" class="btn btn-sm btn-outline-info preview-trigger-btn"
+                                                                        @click.stop="openPreviewModal(previews.bride.parentalAdvise, 'Bride Parental Advice')">
+                                                                        Preview
+                                                                    </button>
+                                                                    <button v-if="previews.bride.parentalAdvise"
+                                                                        type="button"
+                                                                        class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
+                                                                        @click.stop="triggerReplaceFromButton($event)">
+                                                                        Replace
+                                                                    </button>
+                                                                    <div v-else class="text-info small">Advice Loaded</div>
+                                                                    <div class="glass-badge-sm">Selected</div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -219,7 +437,7 @@
                                                         <div class="glass-upload-container position-relative">
                                                             <input type="file" class="file-input-overlay"
                                                                 @change="handleFileUpload($event, 'groom', fDoc.k)"
-                                                                accept="image/*,.pdf" />
+                                                                accept=".pdf,application/pdf" />
                                                             <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
                                                                 :class="{ 'has-file': previews.groom[fDoc.k] }">
                                                                 <div v-if="!previews.groom[fDoc.k]">
@@ -227,7 +445,20 @@
                                                                     <p class="mb-0 smallest text-white-50">Upload {{
                                                                         fDoc.l }}</p>
                                                                 </div>
-                                                                <div v-else class="text-info small">Selected</div>
+                                                                <div v-else class="animate-fade-in">
+                                                                    <button v-if="isPdf('groom', fDoc.k)" type="button"
+                                                                        class="btn btn-sm btn-outline-info preview-trigger-btn"
+                                                                        @click.stop="openPreviewModal(previews.groom[fDoc.k], `Groom ${fDoc.l}`)">
+                                                                        Preview
+                                                                    </button>
+                                                                    <button v-if="previews.groom[fDoc.k]" type="button"
+                                                                        class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
+                                                                        @click.stop="triggerReplaceFromButton($event)">
+                                                                        Replace
+                                                                    </button>
+                                                                    <div v-else class="text-info small">Selected</div>
+                                                                    <div class="glass-badge-sm">Selected</div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -241,7 +472,7 @@
                                                         <div class="glass-upload-container position-relative">
                                                             <input type="file" class="file-input-overlay"
                                                                 @change="handleFileUpload($event, 'bride', fDoc.k)"
-                                                                accept="image/*,.pdf" />
+                                                                accept=".pdf,application/pdf" />
                                                             <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
                                                                 :class="{ 'has-file': previews.bride[fDoc.k] }">
                                                                 <div v-if="!previews.bride[fDoc.k]">
@@ -249,7 +480,20 @@
                                                                     <p class="mb-0 smallest text-white-50">Upload {{
                                                                         fDoc.l }}</p>
                                                                 </div>
-                                                                <div v-else class="text-info small">Selected</div>
+                                                                <div v-else class="animate-fade-in">
+                                                                    <button v-if="isPdf('bride', fDoc.k)" type="button"
+                                                                        class="btn btn-sm btn-outline-info preview-trigger-btn"
+                                                                        @click.stop="openPreviewModal(previews.bride[fDoc.k], `Bride ${fDoc.l}`)">
+                                                                        Preview
+                                                                    </button>
+                                                                    <button v-if="previews.bride[fDoc.k]" type="button"
+                                                                        class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
+                                                                        @click.stop="triggerReplaceFromButton($event)">
+                                                                        Replace
+                                                                    </button>
+                                                                    <div v-else class="text-info small">Selected</div>
+                                                                    <div class="glass-badge-sm">Selected</div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -507,8 +751,8 @@
                                                         class="glass-upload-container position-relative">
                                                         <input type="file" class="file-input-overlay"
                                                             @change="handleFileUpload($event, 'groom', 'apostilled')"
-                                                            accept="image/*,.pdf" />
-                                                        <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
+                                                            accept=".pdf,application/pdf" />
+                                                            <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
                                                             :class="{ 'has-file': previews.groom.apostilled }">
                                                             <div v-if="!previews.groom.apostilled">
                                                                 <i
@@ -516,7 +760,20 @@
                                                                 <p class="smallest text-white-50">Upload Death
                                                                     Certificate</p>
                                                             </div>
-                                                            <div v-else class="text-info small">Death Cert Loaded</div>
+                                                            <div v-else class="animate-fade-in">
+                                                                <button v-if="isPdf('groom', 'apostilled')"
+                                                                    type="button" class="btn btn-sm btn-outline-info preview-trigger-btn"
+                                                                    @click.stop="openPreviewModal(previews.groom.apostilled, 'Groom Apostilled Foreign Death Certificate')">
+                                                                    Preview
+                                                                </button>
+                                                                <button v-if="previews.groom.apostilled" type="button"
+                                                                    class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
+                                                                    @click.stop="triggerReplaceFromButton($event)">
+                                                                    Replace
+                                                                </button>
+                                                                <div v-else class="text-info small">Death Cert Loaded</div>
+                                                                <div class="glass-badge-sm">Selected</div>
+                                                            </div>
                                                         </div>
                                                     </div>
 
@@ -525,8 +782,8 @@
                                                         class="glass-upload-container position-relative">
                                                         <input type="file" class="file-input-overlay"
                                                             @change="handleFileUpload($event, 'groom', 'divorceDecree')"
-                                                            accept="image/*,.pdf" />
-                                                        <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
+                                                            accept=".pdf,application/pdf" />
+                                                            <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
                                                             :class="{ 'has-file': previews.groom.divorceDecree }">
                                                             <div v-if="!previews.groom.divorceDecree">
                                                                 <i
@@ -534,7 +791,20 @@
                                                                 <p class="smallest text-white-50">Upload Divorce Decree
                                                                 </p>
                                                             </div>
-                                                            <div v-else class="text-info small">Divorce Decree Loaded
+                                                            <div v-else class="animate-fade-in">
+                                                                <button v-if="isPdf('groom', 'divorceDecree')"
+                                                                    type="button" class="btn btn-sm btn-outline-info preview-trigger-btn"
+                                                                    @click.stop="openPreviewModal(previews.groom.divorceDecree, 'Groom Divorce / Annulment Decree')">
+                                                                    Preview
+                                                                </button>
+                                                                <button v-if="previews.groom.divorceDecree" type="button"
+                                                                    class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
+                                                                    @click.stop="triggerReplaceFromButton($event)">
+                                                                    Replace
+                                                                </button>
+                                                                <div v-else class="text-info small">Divorce Decree Loaded
+                                                                </div>
+                                                                <div class="glass-badge-sm">Selected</div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -602,15 +872,18 @@
                                         <h4 class="section-title mb-4">Parents' Information</h4>
 
                                         <div class="row g-3 mb-4 border-bottom border-white-10 pb-4">
-                                            <div class="col-12"><small class="text-white-50">Father's Details</small>
+                                            <div class="col-12">
+                                                <small class="text-white-50">Father's Details</small>
                                             </div>
-                                            <div class="col-md-4"><input class="form-control"
-                                                    v-model="form.groom.fatherFirstName" placeholder="First Name"></div>
-                                            <div class="col-md-4"><input class="form-control"
-                                                    v-model="form.groom.fatherMiddleName" placeholder="Middle Name">
+                                            <div class="col-md-4">
+                                                <input class="form-control" v-model="form.groom.fatherFirstName" placeholder="First Name"></div>
+                                            <div class="col-md-4">
+                                                <input class="form-control" v-model="form.groom.fatherMiddleName" placeholder="Middle Name">
                                             </div>
-                                            <div class="col-md-4"><input class="form-control"
-                                                    v-model="form.groom.fatherLastName" placeholder="Last Name"></div>
+                                            <div class="col-md-4">
+                                                <input class="form-control" v-model="form.groom.fatherLastName" placeholder="Last Name">
+                                            </div>
+                                            <small class="text-white-50">Father's Citizenship</small>
                                             <div class="col-md-4">
                                                 <select class="form-control" v-model="form.groom.fatherCitizenship">
                                                     <option value="" disabled>Father's Citizenship</option>
@@ -626,7 +899,7 @@
                                             </div>
 
                                             <div class="row g-2">
-                                                <label class="form-label">Full Residence</label>
+                                                <small class="text-white-50">Father's Full Residence</small>
                                                 <div class="col-md-5">
                                                     <div class="position-relative">
                                                         <input class="form-control"
@@ -671,6 +944,7 @@
                                             <div class="col-md-4"><input class="form-control"
                                                     v-model="form.groom.motherMaidenLastName" placeholder="Last Name">
                                             </div>
+                                            <small class="text-white-50">Mother's Citizenship</small>
                                             <div class="col-md-4">
                                                 <select class="form-control"
                                                     v-model="form.groom.motherMaidenCitizenship">
@@ -689,7 +963,7 @@
                                             </div>
 
                                             <div class="row g-2">
-                                                <label class="form-label">Full Residence</label>
+                                                <small class="text-white-50">Mother's Full Address</small>
                                                 <div class="col-md-5">
                                                     <div class="position-relative">
                                                         <input class="form-control"
@@ -961,15 +1235,11 @@
                                             <div class="col-md-12">
                                                 <label class="form-label">Full Address</label>
                                                 <div class="row g-2">
-                                                    <div class="col-md-2">
-                                                        <input class="form-control" v-model="form.bride.housenum"
-                                                            autocomplete="off" placeholder="House no.">
+                                                    <div class="col-md-5">
+                                                        <input class="form-control" v-model="form.bride.houseNumStreet"
+                                                            autocomplete="off" placeholder="House no., Street">
                                                     </div>
-                                                    <div class="col-md-2">
-                                                        <input class="form-control" v-model="form.bride.street"
-                                                            autocomplete="off" placeholder="Street.">
-                                                    </div>
-                                                    <div class="col-md-8">
+                                                    <div class="col-md-7">
                                                         <div class="position-relative">
                                                             <input class="form-control" v-model="form.bride.residence"
                                                                 @input="onBrideResidenceInput"
@@ -1049,15 +1319,24 @@
                                         <h4 class="section-title mb-4">Parents' Information</h4>
 
                                         <div class="row g-3 mb-4 border-bottom border-white-10 pb-4">
-                                            <div class="col-12"><small class="text-white-50 uppercase fw-bold">Father's
-                                                    Details</small></div>
+                                            <div class="col-12">
+                                                <small class="text-white-50 uppercase fw-bold">
+                                                    Father's Details
+                                                </small>
+                                            </div>
                                             <div class="col-md-4"><input class="form-control"
                                                     v-model="form.bride.fatherFirstName" placeholder="First Name"></div>
                                             <div class="col-md-4"><input class="form-control"
                                                     v-model="form.bride.fatherMiddleName" placeholder="Middle Name">
                                             </div>
-                                            <div class="col-md-4"><input class="form-control"
-                                                    v-model="form.bride.fatherLastName" placeholder="Last Name"></div>
+                                            <div class="col-md-4">
+                                                <input class="form-control" v-model="form.bride.fatherLastName" placeholder="Last Name">
+                                            </div>
+                                            <div class="col-12">
+                                                <small class="text-white-50 uppercase fw-bold">
+                                                    Father's Citizenship
+                                                </small>
+                                            </div>
                                             <div class="col-md-4">
                                                 <select class="form-control" v-model="form.bride.fatherCitizenship">
                                                     <option value="" disabled>Father's Citizenship</option>
@@ -1072,7 +1351,11 @@
                                                     placeholder="Specify father's citizenship">
                                             </div>
                                             <div class="row g-2">
-                                                <label class="form-label">Full Residence</label>
+                                                <div class="col-12">
+                                                    <small class="text-white-50 uppercase fw-bold">
+                                                        Father's Full Residence
+                                                    </small>
+                                                </div>
                                                 <div class="col-md-5">
                                                     <div class="position-relative">
                                                         <input class="form-control"
@@ -1117,6 +1400,11 @@
                                             <div class="col-md-4"><input class="form-control"
                                                     v-model="form.bride.motherMaidenLastName" placeholder="Last Name">
                                             </div>
+                                            <div class="col-12">
+                                                <small class="text-white-50 uppercase fw-bold">
+                                                    Mother's Details
+                                                </small>
+                                            </div>
                                             <div class="col-md-4">
                                                 <select class="form-control"
                                                     v-model="form.bride.motherMaidenCitizenship">
@@ -1133,7 +1421,11 @@
                                                     placeholder="Specify mother's citizenship">
                                             </div>
                                             <div class="row g-2">
-                                                <label class="form-label">Full Residence</label>
+                                                <div class="col-12">
+                                                    <small class="text-white-50 uppercase fw-bold">
+                                                        Mother's Details
+                                                    </small>
+                                                </div>
                                                 <div class="col-md-5">
                                                     <div class="position-relative">
                                                         <input class="form-control"
@@ -1396,6 +1688,19 @@
                 </div>
             </div>
         </main>
+
+        <div v-if="previewModal.open" class="pdf-preview-modal-backdrop" @click="closePreviewModal">
+            <div class="pdf-preview-modal-panel" @click.stop>
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h6 class="mb-0 text-white">{{ previewModal.title || 'Document Preview' }}</h6>
+                    <button type="button" class="btn btn-sm btn-outline-light" @click="closePreviewModal">
+                        Close
+                    </button>
+                </div>
+                <iframe v-if="previewModal.url" :src="`${previewModal.url}#toolbar=1&navpanes=0`"
+                    class="pdf-preview-modal-frame" title="PDF document preview"></iframe>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -1470,9 +1775,28 @@ export default {
                 groom: { cenomar: '', psa: '', lcro: '' },
                 bride: { cenomar: '', psa: '', lcro: '' }
             },
+            previewModal: {
+                open: false,
+                url: '',
+                title: ''
+            },
             form: {
-                groom: { documents: {}, sex: "Male" },
-                bride: { documents: {}, sex: "Female" },
+                groom: {
+                    documents: {},
+                    sex: "Male",
+                    govtIssuedIdType: '',
+                    govtIssuedIdNumber: '',
+                    govtIssuedIdIssuedAt: '',
+                    govtIssuedIdIssuedOn: ''
+                },
+                bride: {
+                    documents: {},
+                    sex: "Female",
+                    govtIssuedIdType: '',
+                    govtIssuedIdNumber: '',
+                    govtIssuedIdIssuedAt: '',
+                    govtIssuedIdIssuedOn: ''
+                },
                 consentSource: {
                     groom: {},
                     bride: {}
@@ -1744,14 +2068,18 @@ export default {
 
             // Store file in the form object
             this.form[person].documents[docType] = file;
-            this.fileTypes[person][docType] = file.type;
+            const normalizedType = file.type || (file.name && file.name.toLowerCase().endsWith('.pdf') ? 'application/pdf' : '');
+            this.fileTypes[person][docType] = normalizedType;
 
-            if (file.type.startsWith('image/')) {
+            this.revokePreviewUrlIfBlob(person, docType);
+            if (normalizedType.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     this.previews[person][docType] = e.target.result;
                 };
                 reader.readAsDataURL(file);
+            } else if (normalizedType === 'application/pdf') {
+                this.previews[person][docType] = URL.createObjectURL(file);
             } else {
                 // For PDFs or other files, set a placeholder to show icon
                 this.previews[person][docType] = 'document';
@@ -1760,6 +2088,82 @@ export default {
         isImage(person, docType) {
             const type = this.fileTypes[person][docType];
             return type && type.startsWith('image/');
+        },
+        isPdf(person, docType) {
+            const type = this.fileTypes[person][docType];
+            return type === 'application/pdf';
+        },
+        getDocumentDisplayLabel(docType) {
+            if (docType === 'govtIssuedId') return 'Government Issued ID';
+            if (docType === 'pmocCertificate') return 'PMOC Certificate';
+            return String(docType || '').toUpperCase();
+        },
+        openPreviewModal(url, title = 'Document Preview') {
+            if (!url || typeof url !== 'string') return;
+            this.previewModal.open = true;
+            this.previewModal.url = url;
+            this.previewModal.title = title;
+        },
+        closePreviewModal() {
+            this.previewModal.open = false;
+            this.previewModal.url = '';
+            this.previewModal.title = '';
+        },
+        triggerReplaceFromButton(event) {
+            const trigger = event?.currentTarget;
+            const container = trigger?.closest('.glass-upload-container');
+            const fileInput = container?.querySelector('.file-input-overlay');
+            if (fileInput) {
+                fileInput.click();
+            }
+        },
+        revokePreviewUrlIfBlob(person, docType) {
+            const preview = this.previews?.[person]?.[docType];
+            if (typeof preview === 'string' && preview.startsWith('blob:')) {
+                if (this.previewModal.url === preview) {
+                    this.closePreviewModal();
+                }
+                URL.revokeObjectURL(preview);
+            }
+        },
+        isGovtIdDetailsComplete(person) {
+            const profile = this.form[person] || {};
+            return !!(
+                profile.govtIssuedIdType &&
+                profile.govtIssuedIdNumber &&
+                profile.govtIssuedIdIssuedAt &&
+                profile.govtIssuedIdIssuedOn
+            );
+        },
+        getGovtIdProgress(person) {
+            const profile = this.form[person] || {};
+            const fields = [
+                profile.govtIssuedIdType,
+                profile.govtIssuedIdNumber,
+                profile.govtIssuedIdIssuedAt,
+                profile.govtIssuedIdIssuedOn
+            ];
+            return fields.filter(Boolean).length;
+        },
+        getTodayDateString() {
+            return new Date().toISOString().split('T')[0];
+        },
+        getGovtIdMinDateString() {
+            return '1950-01-01';
+        },
+        getGovtIdIssuedOnError(dateValue, personLabel) {
+            if (!dateValue) return `${personLabel} issued date is required.`;
+
+            const minDate = this.getGovtIdMinDateString();
+            const maxDate = this.getTodayDateString();
+
+            if (dateValue < minDate) {
+                return `${personLabel} issued date is too old. Please use a date from ${minDate} up to today.`;
+            }
+            if (dateValue > maxDate) {
+                return `${personLabel} issued date cannot be in the future.`;
+            }
+            return '';
         },
         onGroomCityInput() {
             const query = (this.form.groom.cityMunicipality || '').trim();
@@ -2731,6 +3135,31 @@ export default {
                         this.scrollToError();
                         return;
                     }
+                    const missingGroomGovtIdDetails = !this.form.groom.govtIssuedIdType
+                        || !this.form.groom.govtIssuedIdNumber
+                        || !this.form.groom.govtIssuedIdIssuedAt
+                        || !this.form.groom.govtIssuedIdIssuedOn;
+                    const missingBrideGovtIdDetails = !this.form.bride.govtIssuedIdType
+                        || !this.form.bride.govtIssuedIdNumber
+                        || !this.form.bride.govtIssuedIdIssuedAt
+                        || !this.form.bride.govtIssuedIdIssuedOn;
+                    if (missingGroomGovtIdDetails || missingBrideGovtIdDetails) {
+                        this.message.push("Please complete Government Issued ID details (ID type, ID number, issued at, and issued on) for both Groom and Bride.");
+                        this.scrollToError();
+                        return;
+                    }
+                    const groomIssuedOnError = this.getGovtIdIssuedOnError(this.form.groom.govtIssuedIdIssuedOn, 'Groom');
+                    if (groomIssuedOnError) {
+                        this.message.push(groomIssuedOnError);
+                        this.scrollToError();
+                        return;
+                    }
+                    const brideIssuedOnError = this.getGovtIdIssuedOnError(this.form.bride.govtIssuedIdIssuedOn, 'Bride');
+                    if (brideIssuedOnError) {
+                        this.message.push(brideIssuedOnError);
+                        this.scrollToError();
+                        return;
+                    }
 
                     if (this.type === "groom" || this.type === "both") {
                         const missingGroomForeignBase = ['legalCapacity', 'validPassport']
@@ -3026,6 +3455,23 @@ export default {
                         isBrideMissing = currentRequiredDocs.some(doc => !this.form.bride.documents[doc]);
                         if (isGroomMissing || isBrideMissing) {
                             this.message.push("Please upload a Valid ID for both parties.");
+                        } else {
+                            const missingGroomGovtIdDetails = !this.form.groom.govtIssuedIdType
+                                || !this.form.groom.govtIssuedIdNumber
+                                || !this.form.groom.govtIssuedIdIssuedAt
+                                || !this.form.groom.govtIssuedIdIssuedOn;
+                            const missingBrideGovtIdDetails = !this.form.bride.govtIssuedIdType
+                                || !this.form.bride.govtIssuedIdNumber
+                                || !this.form.bride.govtIssuedIdIssuedAt
+                                || !this.form.bride.govtIssuedIdIssuedOn;
+                            if (missingGroomGovtIdDetails || missingBrideGovtIdDetails) {
+                                this.message.push("Please complete Government Issued ID details (ID type, ID number, issued at, and issued on) for both Groom and Bride.");
+                            } else {
+                                const groomIssuedOnError = this.getGovtIdIssuedOnError(this.form.groom.govtIssuedIdIssuedOn, 'Groom');
+                                const brideIssuedOnError = this.getGovtIdIssuedOnError(this.form.bride.govtIssuedIdIssuedOn, 'Bride');
+                                if (groomIssuedOnError) this.message.push(groomIssuedOnError);
+                                if (brideIssuedOnError) this.message.push(brideIssuedOnError);
+                            }
                         }
                         break;
 
@@ -3724,6 +4170,12 @@ export default {
         if (this.brideDissolvedPlaceAbortController) {
             this.brideDissolvedPlaceAbortController.abort();
         }
+        ['groom', 'bride'].forEach((person) => {
+            const personPreviews = this.previews?.[person] || {};
+            Object.keys(personPreviews).forEach((docType) => {
+                this.revokePreviewUrlIfBlob(person, docType);
+            });
+        });
     }
 }
 </script>
@@ -3919,6 +4371,17 @@ export default {
     z-index: 10;
 }
 
+.preview-trigger-btn {
+    position: relative;
+    z-index: 25;
+    pointer-events: auto;
+}
+
+/* When a file is already selected, allow action buttons (e.g. Preview) to be clickable. */
+.glass-upload-container:has(.glass-placeholder.has-file) .file-input-overlay {
+    pointer-events: none;
+}
+
 /* Glass Badge */
 .glass-badge {
     position: absolute;
@@ -3953,6 +4416,35 @@ export default {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.pdf-preview-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    background: rgba(7, 10, 20, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.pdf-preview-modal-panel {
+    width: min(980px, 100%);
+    max-height: calc(100vh - 32px);
+    background: rgba(14, 20, 38, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+}
+
+.pdf-preview-modal-frame {
+    width: 100%;
+    height: min(78vh, 860px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    background: #fff;
+}
+
 .glass-placeholder {
     min-height: 120px !important;
     /* Smaller footprint */
@@ -3972,6 +4464,35 @@ export default {
 
 .border-white-10 {
     border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.govt-id-meta-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(13, 110, 253, 0.25);
+    border-radius: 12px;
+}
+
+.govt-id-progress-chip {
+    font-size: 0.68rem;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: #cfe2ff;
+    background: rgba(13, 110, 253, 0.22);
+    border: 1px solid rgba(13, 110, 253, 0.45);
+    border-radius: 999px;
+    padding: 4px 10px;
+    white-space: nowrap;
+}
+
+.govt-id-upload-hint {
+    background: rgba(255, 193, 7, 0.12);
+    border: 1px solid rgba(255, 193, 7, 0.35);
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+.letter-spaced {
+    letter-spacing: 0.6px;
 }
 
 /* Better Label Styling */
