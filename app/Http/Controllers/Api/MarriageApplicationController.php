@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -17,6 +18,102 @@ class MarriageApplicationController extends Controller
 {
     public function store(Request $request)
     {
+        $request->validate([
+            'type' => 'nullable|in:filipino,groom,bride,both',
+            'groomRequirement' => 'nullable|in:parental-consent,parental-advise,no-need',
+            'brideRequirement' => 'nullable|in:parental-consent,parental-advise,no-need',
+            'groom' => 'required|string',
+            'bride' => 'required|string',
+            'consentSource' => 'nullable|string',
+            'documents_groom' => 'required|array|min:1',
+            'documents_bride' => 'required|array|min:1',
+            'documents_groom.*' => 'required|file|mimes:pdf|max:15360',
+            'documents_bride.*' => 'required|file|mimes:pdf|max:15360',
+        ]);
+
+        $groomPayload = json_decode($request->input('groom', '{}'), true) ?? [];
+        $bridePayload = json_decode($request->input('bride', '{}'), true) ?? [];
+        $type = strtolower((string) ($request->input('type') ?? 'filipino'));
+        $groomRequirement = strtolower((string) ($request->input('groomRequirement') ?? 'no-need'));
+        $brideRequirement = strtolower((string) ($request->input('brideRequirement') ?? 'no-need'));
+        $groomStatus = strtolower((string) ($groomPayload['civilStatus'] ?? ''));
+
+        $uploadedDocKeys = [
+            'groom' => array_keys($request->file('documents_groom', [])),
+            'bride' => array_keys($request->file('documents_bride', [])),
+        ];
+        $requiredDocKeys = [
+            'groom' => ['cenomar', 'psa', 'govtIssuedId', 'pmocCertificate'],
+            'bride' => ['cenomar', 'psa', 'govtIssuedId', 'pmocCertificate'],
+        ];
+
+        if ($groomRequirement === 'parental-consent') {
+            $requiredDocKeys['groom'][] = 'parentalConsent';
+        } elseif ($groomRequirement === 'parental-advise') {
+            $requiredDocKeys['groom'][] = 'parentalAdvise';
+        }
+        if ($brideRequirement === 'parental-consent') {
+            $requiredDocKeys['bride'][] = 'parentalConsent';
+        } elseif ($brideRequirement === 'parental-advise') {
+            $requiredDocKeys['bride'][] = 'parentalAdvise';
+        }
+
+        if (in_array($type, ['groom', 'both'], true)) {
+            $requiredDocKeys['groom'] = array_merge($requiredDocKeys['groom'], ['legalCapacity', 'validPassport']);
+            if ($groomStatus === 'widowed') {
+                $requiredDocKeys['groom'][] = 'apostilled';
+            }
+            if (in_array($groomStatus, ['divorced', 'annulled'], true)) {
+                $requiredDocKeys['groom'][] = 'divorceDecree';
+            }
+        }
+        if (in_array($type, ['bride', 'both'], true)) {
+            $requiredDocKeys['bride'] = array_merge($requiredDocKeys['bride'], ['legalCapacity', 'validPassport']);
+        }
+
+        $govtIssuedDateMin = Carbon::create(1950, 1, 1)->startOfDay();
+        $today = Carbon::today();
+        $validationErrors = [];
+
+        foreach (['groom', 'bride'] as $role) {
+            $missing = array_values(array_diff(array_unique($requiredDocKeys[$role]), $uploadedDocKeys[$role]));
+            if (!empty($missing)) {
+                $validationErrors["documents_{$role}"] = [
+                    ucfirst($role) . " is missing required document(s): " . implode(', ', $missing) . ".",
+                ];
+            }
+        }
+
+        foreach (['groom' => $groomPayload, 'bride' => $bridePayload] as $role => $payload) {
+            $label = ucfirst($role);
+            if (empty($payload['govtIssuedIdType'])) {
+                $validationErrors["{$role}.govtIssuedIdType"] = ["{$label} Government ID type is required."];
+            }
+            if (empty($payload['govtIssuedIdNumber'])) {
+                $validationErrors["{$role}.govtIssuedIdNumber"] = ["{$label} Government ID number is required."];
+            }
+            if (empty($payload['govtIssuedIdIssuedAt'])) {
+                $validationErrors["{$role}.govtIssuedIdIssuedAt"] = ["{$label} Government ID issued-at value is required."];
+            }
+            if (empty($payload['govtIssuedIdIssuedOn'])) {
+                $validationErrors["{$role}.govtIssuedIdIssuedOn"] = ["{$label} Government ID issued-on date is required."];
+                continue;
+            }
+
+            try {
+                $issuedOn = Carbon::createFromFormat('Y-m-d', (string) $payload['govtIssuedIdIssuedOn'])->startOfDay();
+                if ($issuedOn->lt($govtIssuedDateMin) || $issuedOn->gt($today)) {
+                    $validationErrors["{$role}.govtIssuedIdIssuedOn"] = ["{$label} Government ID issued-on date must be between 1950-01-01 and today."];
+                }
+            } catch (\Exception $e) {
+                $validationErrors["{$role}.govtIssuedIdIssuedOn"] = ["{$label} Government ID issued-on date format is invalid."];
+            }
+        }
+
+        if (!empty($validationErrors)) {
+            throw ValidationException::withMessages($validationErrors);
+        }
+
         return DB::transaction(function () use ($request) {
             $consentSource = json_decode($request->input('consentSource', '{}'), true) ?? [];
             $requirements = [
@@ -149,6 +246,10 @@ class MarriageApplicationController extends Controller
                     'source_citizenship'   => $resolveCitizenship($source, 'citizenship', 'citizenshipOther'),
                     'source_relationship'  => $source['relationship'] ?? null,
                     'source_residence'     => $sourceResidence,
+                    'government_id_type'   => $data['govtIssuedIdType'] ?? null,
+                    'government_id_number' => $data['govtIssuedIdNumber'] ?? null,
+                    'government_id_issued_at' => $data['govtIssuedIdIssuedAt'] ?? null,
+                    'government_id_issued_on' => $data['govtIssuedIdIssuedOn'] ?? null,
 
                     'created_at'         => Carbon::now(),
                     'updated_at'         => Carbon::now(),
@@ -171,6 +272,12 @@ class MarriageApplicationController extends Controller
 
         if ($request->hasFile($fileKey)) {
             foreach ($request->file($fileKey) as $docType => $file) {
+                if (strtolower($file->getClientOriginalExtension()) !== 'pdf') {
+                    throw ValidationException::withMessages([
+                        "{$fileKey}.{$docType}" => ['Only PDF files are allowed for uploaded documents.'],
+                    ]);
+                }
+
                 // Store physical file
                 $path = $file->store("applications/{$controlNo}/{$role}", 'public');
 
