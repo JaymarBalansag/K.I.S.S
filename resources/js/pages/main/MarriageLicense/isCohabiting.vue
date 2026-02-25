@@ -174,6 +174,47 @@ export default {
       const link = `/Marriage-Form/requirements/groom/${this.groomAgeRange}/bride/${this.brideAgeRange}/isForeigner/${this.isForeigner}/${this.type}/Cohab/${this.isCohabiting}`;
       this.$router.push(link);
     }
+  },
+  mounted() {
+    const prepQuestion = sessionStorage.getItem("prepQuestion");
+
+    if(prepQuestion){
+        
+        Swal.fire({
+          title: 'Before You Proceed',
+          html: `
+              <p class="mb-2">Please prepare the required documents and upload them in PDF format.</p>
+              <p class="mb-0 small">
+                  Not sure about the basic and other requirements?
+                  <RouterLink to="/faq" rel="noopener noreferrer">View the FAQ</RouterLink>.
+              </p>
+          `,
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, I prepared them',
+          cancelButtonText: "I'm not prepared yet",
+          confirmButtonColor: '#0d6efd',
+          cancelButtonColor: '#6c757d',
+          reverseButtons: true,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          allowEnterKey: false,
+          showCloseButton: false
+      }).then((result) => {
+          if (result.isConfirmed) {
+              sessionStorage.removeItem("prepQuestion")
+          } else {
+              Swal.fire({
+                  title: 'Take Your Time',
+                  text: 'Feel free to explore the requirements and prepare your documents. We will be here when you are ready.',
+                  icon: 'info',
+                  confirmButtonText: 'OK',
+                  confirmButtonColor: '#0d6efd'
+              });
+              this.$router.push('/home');
+          }
+      });
+    }
   }
 };
 </script>
