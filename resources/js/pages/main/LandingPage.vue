@@ -34,7 +34,7 @@
                                 </div>
                                 <h3 class="card-title h4 fw-bold text-dark mb-3">{{ service.title }}</h3>
                                 <p class="card-text text-muted mb-4 lh-lg">{{ service.description }}</p>
-                                <RouterLink :to="service.link"
+                                <RouterLink :to="service.link" @click.prevent="handleServiceExplore(service)"
                                     class="btn btn-outline-primary rounded-pill fw-bold px-4 transition-all">
                                     Explore Service <span class="ms-1">→</span>
                                 </RouterLink>
@@ -83,13 +83,23 @@ export default {
         };
     },
     methods: {
+      async handleServiceExplore(service) {
+        if (service.link !== '/isCohabiting') {
+            this.$router.push(service.link);
+            return;
+        }
+
+        sessionStorage.setItem("prepQuestion", "true");
+        this.$router.push(service.link);
+        
+      },
       isCohabitingMessage() {
         Swal.fire({
             title: "Cohabitation",
-            text: "Couples or Partner do not need marriage license who is cohabiting 5 years above",
+            text: "Couples or partners who have cohabited for 5 years or more do not need a marriage license.",
             icon: "warning"
         });
-      }  
+      }
     },
     mounted() {
         const isCohabiting = sessionStorage.getItem("isCohabiting");
