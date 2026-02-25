@@ -16,7 +16,7 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: "Courier New", Courier, monospace;
+            font-family: "Libre Baskerville", Courier, monospace;
             font-size: 11pt;
             color: black;
         }
@@ -115,7 +115,6 @@
         .b-birthplace {
             top: 430px;
             width: 300px;
-            font-size: 9pt;
             white-space: normal;
         }
 
@@ -242,14 +241,49 @@
             top: 1050px;
         }
 
-        .g-civil-registrar,
-        .b-civil-registrar {
-            top: 1180px;
+        .g-day-today,
+        .b-day-today {
+            top: 1098px;
+        }
+
+        .g-month-today,
+        .b-month-today {
+            top: 1098px;
+        }
+
+        .g-year-today,
+        .b-year-today {
+            top: 1098px;
         }
 
         .g-place,
         .b-place {
             top: 1110px;
+        }
+
+        .g-ID,
+        .b-ID {
+            top: 1123px;
+            font-size: 9px;
+            width: 105px;
+            text-align: left;
+            white-space: normal;
+        }
+
+        .g-Issued-on,
+        .b-Issued-on {
+            top: 1140px;
+        }
+
+        .g-Issued-at,
+        .b-Issued-at {
+            top: 1155px;
+        }
+
+
+        .g-civil-registrar,
+        .b-civil-registrar {
+            top: 1180px;
         }
 
         /* ---------------- LEFT OFFSETS (COLUMN ALIGNMENT) ---------------- */
@@ -262,10 +296,24 @@
             left: 155px;
         }
 
+        /* Groom's Birthday */
         .g-bday {
             left: 130px;
         }
 
+        .g-day {
+            left: 120px;
+        }
+
+        .g-month {
+            left: 170px;
+        }
+
+        .g-year {
+            left: 275px;
+        }
+
+        /* Age */
         .g-age {
             left: 350px;
         }
@@ -274,38 +322,94 @@
             left: 145px;
         }
 
+        /* Citezenship */
         .g-citizenship {
             left: 270px;
         }
 
+        .g-birth-municipality {
+            left: 125px;
+        }
+
+        .g-birth-province {
+            left: 235px;
+        }
+
+        .g-birth-country {
+            left: 300px;
+        }
+
+        /* Residence */
         .g-residence {
             left: 115px;
         }
 
         .g-religion {
-            left: 180px;
+            left: 190px;
         }
 
-        .g-civil-status,
+        .g-civil-status {
+            left: 220px;
+        }
+
         .g-if-married {
-            left: 230px;
+            left: 210px;
         }
 
         .g-place-dissolved {
             left: 140px;
         }
 
+        .g-place-municipality {
+            left: 125px;
+        }
+
+        .g-place-province {
+            left: 235px;
+        }
+
+        .g-place-country {
+            left: 300px;
+        }
+
         .g-date-dissolved {
             left: 160px;
         }
 
+        .g-disolve-day {
+            left: 120px;
+        }
+
+        .g-disolve-month {
+            left: 210px;
+        }
+
+        .g-disolve-year {
+            left: 310px;
+        }
+
         .g-relationship {
-            left: 170px;
+            left: 190px;
         }
 
         .g-fathername,
         .g-mothername {
             left: 145px;
+        }
+
+        .g-f-fname,
+        .g-m-fname {
+            left: 130px;
+        }
+
+        .g-f-mname,
+        .g-m-mname {
+            left: 220px;
+        }
+
+        .g-f-lname,
+        .g-m-lname {
+            left: 300px;
         }
 
         .g-father-citizenship,
@@ -326,8 +430,46 @@
             left: 190px;
         }
 
+        .g-day-today {
+            left: 115px;
+        }
+
+        .g-month-today {
+            left: 200px;
+        }
+
+        .g-year-today {
+            left: 330px;
+        }
+
         .g-place {
             left: 135px;
+        }
+
+        .g-ID {
+            left: 265px;
+        }
+
+
+        .g-Issued-on {
+            left: 140px;
+        }
+
+        .g-issued-month {
+            left: 160px;
+
+        }
+
+        .g-issued-day {
+            left: 305px;
+        }
+
+        .g-issued-year {
+            left: 340px;
+        }
+
+        .g-Issued-at {
+            left: 140px;
         }
 
         .g-civil-registrar {
@@ -346,6 +488,18 @@
             left: 530px;
         }
 
+        .b-day {
+            left: 495px;
+        }
+
+        .b-month {
+            left: 550px;
+        }
+
+        .b-year {
+            left: 650px;
+        }
+
         .b-age {
             left: 720px;
         }
@@ -358,26 +512,69 @@
             left: 650px;
         }
 
+        .b-birth-municipality {
+            left: 500px;
+        }
+
+        .b-birth-province {
+            left: 610px;
+        }
+
+        .b-birth-country {
+            left: 675px;
+        }
+
+
         .b-residence {
             left: 500px;
         }
 
-        .b-religion,
-        .b-civil-status,
-        .b-if-married {
+        .b-religion {
+            left: 550px;
+        }
+
+        .b-civil-status {
             left: 580px;
+        }
+
+        .b-if-married {
+            left: 570px;
         }
 
         .b-place-dissolved {
             left: 500px;
         }
 
+        .b-disolve-municipality {
+            left: 495px;
+        }
+
+        .b-disolve-province {
+            left: 600px;
+        }
+
+        .b-disolve-country {
+            left: 675px;
+        }
+
         .b-date-dissolved {
-            left: 560px;
+            left: 540px;
+        }
+
+        .b-date-dissolved-day {
+            left: 500px;
+        }
+
+        .b-date-dissolved-month {
+            left: 580px;
+        }
+
+        .b-date-dissolved-year {
+            left: 680px;
         }
 
         .b-relationship {
-            left: 570px;
+            left: 560px;
         }
 
         .b-fathername,
@@ -385,9 +582,24 @@
             left: 525px;
         }
 
+        .b-father-first,
+        .b-mother-first {
+            left: 500px;
+        }
+
+        .b-father-middle,
+        .b-mother-middle {
+            left: 590px;
+        }
+
+        .b-father-last,
+        .b-mother-last {
+            left: 680px;
+        }
+
         .b-father-citizenship,
         .b-mother-citizenship {
-            left: 600px;
+            left: 590px;
         }
 
         .b-father-residence {
@@ -412,8 +624,45 @@
             left: 560px;
         }
 
+        .b-day-today {
+            left: 480px;
+        }
+
+        .b-month-today {
+            left: 570px;
+        }
+
+        .b-year-today {
+            left: 690px;
+        }
+
         .b-place {
             left: 530px;
+        }
+
+        .b-ID {
+            left: 635px;
+        }
+
+
+        .b-Issued-on {
+            left: 540px;
+        }
+
+        .b-Issued-month {
+            left: 520px;
+        }
+
+        .b-Issued-day {
+            left: 670px;
+        }
+
+        .b-Issued-year {
+            left: 710px;
+        }
+
+        .b-Issued-at {
+            left: 540px;
         }
 
         .b-civil-registrar {
@@ -433,26 +682,44 @@
         <div class="data received-by">MUNICIPAL CIVIL REGISTRAR</div>
         <div class="data date">Feb 10, 2026</div>
 
+        <!-- Groom's Details -->
         <div class="data b-fullname">Russell Limos Taburada</div>
         <div class="data g-name-first">Ruwilson</div>
         <div class="data g-name-middle">Taburada</div>
         <div class="data g-name-last">Hipos</div>
-        <div class="data g-bday">26 November, 2003</div>
+
+        <div class="data g-bday g-day">26</div>
+        <div class="data g-bday g-month">November,</div>
+        <div class="data g-bday g-year">2003</div>
         <div class="data g-age">22</div>
-        <div class="data g-birthplace">Abuyog Leyte, Philippines</div>
+
+        <div class="data g-birthplace g-birth-municipality">Abuyog</div>
+        <div class="data g-birthplace g-birth-province">Leyte,</div>
+        <div class="data g-birthplace g-birth-country">Philippines</div>
+
         <div class="data g-sex">Male</div>
         <div class="data g-citizenship">Filipino</div>
         <div class="data g-residence">340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines</div>
         <div class="data g-religion">Roman Catholic</div>
         <div class="data g-civil-status">Single</div>
         <div class="data g-if-married">Divorced</div>
-        <div class="data g-place-dissolved">Abuyog Leyte, Philippines</div>
-        <div class="data g-date-dissolved">10 February, 2026</div>
+        <div class="data g-place-dissolved g-place-municipality">Abuyog</div>
+        <div class="data g-place-dissolved g-place-province">Leyte,</div>
+        <div class="data g-place-dissolved g-place-country">Philippines</div>
+
+        <div class="data g-date-dissolved g-disolve-day">10</div>
+        <div class="data g-date-dissolved g-disolve-month">February</div>
+        <div class="data g-date-dissolved g-disolve-year">2026</div>
         <div class="data g-relationship">Not Applicable</div>
-        <div class="data g-fathername">Jaymar Sabillo Balansag</div>
+
+        <div class="data g-fathername g-f-fname">Jaymar</div>
+        <div class="data g-fathername g-f-mname">Sabillo</div>
+        <div class="data g-fathername g-f-lname">Balansag</div>
         <div class="data g-father-citizenship">Filipino</div>
         <div class="data g-father-residence">340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines</div>
-        <div class="data g-mothername">Lorena Limos Taburada</div>
+        <div class="data g-mothername g-m-fname">Lorena</div>
+        <div class="data g-mothername g-m-mname">Limos</div>
+        <div class="data g-mothername g-m-lname">Taburada</div>
         <div class="data g-mother-citizenship">Filipino</div>
         <div class="data g-mother-residence">340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines</div>
         <div class="data g-give-consent">NOT APPLICABLE</div>
@@ -460,29 +727,61 @@
         <div class="data g-give-consent-citizenship">NOT APPLICABLE</div>
         <div class="data g-give-consent-residence">NOT APPLICABLE</div>
         <div class="data g-fullname-signature">Russell Limos Taburada</div>
+
+        <div class="data g-day-today">24th</div>
+        <div class="data g-month-today">FEBRUARY</div>
+        <div class="data g-year-today">2026</div>
+
         <div class="data g-place">Abuyog, Leyte</div>
+        <div class="data g-ID">PHIL.ID: 5047-3248-5342-6083</div>
+
+        <div class="data g-Issued-on g-issued-month">February</div>
+        <div class="data g-Issued-on g-issued-day">10</div>
+        <div class="data g-Issued-on g-issued-year">2026</div>
+
+        <div class="data g-Issued-at">Abuyog, Leyte</div>
         <div class="data g-civil-registrar">Atty. Madilyn Madolin-Merano</div>
 
+        <!-- Bride's Details -->
         <div class="data g-fullname">Ruwilson Taburada Hipos</div>
         <div class="data b-name-first">Ruwilson</div>
         <div class="data b-name-middle">Taburada</div>
         <div class="data b-name-last">Hipos</div>
-        <div class="data b-bday">26 November, 2003</div>
+
+        <div class="data b-bday b-day">26</div>
+        <div class="data b-bday b-month">November</div>
+        <div class="data b-bday b-year">2003</div>
         <div class="data b-age">22</div>
-        <div class="data b-birthplace">Abuyog Leyte, Philippines</div>
+
+        <div class="data b-birthplace b-birth-municipality">Abuyog</div>
+        <div class="data b-birthplace b-birth-province">Leyte</div>
+        <div class="data b-birthplace b-birth-country">Philippines</div>
+
         <div class="data b-sex">Male</div>
         <div class="data b-citizenship">Filipino</div>
         <div class="data b-residence">340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines</div>
         <div class="data b-religion">Roman Catholic</div>
         <div class="data b-civil-status">Single</div>
         <div class="data b-if-married">Divorced</div>
-        <div class="data b-place-dissolved">Abuyog Leyte, Philippines</div>
-        <div class="data b-date-dissolved">10 February, 2026</div>
+        <div class="data b-place-dissolved b-disolve-municipality">Abuyog</div>
+        <div class="data b-place-dissolved b-disolve-province">Leyte</div>
+        <div class="data b-place-dissolved b-disolve-country">Philippines</div>
+
+        <div class="data b-date-dissolved b-date-dissolved-day">10</div>
+        <div class="data b-date-dissolved b-date-dissolved-month">February</div>
+        <div class="data b-date-dissolved b-date-dissolved-year">2026</div>
+
+
         <div class="data b-relationship">Not Applicable</div>
-        <div class="data b-fathername">Jaymar Sabillo Balansag</div>
+        <div class="data b-fathername b-father-first">Jaymar</div>
+        <div class="data b-fathername b-father-middle">Sabillo</div>
+        <div class="data b-fathername b-father-last">Balansag</div>
         <div class="data b-father-citizenship">Filipino</div>
         <div class="data b-father-residence">340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines</div>
-        <div class="data b-mothername">Lorena Limos Taburada</div>
+        <div class="data b-mothername b-mother-first">Lorena</div>
+        <div class="data b-mothername b-mother-middle">Limos</div>
+        <div class="data b-mothername b-mother-last">Taburada</div>
+
         <div class="data b-mother-citizenship">Filipino</div>
         <div class="data b-mother-residence">340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines</div>
         <div class="data b-give-consent">NOT APPLICABLE</div>
@@ -490,7 +789,17 @@
         <div class="data b-give-consent-citizenship">NOT APPLICABLE</div>
         <div class="data b-give-consent-residence">NOT APPLICABLE</div>
         <div class="data b-fullname-signature">Ruwilson Taburada Hipos</div>
+
+        <div class="data b-day-today">24th</div>
+        <div class="data b-month-today">FEBRUARY</div>
+        <div class="data b-year-today">2026</div>
+
         <div class="data b-place">Abuyog, Leyte</div>
+        <div class="data b-ID">PHIL.ID: 5047-3248-5342-6083</div>
+        <div class="data b-Issued-on b-Issued-month">February</div>
+        <div class="data b-Issued-on b-Issued-day">10</div>
+        <div class="data b-Issued-on b-Issued-year">2026</div>
+        <div class="data b-Issued-at">Abuyog, Leyte</div>
         <div class="data b-civil-registrar">Atty. Madilyn Madolin-Merano</div>
 
     </div>

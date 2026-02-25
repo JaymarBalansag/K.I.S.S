@@ -441,11 +441,11 @@ class MarriageApplicationController extends Controller
         if ($applicationId && $controlNumber) {
             $data = $this->buildApplicationFormData($applicationId, $controlNumber);
             if ($data !== null) {
-                return view('pdf.MarriageLicenseApplicationForm', $data);
+                return view('pdf.trial', $data);
             }
         }
 
-        return view('pdf.MarriageLicenseApplicationForm', $this->buildPreviewData());
+        return view('pdf.trial', $this->buildPreviewData());
     }
 
     public function trialPreviewPdf(Request $request)
@@ -456,14 +456,14 @@ class MarriageApplicationController extends Controller
         if ($applicationId && $controlNumber) {
             $data = $this->buildApplicationFormData($applicationId, $controlNumber);
             if ($data !== null) {
-                $pdf = Pdf::loadView('pdf.MarriageLicenseApplicationForm', $data)
+                $pdf = Pdf::loadView('pdf.trial', $data)
                     ->setPaper([0, 0, 612, 936], 'portrait');
 
                 return $pdf->stream('Marriage_Trial.pdf');
             }
         }
 
-        $pdf = Pdf::loadView('pdf.MarriageLicenseApplicationForm', $this->buildPreviewData())
+        $pdf = Pdf::loadView('pdf.trial', $this->buildPreviewData())
             ->setPaper([0, 0, 612, 936], 'portrait');
 
         return $pdf->stream('Marriage_Trial.pdf');
@@ -471,75 +471,93 @@ class MarriageApplicationController extends Controller
 
     private function buildPreviewData()
     {
+        $meta = [
+            'province' => 'LEYTE',
+            'municipality' => 'ABUYOG',
+            'received_by' => 'MUNICIPAL CIVIL REGISTRAR',
+            'date' => 'Feb 10, 2026',
+        ];
+
+        $groom = [
+            'full_name' => 'Ruwilson Taburada Hipos',
+            'name_first' => 'Ruwilson',
+            'name_middle' => 'Taburada',
+            'name_last' => 'Hipos',
+            'birth_date' => '26 November, 2003',
+            'age' => '22',
+            'birthplace' => 'Abuyog Leyte, Philippines',
+            'sex' => 'Male',
+            'citizenship' => 'Filipino',
+            'residence' => '340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines',
+            'religion' => 'Roman Catholic',
+            'civil_status' => 'Single',
+            'if_married' => 'Divorced',
+            'place_dissolved' => 'Abuyog Leyte, Philippines',
+            'date_dissolved' => '10 February, 2026',
+            'relationship' => 'Not Applicable',
+            'father_name' => 'Jaymar Sabillo Balansag',
+            'father_citizenship' => 'Filipino',
+            'father_residence' => '340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines',
+            'mother_name' => 'Lorena Limos Taburada',
+            'mother_citizenship' => 'Filipino',
+            'mother_residence' => '340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines',
+            'give_consent' => 'NOT APPLICABLE',
+            'give_consent_relationship' => 'NOT APPLICABLE',
+            'give_consent_citizenship' => 'NOT APPLICABLE',
+            'give_consent_residence' => 'NOT APPLICABLE',
+            'day_today' => '24th',
+            'month_today' => 'FEBRUARY',
+            'year_today' => '2026',
+            'place' => 'Abuyog, Leyte',
+            'id' => 'PHIL.ID: 5047-3248-5342-6083',
+            'issued_on' => 'February 10, 2026',
+            'issued_at' => 'Abuyog, Leyte',
+            'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
+            'fullname_signature' => 'Russell Limos Taburada',
+        ];
+
+        $bride = [
+            'full_name' => 'Russell Limos Taburada',
+            'name_first' => 'Ruwilson',
+            'name_middle' => 'Taburada',
+            'name_last' => 'Hipos',
+            'birth_date' => '26 November 2003',
+            'age' => '22',
+            'birthplace' => 'Abuyog Leyte Philippines',
+            'sex' => 'Male',
+            'citizenship' => 'Filipino',
+            'residence' => '340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines',
+            'religion' => 'Roman Catholic',
+            'civil_status' => 'Single',
+            'if_married' => 'Divorced',
+            'place_dissolved' => 'Abuyog Leyte Philippines',
+            'date_dissolved' => '10 February 2026',
+            'relationship' => 'Not Applicable',
+            'father_name' => 'Jaymar Sabillo Balansag',
+            'father_citizenship' => 'Filipino',
+            'father_residence' => '340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines',
+            'mother_name' => 'Lorena Limos Taburada',
+            'mother_citizenship' => 'Filipino',
+            'mother_residence' => '340 Ave. Rizal Street, Brgy. Bito Abuyog Leyte, Philippines',
+            'give_consent' => 'NOT APPLICABLE',
+            'give_consent_relationship' => 'NOT APPLICABLE',
+            'give_consent_citizenship' => 'NOT APPLICABLE',
+            'give_consent_residence' => 'NOT APPLICABLE',
+            'day_today' => '24th',
+            'month_today' => 'FEBRUARY',
+            'year_today' => '2026',
+            'place' => 'Abuyog, Leyte',
+            'id' => 'PHIL.ID: 5047-3248-5342-6083',
+            'issued_on' => 'February 10, 2026',
+            'issued_at' => 'Abuyog, Leyte',
+            'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
+            'fullname_signature' => 'Ruwilson Taburada Hipos',
+        ];
+
         return [
-            'meta' => [
-                'province' => 'LEYTE',
-                'municipality' => 'ABUYOG',
-                'received_by' => 'MUNICIPAL CIVIL REGISTRAR',
-                'date' => Carbon::now()->format('M d, Y'),
-            ],
-            'groom' => [
-                'full_name' => 'Groom Full Name',
-                'name_first' => 'Groom',
-                'name_middle' => 'Middle',
-                'name_last' => 'Last',
-                'birth_date' => '01 January, 2000',
-                'age' => '26',
-                'birthplace' => 'Abuyog Leyte, Philippines',
-                'sex' => 'Male',
-                'citizenship' => 'Filipino',
-                'residence' => 'Sample Address, Abuyog Leyte, Philippines',
-                'religion' => 'Roman Catholic',
-                'civil_status' => 'Single',
-                'if_married' => 'NOT APPLICABLE',
-                'place_dissolved' => 'NOT APPLICABLE',
-                'date_dissolved' => 'NOT APPLICABLE',
-                'relationship' => 'NOT APPLICABLE',
-                'father_name' => 'Father Full Name',
-                'father_citizenship' => 'Filipino',
-                'father_residence' => 'Sample Address, Abuyog Leyte, Philippines',
-                'mother_name' => 'Mother Full Name',
-                'mother_citizenship' => 'Filipino',
-                'mother_residence' => 'Sample Address, Abuyog Leyte, Philippines',
-                'give_consent' => 'NOT APPLICABLE',
-                'give_consent_relationship' => 'NOT APPLICABLE',
-                'give_consent_citizenship' => 'NOT APPLICABLE',
-                'give_consent_residence' => 'NOT APPLICABLE',
-                'fullname_signature' => 'Groom Full Name',
-                'place' => 'ABUYOG, LEYTE',
-                'civil_registrar' => 'Madilyn Madolin-Merano',
-            ],
-            'bride' => [
-                'full_name' => 'Bride Full Name',
-                'name_first' => 'Bride',
-                'name_middle' => 'Middle',
-                'name_last' => 'Last',
-                'birth_date' => '01 January, 2000',
-                'age' => '26',
-                'birthplace' => 'Abuyog Leyte, Philippines',
-                'sex' => 'Female',
-                'citizenship' => 'Filipino',
-                'residence' => 'Sample Address, Abuyog Leyte, Philippines',
-                'religion' => 'Roman Catholic',
-                'civil_status' => 'Single',
-                'if_married' => 'NOT APPLICABLE',
-                'place_dissolved' => 'NOT APPLICABLE',
-                'date_dissolved' => 'NOT APPLICABLE',
-                'relationship' => 'NOT APPLICABLE',
-                'father_name' => 'Father Full Name',
-                'father_citizenship' => 'Filipino',
-                'father_residence' => 'Sample Address, Abuyog Leyte, Philippines',
-                'mother_name' => 'Mother Full Name',
-                'mother_citizenship' => 'Filipino',
-                'mother_residence' => 'Sample Address, Abuyog Leyte, Philippines',
-                'give_consent' => 'NOT APPLICABLE',
-                'give_consent_relationship' => 'NOT APPLICABLE',
-                'give_consent_citizenship' => 'NOT APPLICABLE',
-                'give_consent_residence' => 'NOT APPLICABLE',
-                'fullname_signature' => 'Bride Full Name',
-                'place' => 'ABUYOG, LEYTE',
-                'civil_registrar' => 'Madilyn C. Madolin-Merano',
-            ],
+            'meta' => $meta,
+            'groom' => $groom,
+            'bride' => $bride,
         ];
     }
 
@@ -622,13 +640,47 @@ class MarriageApplicationController extends Controller
             }
             return $field ?: $fallback;
         };
+        $firstNonEmpty = function (...$values) {
+            foreach ($values as $value) {
+                if ($value !== null && trim((string) $value) !== '') {
+                    return $value;
+                }
+            }
+            return null;
+        };
+        $resolveId = function ($applicant) use ($firstNonEmpty) {
+            return $firstNonEmpty(
+                data_get($applicant, 'identification_number'),
+                data_get($applicant, 'id_number'),
+                data_get($applicant, 'valid_id'),
+                data_get($applicant, 'government_id'),
+                data_get($applicant, 'phil_id'),
+                'N/A'
+            );
+        };
+        $toOrdinalDay = function ($day) {
+            $dayInt = (int) $day;
+            if ($dayInt <= 0) {
+                return '';
+            }
+            if ($dayInt % 100 >= 11 && $dayInt % 100 <= 13) {
+                return $dayInt . 'th';
+            }
+            return match ($dayInt % 10) {
+                1 => $dayInt . 'st',
+                2 => $dayInt . 'nd',
+                3 => $dayInt . 'rd',
+                default => $dayInt . 'th',
+            };
+        };
 
         $metaDate = $applicants->first()->submitted_at ?: Carbon::now();
+        $submittedDate = Carbon::parse($metaDate);
         $meta = [
             'province' => 'LEYTE',
             'municipality' => 'ABUYOG',
             'received_by' => 'MUNICIPAL CIVIL REGISTRAR',
-            'date' => Carbon::parse($metaDate)->format('M d, Y'),
+            'date' => $submittedDate->format('M d, Y'),
         ];
 
         $groomData = [
@@ -655,13 +707,19 @@ class MarriageApplicationController extends Controller
             'mother_citizenship' => $groom->mother_citizenship,
             'mother_residence' => $groom->mother_residence,
             'give_consent' => $consentValue($groom, trim(($groom->source_first_name ?? '') . ' ' . ($groom->source_middle_name ?? '') . ' ' . ($groom->source_last_name ?? ''))),
-            'give_consent_relationship' => $consentValue($groom, $groom->source_relationship ?? null),
-            'give_consent_citizenship' => $consentValue($groom, $groom->source_citizenship ?? null),
-            'give_consent_residence' => $consentValue($groom, $groom->source_residence ?? null),
-            'fullname_signature' => $formatName($groom->first_name, $groom->middle_name, $groom->last_name),
-            'place' => 'ABUYOG, LEYTE',
-            'civil_registrar' => 'Atty. Madilyn C. Madolin-Merano',
-        ];
+              'give_consent_relationship' => $consentValue($groom, $groom->source_relationship ?? null),
+              'give_consent_citizenship' => $consentValue($groom, $groom->source_citizenship ?? null),
+              'give_consent_residence' => $consentValue($groom, $groom->source_residence ?? null),
+              'fullname_signature' => $formatName($groom->first_name, $groom->middle_name, $groom->last_name),
+              'day_today' => $toOrdinalDay($submittedDate->day),
+              'month_today' => strtoupper($submittedDate->format('F')),
+              'year_today' => $submittedDate->format('Y'),
+              'place' => 'Abuyog, Leyte',
+              'id' => $resolveId($groom),
+              'issued_on' => $submittedDate->format('F d, Y'),
+              'issued_at' => 'Abuyog, Leyte',
+              'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
+          ];
 
         $brideData = [
             'full_name' => $formatName($bride->first_name, $bride->middle_name, $bride->last_name),
@@ -687,13 +745,19 @@ class MarriageApplicationController extends Controller
             'mother_citizenship' => $bride->mother_citizenship,
             'mother_residence' => $bride->mother_residence,
             'give_consent' => $consentValue($bride, trim(($bride->source_first_name ?? '') . ' ' . ($bride->source_middle_name ?? '') . ' ' . ($bride->source_last_name ?? ''))),
-            'give_consent_relationship' => $consentValue($bride, $bride->source_relationship ?? null),
-            'give_consent_citizenship' => $consentValue($bride, $bride->source_citizenship ?? null),
-            'give_consent_residence' => $consentValue($bride, $bride->source_residence ?? null),
-            'fullname_signature' => $formatName($bride->first_name, $bride->middle_name, $bride->last_name),
-            'place' => 'ABUYOG, LEYTE',
-            'civil_registrar' => 'Atty. Madilyn C. Madolin-Merano',
-        ];
+              'give_consent_relationship' => $consentValue($bride, $bride->source_relationship ?? null),
+              'give_consent_citizenship' => $consentValue($bride, $bride->source_citizenship ?? null),
+              'give_consent_residence' => $consentValue($bride, $bride->source_residence ?? null),
+              'fullname_signature' => $formatName($bride->first_name, $bride->middle_name, $bride->last_name),
+              'day_today' => $toOrdinalDay($submittedDate->day),
+              'month_today' => strtoupper($submittedDate->format('F')),
+              'year_today' => $submittedDate->format('Y'),
+              'place' => 'Abuyog, Leyte',
+              'id' => $resolveId($bride),
+              'issued_on' => $submittedDate->format('F d, Y'),
+              'issued_at' => 'Abuyog, Leyte',
+              'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
+          ];
 
         return [
             'meta' => $meta,

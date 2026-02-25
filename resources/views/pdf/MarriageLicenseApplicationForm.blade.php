@@ -16,8 +16,8 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: "Courier New", Courier, monospace;
-            font-size: 11pt;
+            font-family: "Bookman Old Style", Courier, monospace;
+            font-size: 10pt;
             color: black;
         }
     
