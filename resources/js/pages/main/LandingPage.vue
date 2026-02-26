@@ -43,14 +43,6 @@
                     </div>
                 </div>
 
-                <div class="row justify-content-center mt-4">
-                    <div class="col-lg-10 text-center">
-                        <a href="/api/pdf/trial-preview-pdf" target="_blank" rel="noopener noreferrer"
-                            class="btn btn-light btn-lg rounded-pill fw-bold px-5 shadow">
-                            Print Trial Form PDF
-                        </a>
-                    </div>
-                </div>
             </div>
         </main>
 

@@ -3328,7 +3328,10 @@ export default {
                         this.scrollToError();
                         return;
                     }
-                    if (!this.form.bride.housenum || !this.form.bride.street || !this.form.bride.residence) {
+                    if (
+                        (!this.form.bride.houseNumStreet && !(this.form.bride.housenum && this.form.bride.street)) ||
+                        !this.form.bride.residence
+                    ) {
                         this.message.push("Please fill in full Bride residence.");
                         this.scrollToError();
                         return;
@@ -3771,7 +3774,10 @@ export default {
                         break;
 
                     case 26: // Bride Residence
-                        if (!this.form.bride.housenum || !this.form.bride.street || !this.form.bride.residence) {
+                        if (
+                            (!this.form.bride.houseNumStreet && !(this.form.bride.housenum && this.form.bride.street)) ||
+                            !this.form.bride.residence
+                        ) {
                             this.message.push("Please fill in full bride residence (House no., Street, and Barangay to Zip code).");
                             this.scrollToError();
                             return;

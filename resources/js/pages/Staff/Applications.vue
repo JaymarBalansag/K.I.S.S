@@ -108,9 +108,13 @@
                                                 <i class="bi bi-patch-check-fill me-1"></i> Issue
                                             </button>
 
-                                            <button v-if="app.status === 'issued'" @click="openPrintModal(app)"
+                                            <button v-if="app.status === 'issued'" @click="openPrintModal(app, '8x13')"
                                                 class="btn btn-action-glass text-warning">
-                                                <i class="bi bi-printer-fill me-1"></i> Print
+                                                <i class="bi bi-printer-fill me-1"></i> Print 8.5x13
+                                            </button>
+                                            <button v-if="app.status === 'issued'" @click="openPrintModal(app, '8x14')"
+                                                class="btn btn-action-glass text-info">
+                                                <i class="bi bi-printer-fill me-1"></i> Print 8.5x14
                                             </button>
 
                                         </div>
@@ -150,6 +154,14 @@
                                 <button v-if="app.status === 'approved'" @click="validateApproval(app, 'issued')"
                                     class="btn btn-action-glass text-warning flex-grow-1">
                                     <i class="bi bi-patch-check-fill me-1"></i> Issue
+                                </button>
+                                <button v-if="app.status === 'issued'" @click="openPrintModal(app, '8x13')"
+                                    class="btn btn-action-glass text-warning">
+                                    <i class="bi bi-printer-fill"></i> 8.5x13
+                                </button>
+                                <button v-if="app.status === 'issued'" @click="openPrintModal(app, '8x14')"
+                                    class="btn btn-action-glass text-info">
+                                    <i class="bi bi-printer-fill"></i> 8.5x14
                                 </button>
 
 
@@ -477,19 +489,28 @@
         </div>
     </div>
     <div v-if="showPrintModal" class="modal-overlay">
-        <div class="modal-content">
-            <iframe
-                ref="printFrame"
-                :src="`${trialPdfUrl}#toolbar=0&navpanes=0&view=FitH`"
-                class="print-pdf-frame"
-            ></iframe>
-            <div class="print-modal-actions">
-                <button class="btn btn-warning fw-bold px-4" @click="printIframe">
-                    <i class="bi bi-printer-fill me-1"></i> Print
-                </button>
-                <button class="btn btn-outline-light fw-bold px-4" @click="closePrintModal">
-                    <i class="bi bi-x-circle me-1"></i> Close
-                </button>
+        <div class="print-modal-content">
+            <div class="px-3 pb-2">
+                <iframe
+                    ref="printPreviewFrame"
+                    :src="printPreviewSrc"
+                    class="print-pdf-frame"
+                    @load="handlePrintPreviewLoaded"
+                ></iframe>
+                <div class="print-modal-actions">
+                    <button class="btn btn-warning fw-bold px-4" @click="printIframe" :disabled="isPrinting || isPrintPreviewLoading">
+                        <span v-if="isPrinting">
+                            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </span>
+                        <span v-else>
+                            <i class="bi bi-printer-fill me-1"></i> Print
+                        </span>
+                    </button>
+                    <button class="btn btn-outline-light fw-bold px-4" @click="closePrintModal" :disabled="isPrinting">
+                        <i class="bi bi-x-circle me-1"></i> Cancel
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -523,7 +544,11 @@ export default {
             currentFilePath: '',
             currentFileIsPDF: false,
             showPrintModal: false,
+            isPrinting: false,
+            isPrintPreviewLoading: false,
+            selectedPaperSize: '8x13',
             trialPdfUrl: '/api/pdf/trial-preview-pdf',
+            printPreviewSrc: '',
         };
     },
     computed: {
@@ -689,23 +714,54 @@ export default {
             }
         },
 
-        openPrintModal(app) {
+        buildTrialPdfUrl(paperSize = '8x13') {
+            const size = paperSize === '8x14' ? '8x14' : '8x13';
+            return `${this.trialPdfUrl}${this.trialPdfUrl.includes('?') ? '&' : '?'}paper_size=${size}`;
+        },
+        openPrintModal(app, paperSize = '8x13') {
             if (app?.id && app?.control_number) {
                 this.trialPdfUrl = `/api/pdf/trial-preview-pdf?application_id=${app.id}&control_number=${encodeURIComponent(app.control_number)}`;
             } else {
                 this.trialPdfUrl = '/api/pdf/trial-preview-pdf';
             }
+            this.selectedPaperSize = paperSize === '8x14' ? '8x14' : '8x13';
             this.showPrintModal = true;
+            this.loadPrintPreview();
         },
         closePrintModal() {
             this.showPrintModal = false;
+            this.isPrinting = false;
+            this.isPrintPreviewLoading = false;
+            this.printPreviewSrc = '';
+        },
+        loadPrintPreview() {
+            this.isPrintPreviewLoading = true;
+            const baseUrl = this.buildTrialPdfUrl(this.selectedPaperSize);
+            this.printPreviewSrc = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}_preview_ts=${Date.now()}#toolbar=0&navpanes=0&view=FitH`;
+        },
+        handlePrintPreviewLoaded() {
+            this.isPrintPreviewLoading = false;
         },
         printIframe() {
-            const iframe = this.$refs.printFrame;
-            if (iframe?.contentWindow) {
-                iframe.contentWindow.focus();
-                iframe.contentWindow.print();
+            if (this.isPrinting || this.isPrintPreviewLoading) return;
+            this.isPrinting = true;
+            const frameWindow = this.$refs.printPreviewFrame?.contentWindow;
+            if (!frameWindow) {
+                this.isPrinting = false;
+                return;
             }
+
+            let done = false;
+            const cleanup = () => {
+                if (done) return;
+                done = true;
+                this.isPrinting = false;
+            };
+
+            frameWindow.onafterprint = cleanup;
+            setTimeout(cleanup, 8000);
+            frameWindow.focus();
+            frameWindow.print();
         }
     },
     mounted() {
@@ -728,6 +784,11 @@ export default {
                 this.page = 1;
                 this.fetchApplications();
             }, 500);
+        },
+        selectedPaperSize() {
+            if (this.showPrintModal) {
+                this.loadPrintPreview();
+            }
         }
     },
 };
@@ -796,30 +857,37 @@ export default {
     z-index: 2100;
 }
 
-.modal-content {
-    width: min(95vw, 980px);
+.print-modal-content {
+    width: min(96vw, 1100px);
+    max-height: 94vh;
+    display: flex;
+    flex-direction: column;
     background: rgba(30, 41, 59, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 14px;
-    padding: 12px;
+    padding: 10px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
 }
 
 .print-pdf-frame {
     width: 100%;
-    height: min(72vh, 820px);
+    height: min(66vh, 760px);
     border: none;
     border-radius: 10px;
     background: #fff;
 }
 
 .print-modal-actions {
-    margin-top: 12px;
+    margin-top: 8px;
     display: flex;
     justify-content: flex-end;
     gap: 10px;
     padding: 8px 4px 4px;
     border-top: 1px solid rgba(255, 255, 255, 0.12);
+    position: sticky;
+    bottom: 0;
+    background: rgba(30, 41, 59, 0.98);
+    z-index: 2;
 }
 
 .glass-row {

@@ -9,6 +9,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
@@ -120,6 +121,10 @@ class MarriageApplicationController extends Controller
                 'groom' => $request->input('groomRequirement'),
                 'bride' => $request->input('brideRequirement'),
             ];
+            $hasGovernmentIdType = Schema::hasColumn('applicants', 'government_id_type');
+            $hasGovernmentIdNumber = Schema::hasColumn('applicants', 'government_id_number');
+            $hasGovernmentIdIssuedAt = Schema::hasColumn('applicants', 'government_id_issued_at');
+            $hasGovernmentIdIssuedOn = Schema::hasColumn('applicants', 'government_id_issued_on');
             $monthNames = [
                 1 => 'January',
                 2 => 'February',
@@ -181,6 +186,7 @@ class MarriageApplicationController extends Controller
                 $source = $consentSource[$role] ?? [];
                 $residenceAddress = $joinAddress(
                     $data['streethousenum'] ?? null,
+                    $data['houseNumStreet'] ?? null,
                     $data['housenum'] ?? null,
                     $data['street'] ?? null,
                     $data['residence'] ?? null
@@ -199,7 +205,7 @@ class MarriageApplicationController extends Controller
                 );
 
                 // Insert Applicant Info using Query Builder
-                DB::table('applicants')->insert([
+                $applicantInsert = [
                     'application_id'     => $applicationId,
                     'applicant_type'     => $role,
                     'first_name'         => $data['firstName'] ?? null,
@@ -246,14 +252,25 @@ class MarriageApplicationController extends Controller
                     'source_citizenship'   => $resolveCitizenship($source, 'citizenship', 'citizenshipOther'),
                     'source_relationship'  => $source['relationship'] ?? null,
                     'source_residence'     => $sourceResidence,
-                    'government_id_type'   => $data['govtIssuedIdType'] ?? null,
-                    'government_id_number' => $data['govtIssuedIdNumber'] ?? null,
-                    'government_id_issued_at' => $data['govtIssuedIdIssuedAt'] ?? null,
-                    'government_id_issued_on' => $data['govtIssuedIdIssuedOn'] ?? null,
 
                     'created_at'         => Carbon::now(),
                     'updated_at'         => Carbon::now(),
-                ]);
+                ];
+
+                if ($hasGovernmentIdType) {
+                    $applicantInsert['government_id_type'] = $data['govtIssuedIdType'] ?? null;
+                }
+                if ($hasGovernmentIdNumber) {
+                    $applicantInsert['government_id_number'] = $data['govtIssuedIdNumber'] ?? null;
+                }
+                if ($hasGovernmentIdIssuedAt) {
+                    $applicantInsert['government_id_issued_at'] = $data['govtIssuedIdIssuedAt'] ?? null;
+                }
+                if ($hasGovernmentIdIssuedOn) {
+                    $applicantInsert['government_id_issued_on'] = $data['govtIssuedIdIssuedOn'] ?? null;
+                }
+
+                DB::table('applicants')->insert($applicantInsert);
 
                 // 4. Handle File Uploads
                 $this->uploadDocumentsWithQueryBuilder($request, $applicationId, $role, $controlNumber);
@@ -544,34 +561,43 @@ class MarriageApplicationController extends Controller
     {
         $applicationId = $request->query('application_id');
         $controlNumber = $request->query('control_number');
+        $paperSize = strtolower((string) $request->query('paper_size', '8x13'));
+        $isEightByFourteen = $paperSize === '8x14';
+        $viewName = $isEightByFourteen ? 'pdf.trial8x14' : 'pdf.trial';
+        $extraViewData = ['transparentBackground' => $isEightByFourteen];
 
         if ($applicationId && $controlNumber) {
             $data = $this->buildApplicationFormData($applicationId, $controlNumber);
             if ($data !== null) {
-                return view('pdf.trial', $data);
+                return view($viewName, array_merge($data, $extraViewData));
             }
         }
 
-        return view('pdf.trial', $this->buildPreviewData());
+        return view($viewName, array_merge($this->buildPreviewData(), $extraViewData));
     }
 
     public function trialPreviewPdf(Request $request)
     {
         $applicationId = $request->query('application_id');
         $controlNumber = $request->query('control_number');
+        $paperSize = strtolower((string) $request->query('paper_size', '8x13'));
+        $isEightByFourteen = $paperSize === '8x14';
+        $viewName = $isEightByFourteen ? 'pdf.trial8x14' : 'pdf.trial';
+        $paperDimensions = $isEightByFourteen ? [0, 0, 612, 1008] : [0, 0, 612, 936];
+        $extraViewData = ['transparentBackground' => $isEightByFourteen];
 
         if ($applicationId && $controlNumber) {
             $data = $this->buildApplicationFormData($applicationId, $controlNumber);
             if ($data !== null) {
-                $pdf = Pdf::loadView('pdf.trial', $data)
-                    ->setPaper([0, 0, 612, 936], 'portrait');
+                $pdf = Pdf::loadView($viewName, array_merge($data, $extraViewData))
+                    ->setPaper($paperDimensions, 'portrait');
 
                 return $pdf->stream('Marriage_Trial.pdf');
             }
         }
 
-        $pdf = Pdf::loadView('pdf.trial', $this->buildPreviewData())
-            ->setPaper([0, 0, 612, 936], 'portrait');
+        $pdf = Pdf::loadView($viewName, array_merge($this->buildPreviewData(), $extraViewData))
+            ->setPaper($paperDimensions, 'portrait');
 
         return $pdf->stream('Marriage_Trial.pdf');
     }
@@ -699,7 +725,7 @@ class MarriageApplicationController extends Controller
         };
 
         $formatBirthplace = function ($city, $province, $country) {
-            return trim(implode(' ', array_filter([$city, $province, $country], function ($v) {
+            return trim(implode(', ', array_filter([$city, $province, $country], function ($v) {
                 return $v !== null && $v !== '';
             })));
         };
@@ -756,14 +782,24 @@ class MarriageApplicationController extends Controller
             return null;
         };
         $resolveId = function ($applicant) use ($firstNonEmpty) {
-            return $firstNonEmpty(
+            $idType = $firstNonEmpty(
+                data_get($applicant, 'government_id_type'),
+                data_get($applicant, 'id_type')
+            );
+            $idNumber = $firstNonEmpty(
+                data_get($applicant, 'government_id_number'),
                 data_get($applicant, 'identification_number'),
                 data_get($applicant, 'id_number'),
                 data_get($applicant, 'valid_id'),
                 data_get($applicant, 'government_id'),
-                data_get($applicant, 'phil_id'),
-                'N/A'
+                data_get($applicant, 'phil_id')
             );
+
+            if ($idType && $idNumber) {
+                return $idType . ': ' . $idNumber;
+            }
+
+            return $idNumber ?: 'N/A';
         };
         $toOrdinalDay = function ($day) {
             $dayInt = (int) $day;
@@ -795,16 +831,22 @@ class MarriageApplicationController extends Controller
             'name_first' => $groom->first_name,
             'name_middle' => $groom->middle_name,
             'name_last' => $groom->last_name,
-            'birth_date' => $formatDate($groom->day, $groom->month, $groom->year, true),
+            'birth_date' => $firstNonEmpty(
+                $formatDate($groom->day, $groom->month, $groom->year, true),
+                $formatDate($groom->day, $groom->month, $groom->year, false)
+            ),
             'age' => $groom->age,
-            'birthplace' => $formatBirthplace($groom->birth_city, $groom->birth_province, $groom->birth_country),
+            'birthplace' => $firstNonEmpty(
+                $formatBirthplace($groom->birth_city, $groom->birth_province, $groom->birth_country),
+                trim(implode(' ', array_filter([$groom->birth_city, $groom->birth_province, $groom->birth_country])))
+            ),
             'sex' => $groom->sex,
             'citizenship' => $groom->citizenship,
             'residence' => $groom->residence_address,
             'religion' => $groom->religion,
             'civil_status' => $groom->civil_status,
             'if_married' => $groom->dissolution_details ?: 'NOT APPLICABLE',
-            'place_dissolved' => $groom->dissolution_place ?: 'NOT APPLICABLE',
+            'place_dissolved' => $firstNonEmpty($groom->dissolution_place, 'NOT APPLICABLE'),
             'date_dissolved' => $formatDate($groom->dissolution_day, $groom->dissolution_month, $groom->dissolution_year, true) ?: 'NOT APPLICABLE',
             'relationship' => $groom->relationship_degree ?: 'NOT APPLICABLE',
             'father_name' => $formatName($groom->father_first_name, $groom->father_middle_name, $groom->father_last_name),
@@ -814,35 +856,41 @@ class MarriageApplicationController extends Controller
             'mother_citizenship' => $groom->mother_citizenship,
             'mother_residence' => $groom->mother_residence,
             'give_consent' => $consentValue($groom, trim(($groom->source_first_name ?? '') . ' ' . ($groom->source_middle_name ?? '') . ' ' . ($groom->source_last_name ?? ''))),
-              'give_consent_relationship' => $consentValue($groom, $groom->source_relationship ?? null),
-              'give_consent_citizenship' => $consentValue($groom, $groom->source_citizenship ?? null),
-              'give_consent_residence' => $consentValue($groom, $groom->source_residence ?? null),
-              'fullname_signature' => $formatName($groom->first_name, $groom->middle_name, $groom->last_name),
-              'day_today' => $toOrdinalDay($submittedDate->day),
-              'month_today' => strtoupper($submittedDate->format('F')),
-              'year_today' => $submittedDate->format('Y'),
-              'place' => 'Abuyog, Leyte',
-              'id' => $resolveId($groom),
-              'issued_on' => $submittedDate->format('F d, Y'),
-              'issued_at' => 'Abuyog, Leyte',
-              'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
-          ];
+            'give_consent_relationship' => $consentValue($groom, $groom->source_relationship ?? null),
+            'give_consent_citizenship' => $consentValue($groom, $groom->source_citizenship ?? null),
+            'give_consent_residence' => $consentValue($groom, $groom->source_residence ?? null),
+            'fullname_signature' => $formatName($groom->first_name, $groom->middle_name, $groom->last_name),
+            'day_today' => $toOrdinalDay($submittedDate->day),
+            'month_today' => strtoupper($submittedDate->format('F')),
+            'year_today' => $submittedDate->format('Y'),
+            'place' => 'Abuyog, Leyte',
+            'id' => $resolveId($groom),
+            'issued_on' => $submittedDate->format('F d, Y'),
+            'issued_at' => 'Abuyog, Leyte',
+            'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
+        ];
 
         $brideData = [
             'full_name' => $formatName($bride->first_name, $bride->middle_name, $bride->last_name),
             'name_first' => $bride->first_name,
             'name_middle' => $bride->middle_name,
             'name_last' => $bride->last_name,
-            'birth_date' => $formatDate($bride->day, $bride->month, $bride->year, true),
+            'birth_date' => $firstNonEmpty(
+                $formatDate($bride->day, $bride->month, $bride->year, true),
+                $formatDate($bride->day, $bride->month, $bride->year, false)
+            ),
             'age' => $bride->age,
-            'birthplace' => $formatBirthplace($bride->birth_city, $bride->birth_province, $bride->birth_country),
+            'birthplace' => $firstNonEmpty(
+                $formatBirthplace($bride->birth_city, $bride->birth_province, $bride->birth_country),
+                trim(implode(' ', array_filter([$bride->birth_city, $bride->birth_province, $bride->birth_country])))
+            ),
             'sex' => $bride->sex,
             'citizenship' => $bride->citizenship,
             'residence' => $bride->residence_address,
             'religion' => $bride->religion,
             'civil_status' => $bride->civil_status,
             'if_married' => $bride->dissolution_details ?: 'NOT APPLICABLE',
-            'place_dissolved' => $bride->dissolution_place ?: 'NOT APPLICABLE',
+            'place_dissolved' => $firstNonEmpty($bride->dissolution_place, 'NOT APPLICABLE'),
             'date_dissolved' => $formatDate($bride->dissolution_day, $bride->dissolution_month, $bride->dissolution_year, true) ?: 'NOT APPLICABLE',
             'relationship' => $bride->relationship_degree ?: 'NOT APPLICABLE',
             'father_name' => $formatName($bride->father_first_name, $bride->father_middle_name, $bride->father_last_name),
@@ -852,19 +900,19 @@ class MarriageApplicationController extends Controller
             'mother_citizenship' => $bride->mother_citizenship,
             'mother_residence' => $bride->mother_residence,
             'give_consent' => $consentValue($bride, trim(($bride->source_first_name ?? '') . ' ' . ($bride->source_middle_name ?? '') . ' ' . ($bride->source_last_name ?? ''))),
-              'give_consent_relationship' => $consentValue($bride, $bride->source_relationship ?? null),
-              'give_consent_citizenship' => $consentValue($bride, $bride->source_citizenship ?? null),
-              'give_consent_residence' => $consentValue($bride, $bride->source_residence ?? null),
-              'fullname_signature' => $formatName($bride->first_name, $bride->middle_name, $bride->last_name),
-              'day_today' => $toOrdinalDay($submittedDate->day),
-              'month_today' => strtoupper($submittedDate->format('F')),
-              'year_today' => $submittedDate->format('Y'),
-              'place' => 'Abuyog, Leyte',
-              'id' => $resolveId($bride),
-              'issued_on' => $submittedDate->format('F d, Y'),
-              'issued_at' => 'Abuyog, Leyte',
-              'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
-          ];
+            'give_consent_relationship' => $consentValue($bride, $bride->source_relationship ?? null),
+            'give_consent_citizenship' => $consentValue($bride, $bride->source_citizenship ?? null),
+            'give_consent_residence' => $consentValue($bride, $bride->source_residence ?? null),
+            'fullname_signature' => $formatName($bride->first_name, $bride->middle_name, $bride->last_name),
+            'day_today' => $toOrdinalDay($submittedDate->day),
+            'month_today' => strtoupper($submittedDate->format('F')),
+            'year_today' => $submittedDate->format('Y'),
+            'place' => 'Abuyog, Leyte',
+            'id' => $resolveId($bride),
+            'issued_on' => $submittedDate->format('F d, Y'),
+            'issued_at' => 'Abuyog, Leyte',
+            'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
+        ];
 
         return [
             'meta' => $meta,
