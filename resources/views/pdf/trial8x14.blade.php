@@ -9,15 +9,15 @@
 
     <style>
         @page {
-            size: 8.5in 13in;
+            size: 8.5in 14in;
             margin: 0;
         }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: "Bookman Old Style", Courier, monospace;
-            font-size: 10pt;
+            font-family: "Libre Baskerville", Courier, monospace;
+            font-size: 11pt;
             color: black;
         }
 
@@ -25,7 +25,7 @@
         .print-container {
             position: relative;
             width: 8.5in;
-            height: 13in;
+            height: 14in;
         }
 
         /* BACKGROUND IMAGE */
@@ -34,7 +34,7 @@
             top: 0;
             left: 0;
             width: 8.5in;
-            height: 13in;
+            height: 14in;
             opacity: 1;
             z-index: 1;
         }
@@ -51,34 +51,34 @@
 
         /* Top Header Section */
         .province {
-            top: 107px;
+            top: 115px;
             left: 175px;
         }
 
         .municipality {
-            top: 126px;
+            top: 135px;
             left: 230px;
         }
 
         .received-by {
-            top: 146px;
+            top: 160px;
             left: 185px;
         }
 
         .date {
-            top: 163px;
+            top: 175px;
             left: 195px;
         }
 
         /* Row 1: Full Names */
         .b-fullname {
-            top: 248px;
+            top: 270px;
             left: 130px;
             font-weight: bold;
         }
 
         .g-fullname {
-            top: 248px;
+            top: 270px;
             left: 450px;
             font-weight: bold;
         }
@@ -86,34 +86,34 @@
         /* Row 2: First, Middle, Last Names */
         .g-name-first,
         .b-name-first {
-            top: 329px;
+            top: 358px;
         }
 
         .g-name-middle,
         .b-name-middle {
-            top: 344px;
+            top: 373px;
         }
 
         .g-name-last,
         .b-name-last {
-            top: 360px;
+            top: 390px;
         }
 
         /* Row 3: Birthday & Age */
         .g-bday,
         .b-bday {
-            top: 388px;
+            top: 425px;
         }
 
         .g-age,
         .b-age {
-            top: 390px;
+            top: 425px;
         }
 
         /* Row 4: Birthplace */
         .g-birthplace,
         .b-birthplace {
-            top: 430px;
+            top: 460px;
             width: 300px;
             white-space: normal;
         }
@@ -121,18 +121,18 @@
         /* Row 5: Sex & Citizenship */
         .g-sex,
         .b-sex {
-            top: 460px;
+            top: 495px;
         }
 
         .g-citizenship,
         .b-citizenship {
-            top: 460px;
+            top: 495px;
         }
 
         /* Row 6: Residence */
         .g-residence,
         .b-residence {
-            top: 495px;
+            top: 530px;
             width: 250px;
             font-size: 9pt;
             white-space: normal;
@@ -142,49 +142,49 @@
         /* Row 7: Religion, Civil Status, Marriage Info */
         .g-religion,
         .b-religion {
-            top: 535px;
+            top: 570px;
         }
 
         .g-civil-status,
         .b-civil-status {
-            top: 565px;
+            top: 605px;
         }
 
         .g-if-married,
         .b-if-married {
-            top: 600px;
+            top: 640px;
         }
 
         /* Row 8: Dissolution Info */
         .g-place-dissolved,
         .b-place-dissolved {
-            top: 635px;
+            top: 680px;
         }
 
         .g-date-dissolved,
         .b-date-dissolved {
-            top: 670px;
+            top: 720px;
         }
 
         .g-relationship,
         .b-relationship {
-            top: 700px;
+            top: 755px;
         }
 
         /* Row 9: Father's Info */
         .g-fathername,
         .b-fathername {
-            top: 740px;
+            top: 790px;
         }
 
         .g-father-citizenship,
         .b-father-citizenship {
-            top: 765px;
+            top: 825px;
         }
 
         .g-father-residence,
         .b-father-residence {
-            top: 800px;
+            top: 860px;
             width: 250px;
             font-size: 9pt;
             white-space: normal;
@@ -194,17 +194,17 @@
         /* Row 10: Mother's Info */
         .g-mothername,
         .b-mothername {
-            top: 845px;
+            top: 910px;
         }
 
         .g-mother-citizenship,
         .b-mother-citizenship {
-            top: 870px;
+            top: 935px;
         }
 
         .g-mother-residence,
         .b-mother-residence {
-            top: 895px;
+            top: 963px;
             width: 250px;
             font-size: 9pt;
             white-space: normal;
@@ -214,22 +214,22 @@
         /* Row 11: Consent Section */
         .g-give-consent,
         .b-give-consent {
-            top: 930px;
+            top: 1000px;
         }
 
         .g-give-consent-relationship,
         .b-give-consent-relationship {
-            top: 950px;
+            top: 1025px;
         }
 
         .g-give-consent-citizenship,
         .b-give-consent-citizenship {
-            top: 970px;
+            top: 1050px;
         }
 
         .g-give-consent-residence,
         .b-give-consent-residence {
-            top: 1010px;
+            top: 1085px;
             width: 250px;
             font-size: 9pt;
             white-space: normal;
@@ -238,32 +238,32 @@
 
         .g-fullname-signature,
         .b-fullname-signature {
-            top: 1050px;
+            top: 1130px;
         }
 
         .g-day-today,
         .b-day-today {
-            top: 1098px;
+            top: 1180px;
         }
 
         .g-month-today,
         .b-month-today {
-            top: 1098px;
+            top: 1180px;
         }
 
         .g-year-today,
         .b-year-today {
-            top: 1098px;
+            top: 1180px;
         }
 
         .g-place,
         .b-place {
-            top: 1110px;
+            top: 1195px;
         }
 
         .g-ID,
         .b-ID {
-            top: 1123px;
+            top: 1210px;
             font-size: 9px;
             width: 105px;
             text-align: left;
@@ -272,18 +272,18 @@
 
         .g-Issued-on,
         .b-Issued-on {
-            top: 1140px;
+            top: 1227px;
         }
 
         .g-Issued-at,
         .b-Issued-at {
-            top: 1155px;
+            top: 1244px;
         }
 
 
         .g-civil-registrar,
         .b-civil-registrar {
-            top: 1180px;
+            top: 1275px;
         }
 
         /* ---------------- LEFT OFFSETS (COLUMN ALIGNMENT) ---------------- */
@@ -293,7 +293,7 @@
         .g-name-middle,
         .g-name-last,
         .g-birthplace {
-            left: 155px;
+            left: 165px;
         }
 
         /* Groom's Birthday */
@@ -332,11 +332,11 @@
         }
 
         .g-birth-province {
-            left: 235px;
+            left: 225px;
         }
 
         .g-birth-country {
-            left: 300px;
+            left: 290px;
         }
 
         /* Residence */
@@ -365,11 +365,11 @@
         }
 
         .g-place-province {
-            left: 235px;
+            left: 225px;
         }
 
         .g-place-country {
-            left: 300px;
+            left: 280px;
         }
 
         .g-date-dissolved {
@@ -517,11 +517,11 @@
         }
 
         .b-birth-province {
-            left: 610px;
+            left: 600px;
         }
 
         .b-birth-country {
-            left: 675px;
+            left: 655px;
         }
 
 
@@ -554,7 +554,7 @@
         }
 
         .b-disolve-country {
-            left: 675px;
+            left: 665px;
         }
 
         .b-date-dissolved {
@@ -672,13 +672,12 @@
 </head>
 
 <body>
-
-<div class="print-container">
-
+    <div class="print-container">
+    
         @unless($transparentBackground)
         <img src="license.jpg" class="bg-image" alt="Background">
         @endunless
-
+    
         @php
         $splitWords = function ($value, $count = 3) {
         $clean = trim((string) ($value ?? ''));
@@ -713,12 +712,12 @@
         [$gMotherFirst, $gMotherMiddle, $gMotherLast] = $splitWords($groom['mother_name'] ?? '', 3);
         [$bMotherFirst, $bMotherMiddle, $bMotherLast] = $splitWords($bride['mother_name'] ?? '', 3);
         @endphp
-
+    
         <div class="data province">{{ $meta['province'] ?? '' }}</div>
         <div class="data municipality">{{ $meta['municipality'] ?? '' }}</div>
         <div class="data received-by">{{ $meta['received_by'] ?? '' }}</div>
         <div class="data date">{{ $meta['date'] ?? '' }}</div>
-
+    
         <div class="data b-fullname">{{ $bride['full_name'] ?? '' }}</div>
         <div class="data g-name-first">{{ $groom['name_first'] ?? '' }}</div>
         <div class="data g-name-middle">{{ $groom['name_middle'] ?? '' }}</div>
@@ -768,7 +767,7 @@
         <div class="data g-Issued-on g-issued-year">{{ $gIssuedYear ?? '' }}</div>
         <div class="data g-Issued-at">{{ $groom['issued_at'] ?? '' }}</div>
         <div class="data g-civil-registrar">{{ $groom['civil_registrar'] ?? '' }}</div>
-
+    
         <div class="data g-fullname">{{ $groom['full_name'] ?? '' }}</div>
         <div class="data b-name-first">{{ $bride['name_first'] ?? '' }}</div>
         <div class="data b-name-middle">{{ $bride['name_middle'] ?? '' }}</div>
@@ -818,7 +817,7 @@
         <div class="data b-Issued-on b-Issued-year">{{ $bIssuedYear ?? '' }}</div>
         <div class="data b-Issued-at">{{ $bride['issued_at'] ?? '' }}</div>
         <div class="data b-civil-registrar">{{ $bride['civil_registrar'] ?? '' }}</div>
-
+    
     </div>
 </body>
 
