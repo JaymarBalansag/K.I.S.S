@@ -11,31 +11,69 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthenticationController extends Controller
 {
-    public function login(LoginRequest $request){
-        $validated = $request->validated();
-        $user = User::where("email", $validated['email'])->first();
+    public function login(LoginRequest $request)
+    {
+        $user = $this->attemptLogin($request);
 
-        if(!$user || !Hash::check($validated["password"], $user->password)){
-            return response()->json(["message" => "Incorrect credentials"], 401);
+        if (!$user) {
+            return response()->json(['message' => 'Incorrect credentials'], 401);
         }
 
-        if($user->role === 'admin') {
-            $tokenName = $user->first_name . "_" . $user->last_name . "_admin" .  "_token";
-        } else {
-            $tokenName = $user->first_name . "_" . $user->last_name . "_staff" .  "_token";
-        }
-
-        // Create a token with NO expiration date
-        $token = $user->createToken($tokenName)->plainTextToken;
+        $token = $user->createToken($this->buildTokenName($user))->plainTextToken;
 
         return response()->json([
             'token' => $token,
-            'user' => $user
+            'user' => $user,
         ]);
-    }   
+    }
+
+    public function smsLogin(LoginRequest $request)
+    {
+        $user = $this->attemptLogin($request);
+
+        if (!$user) {
+            return response()->json(['message' => 'Incorrect credentials'], 401);
+        }
+
+        $expiresAt = now()->addHours(24);
+
+        $token = $user->createToken(
+            $this->buildTokenName($user, 'sms'),
+            ['*'],
+            $expiresAt
+        )->plainTextToken;
+
+        return response()->json([
+            'status' => 'success',
+            'token' => $token,
+            'expires_at' => $expiresAt->toIso8601String(),
+            'user' => $user,
+        ]);
+    }
+
+    private function attemptLogin(LoginRequest $request): ?User
+    {
+        $validated = $request->validated();
+        $user = User::where('email', $validated['email'])->first();
+
+        if (!$user || !Hash::check($validated['password'], $user->password)) {
+            return null;
+        }
+
+        return $user;
+    }
+
+    private function buildTokenName(User $user, string $suffix = ''): string
+    {
+        $roleSegment = $user->role === 'admin' ? 'admin' : 'staff';
+        $base = $user->first_name . '_' . $user->last_name . '_' . $roleSegment;
+
+        return $suffix === '' ? $base . '_token' : $base . '_' . $suffix . '_token';
+    }
 
     // Admin is the only one who can add users/staffs/admin
-    public function AddUser(AddUserRequest $request) {
+    public function AddUser(AddUserRequest $request)
+    {
         // Validate input
         $validated = $request->validated();
         // Create user
@@ -55,12 +93,10 @@ class AuthenticationController extends Controller
     public function logout(Request $request)
     {
         $request->user()
-        ->tokens()
-        ->where('id', $request->user()->currentAccessToken()->id)
-        ->delete();
+            ->tokens()
+            ->where('id', $request->user()->currentAccessToken()->id)
+            ->delete();
 
         return response()->json(['message' => 'Logged out']);
     }
 }
-
-
