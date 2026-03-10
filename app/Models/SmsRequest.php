@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SmsRequest extends Model
 {
     protected $fillable = [
+        'application_id',
         'phone_number',
         'message',
         'status',

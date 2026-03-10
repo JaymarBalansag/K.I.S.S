@@ -23,6 +23,7 @@ class MarriageApplicationController extends Controller
             'type' => 'nullable|in:filipino,groom,bride,both',
             'groomRequirement' => 'nullable|in:parental-consent,parental-advise,no-need',
             'brideRequirement' => 'nullable|in:parental-consent,parental-advise,no-need',
+            'contact_number' => ['required', 'regex:/^09\d{9}$/'],
             'groom' => 'required|string',
             'bride' => 'required|string',
             'consentSource' => 'nullable|string',
@@ -115,12 +116,21 @@ class MarriageApplicationController extends Controller
             throw ValidationException::withMessages($validationErrors);
         }
 
-        return DB::transaction(function () use ($request) {
+        return DB::transaction(function () use ($request, $groomPayload, $bridePayload) {
             $consentSource = json_decode($request->input('consentSource', '{}'), true) ?? [];
             $requirements = [
                 'groom' => $request->input('groomRequirement'),
                 'bride' => $request->input('brideRequirement'),
             ];
+            $buildFullName = function (array $payload, string $fallback): string {
+                $parts = array_values(array_filter([
+                    trim((string) ($payload['firstName'] ?? '')),
+                    trim((string) ($payload['middleName'] ?? '')),
+                    trim((string) ($payload['lastName'] ?? '')),
+                ], fn($part) => $part !== ''));
+
+                return !empty($parts) ? implode(' ', $parts) : $fallback;
+            };
             $hasGovernmentIdType = Schema::hasColumn('applicants', 'government_id_type');
             $hasGovernmentIdNumber = Schema::hasColumn('applicants', 'government_id_number');
             $hasGovernmentIdIssuedAt = Schema::hasColumn('applicants', 'government_id_issued_at');
@@ -176,6 +186,7 @@ class MarriageApplicationController extends Controller
                 'control_number' => $controlNumber,
                 'status'         => 'pending',
                 'foreigner_type' => $request->type,
+                'phone_number'   => $request->input('contact_number'),
                 'created_at'     => Carbon::now(),
                 'updated_at'     => Carbon::now(),
             ]);
@@ -275,6 +286,22 @@ class MarriageApplicationController extends Controller
                 // 4. Handle File Uploads
                 $this->uploadDocumentsWithQueryBuilder($request, $applicationId, $role, $controlNumber);
             }
+
+            $groomFullName = $buildFullName($groomPayload, 'Groom');
+            $brideFullName = $buildFullName($bridePayload, 'Bride');
+            $preMadeMessage = "Hey {$groomFullName} and {$brideFullName}, this is your control number {$controlNumber}. You can show this at the office.";
+
+            DB::table('sms_requests')->insert([
+                'application_id' => $applicationId,
+                'phone_number'   => $request->input('contact_number'),
+                'message'        => $preMadeMessage,
+                'status'         => 'pending',
+                'sent_from'      => 'kiss',
+                'source'         => 'marriage_application_submission',
+                'external_id'    => $controlNumber,
+                'created_at'     => Carbon::now(),
+                'updated_at'     => Carbon::now(),
+            ]);
 
             return response()->json([
                 'status' => 'success',

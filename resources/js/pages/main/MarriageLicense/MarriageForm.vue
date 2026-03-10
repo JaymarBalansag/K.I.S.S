@@ -1781,6 +1781,7 @@ export default {
                 title: ''
             },
             form: {
+                contact_number: '',
                 groom: {
                     documents: {},
                     sex: "Male",
@@ -1813,7 +1814,24 @@ export default {
         'form.bride': {
             handler(val) { this.handlePersonValidation(val, 'bride'); },
             deep: true
-        }
+        },
+        'form.contact_number'(val) {
+            // keep digits only
+            let clean = String(val || '').replace(/\D/g, '');
+
+            // if user starts with 9, auto-prefix 0
+            if (clean.startsWith('9')) clean = '0' + clean;
+
+            // enforce start with 09
+            if (clean.length > 0 && !clean.startsWith('09')) {
+            clean = '09';
+            }
+
+            // max 11 digits
+            clean = clean.slice(0, 11);
+
+            this.form.contact_number = clean;
+        },
     },
     computed: {
         monthOptions() {
@@ -3970,6 +3988,59 @@ export default {
 
         async submitForm() {
 
+            // 1) Ask contact number first (required)
+            const phonePrompt = await Swal.fire({
+                title: 'Contact Number Required',
+                text: 'Please enter your mobile number in 09XXXXXXXXX format.',
+                input: 'text',
+                inputPlaceholder: '09XXXXXXXXX',
+                inputValue: this.form.contact_number || '',
+                inputAttributes: {
+                    inputmode: 'numeric',
+                    maxlength: 11,
+                    autocapitalize: 'off',
+                    autocomplete: 'tel'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Continue',
+                cancelButtonText: 'Cancel',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    const input = Swal.getInput();
+                    if (!input) return;
+                    input.addEventListener('input', () => {
+                        let clean = String(input.value || '').replace(/\D/g, '');
+                        if (clean.startsWith('9')) clean = '0' + clean;
+                        if (clean.length > 0 && !clean.startsWith('09')) clean = '09';
+                        input.value = clean.slice(0, 11);
+                    });
+                },
+                preConfirm: (value) => {
+                    let clean = String(value || '').replace(/\D/g, '');
+                    if (clean.startsWith('9')) clean = '0' + clean;
+                    if (clean.length > 0 && !clean.startsWith('09')) clean = '09';
+                    clean = clean.slice(0, 11);
+                    if (!/^09\d{9}$/.test(clean)) {
+                        Swal.showValidationMessage('Enter a valid number like 09XXXXXXXXX');
+                        return false;
+                    }
+                    return clean;
+                },
+            });
+
+
+            if (!phonePrompt.isConfirmed) return;
+
+            const contactNumber = phonePrompt.value; // e.g. 09123456789
+            this.form.contact_number = contactNumber;
+
+            if (!/^09\d{9}$/.test(this.form.contact_number || '')) {
+                await Swal.fire('Invalid Number', 'Use format 09XXXXXXXXX', 'warning');
+                return;
+            }
+
+            const contactNumberForApi = this.form.contact_number;
+
             // 2. Show Final Confirmation
             const finalCheck = await Swal.fire({
                 title: 'Final Confirmation',
@@ -3993,7 +4064,7 @@ export default {
                 formData.append('groom', JSON.stringify(this.form.groom));
                 formData.append('bride', JSON.stringify(this.form.bride));
                 formData.append('consentSource', JSON.stringify(this.form.consentSource));
-
+                formData.append('contact_number', contactNumberForApi);
                 // Append all documents from the "Bucket" logic we built earlier
                 Object.keys(this.form.groom.documents).forEach(key => {
                     formData.append(`documents_groom[${key}]`, this.form.groom.documents[key]);
@@ -4011,32 +4082,32 @@ export default {
                     icon: 'success',
                     title: 'Application Submitted!',
                     html: `
-            <div class="p-3 glass-inner text-center">
-              <p class="mb-2">Your Control Number is:</p>
-              <h2 class="text-primary fw-bold mb-3" style="letter-spacing: 2px;">
-                ${response.data.control_number}
-              </h2>
+                        <div class="p-3 glass-inner text-center">
+                        <p class="mb-2">Your Control Number is:</p>
+                        <h2 class="text-primary fw-bold mb-3" style="letter-spacing: 2px;">
+                            ${response.data.control_number}
+                        </h2>
 
-              <div class="alert alert-warning border-0 shadow-sm py-3 px-2 mb-3">
-                <h6 class="fw-bold mb-1">ACTION REQUIRED:</h6>
-                <p class="small mb-0">
-                  Please <b>SCREENSHOT</b> this screen. Present this at the <b>Abuyog LCRO Office</b> to verify your application.
-                </p>
-              </div>
+                        <div class="alert alert-warning border-0 shadow-sm py-3 px-2 mb-3">
+                            <h6 class="fw-bold mb-1">ACTION REQUIRED:</h6>
+                            <p class="small mb-0">
+                            Please <b>SCREENSHOT</b> this screen. Present this at the <b>Abuyog LCRO Office</b> to verify your application.
+                            </p>
+                        </div>
 
-              <div class="mt-4 p-2 border-top border-white-50">
-                <p class="small mb-2 text-muted">Questions or problems with your application?</p>
-                <div class="d-flex align-items-center justify-content-center gap-2">
-                  <i class="bi bi-person-badge-fill text-primary"></i>
-                  <span class="fw-bold">LCRO Marriage Section Staff</span>
-                </div>
-                <p class="mb-0 fw-bold text-success">
-                  <i class="bi bi-telephone-fill"></i> 0912-345-6789
-                </p>
-                <p class="x-small text-muted italic">(Available Mon-Fri, 8AM - 5PM)</p>
-              </div>
-            </div>
-          `,
+                        <div class="mt-4 p-2 border-top border-white-50">
+                            <p class="small mb-2 text-muted">Questions or problems with your application?</p>
+                            <div class="d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-person-badge-fill text-primary"></i>
+                            <span class="fw-bold">LCRO Marriage Section Staff</span>
+                            </div>
+                            <p class="mb-0 fw-bold text-success">
+                            <i class="bi bi-telephone-fill"></i> 0912-345-6789
+                            </p>
+                            <p class="x-small text-muted italic">(Available Mon-Fri, 8AM - 5PM)</p>
+                        </div>
+                        </div>
+                    `,
                     confirmButtonText: 'I have saved my control number',
                     confirmButtonColor: '#198754',
                     allowOutsideClick: false
