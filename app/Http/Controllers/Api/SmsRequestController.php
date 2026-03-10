@@ -31,6 +31,7 @@ class SmsRequestController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'application_id' => 'nullable|exists:marriage_applications,id',
             'phone_number' => 'required|string|max:30',
             'message' => 'required|string',
             'status' => 'nullable|string|in:pending,sent,failed',
@@ -40,6 +41,7 @@ class SmsRequestController extends Controller
         ]);
 
         $smsRequest = SmsRequest::create([
+            'application_id' => $validated['application_id'] ?? null,
             'phone_number' => $validated['phone_number'],
             'message' => $validated['message'],
             'status' => $validated['status'] ?? 'pending',
