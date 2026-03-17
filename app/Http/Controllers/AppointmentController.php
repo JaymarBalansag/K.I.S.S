@@ -189,7 +189,7 @@ class AppointmentController extends Controller
                     'status'           => 'pending',
                 ]);
 
-                if (in_array($appointmentType, ['PMOC', 'PMO'], true)) {
+                if (in_array($appointmentType, ['PMOC', 'PMO', 'Civil Wedding'], true)) {
                     $nameParts = array_filter([
                         $appointment->first_name,
                         $appointment->middle_name,
@@ -200,10 +200,23 @@ class AppointmentController extends Controller
                     });
 
                     $fullName = implode(' ', $nameParts);
-                    $message = "Good day {$fullName}. Your {$appointmentType} appointment request is received. Control No.: {$controlNo}. Requested date: {$appointment->requested_date}. Please keep this for reference. - MCR";
+                    $smsPhone = $appointment->phone_number;
+                    $normalized = preg_replace('/\D+/', '', (string) $smsPhone);
+                    if (str_starts_with($normalized, '63') && strlen($normalized) === 12) {
+                        $smsPhone = '0' . substr($normalized, -10);
+                    } elseif (strlen($normalized) === 10 && str_starts_with($normalized, '9')) {
+                        $smsPhone = '0' . $normalized;
+                    } elseif (strlen($normalized) === 11 && str_starts_with($normalized, '09')) {
+                        $smsPhone = $normalized;
+                    }
+                    if ($appointmentType === 'Civil Wedding') {
+                        $message = "Good day {$fullName}. Your Civil Wedding appointment request is received. Control No.: {$controlNo}. Requested date: {$appointment->requested_date}. Please keep this for reference. - MCR";
+                    } else {
+                        $message = "Good day {$fullName}. Your {$appointmentType} appointment request is received. Control No.: {$controlNo}. Requested date: {$appointment->requested_date}. Please keep this for reference. - MCR";
+                    }
 
                     DB::table('sms_requests')->insert([
-                        'phone_number' => $appointment->phone_number,
+                        'phone_number' => $smsPhone,
                         'message' => $message,
                         'status' => 'pending',
                         'created_at' => Carbon::now(),
