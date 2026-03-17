@@ -289,16 +289,12 @@ class MarriageApplicationController extends Controller
 
             $groomFullName = $buildFullName($groomPayload, 'Groom');
             $brideFullName = $buildFullName($bridePayload, 'Bride');
-            $preMadeMessage = "Hey {$groomFullName} and {$brideFullName}, this is your control number {$controlNumber}. You can show this at the office.";
+            $preMadeMessage = "Good day {$groomFullName} and {$brideFullName}. This is the Municipal Civil Registrar (MCR). Your control number is {$controlNumber}. Please present this at the office. Thank you.";
 
             DB::table('sms_requests')->insert([
-                'application_id' => $applicationId,
                 'phone_number'   => $request->input('contact_number'),
                 'message'        => $preMadeMessage,
                 'status'         => 'pending',
-                'sent_from'      => 'kiss',
-                'source'         => 'marriage_application_submission',
-                'external_id'    => $controlNumber,
                 'created_at'     => Carbon::now(),
                 'updated_at'     => Carbon::now(),
             ]);
