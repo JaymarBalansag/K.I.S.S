@@ -11,5 +11,4 @@ class SmsRequest extends Model
         'message',
         'status',
     ];
-    ];
 }

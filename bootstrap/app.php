@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\isAdmin;
 use App\Http\Middleware\isStaff;
+use App\Http\Middleware\SmsKey;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,7 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'is_admin' => isAdmin::class,
-            'is_staff' => isStaff::class
+            'is_staff' => isStaff::class,
+            'sms_key' => SmsKey::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

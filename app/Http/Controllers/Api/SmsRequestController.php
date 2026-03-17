@@ -23,6 +23,30 @@ class SmsRequestController extends Controller
         return response()->json($query->get(), 200);
     }
 
+    public function getPending(Request $request)
+    {
+        $messages = SmsRequest::query()
+            ->where('status', 'pending')
+            ->orderByDesc('id')
+            ->limit(5)
+            ->get();
+
+        return response()->json($messages, 200);
+    }
+
+    public function acknowledge(Request $request, int $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|string|in:sent,failed',
+        ]);
+
+        $smsRequest = SmsRequest::findOrFail($id);
+        $smsRequest->status = $validated['status'];
+        $smsRequest->save();
+
+        return response()->json($smsRequest, 200);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

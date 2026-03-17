@@ -30,6 +30,10 @@ Route::apiResource('Appointments', App\Http\Controllers\AppointmentController::c
 Route::get('/applications/print/{id}/{control_number}', [MarriageApplicationController::class, 'printApplication']);
 Route::get('/pdf/trial-preview', [MarriageApplicationController::class, 'trialPreview'])->name('pdf.trial.preview');
 Route::get('/pdf/trial-preview-pdf', [MarriageApplicationController::class, 'trialPreviewPdf'])->name('pdf.trial.preview.pdf');
+Route::middleware('sms_key')->group(function () {
+    Route::get('/sms-requests/pending', [SmsRequestController::class, 'getPending']);
+    Route::put('/sms-requests/{id}/ack', [SmsRequestController::class, 'acknowledge']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
 
