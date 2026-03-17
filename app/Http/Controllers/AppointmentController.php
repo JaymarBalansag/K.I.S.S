@@ -189,7 +189,7 @@ class AppointmentController extends Controller
                     'status'           => 'pending',
                 ]);
 
-                if (in_array($appointmentType, ['PMOC', 'PMO'], true)) {
+                if (in_array($appointmentType, ['PMOC', 'PMO', 'Civil Wedding'], true)) {
                     $nameParts = array_filter([
                         $appointment->first_name,
                         $appointment->middle_name,
@@ -200,7 +200,11 @@ class AppointmentController extends Controller
                     });
 
                     $fullName = implode(' ', $nameParts);
-                    $message = "Good day {$fullName}. Your {$appointmentType} appointment request is received. Control No.: {$controlNo}. Requested date: {$appointment->requested_date}. Please keep this for reference. - MCR";
+                    if ($appointmentType === 'Civil Wedding') {
+                        $message = "Good day {$fullName}. Your Civil Wedding appointment request is received. Control No.: {$controlNo}. Requested date: {$appointment->requested_date}. Please keep this for reference. - MCR";
+                    } else {
+                        $message = "Good day {$fullName}. Your {$appointmentType} appointment request is received. Control No.: {$controlNo}. Requested date: {$appointment->requested_date}. Please keep this for reference. - MCR";
+                    }
 
                     DB::table('sms_requests')->insert([
                         'phone_number' => $appointment->phone_number,
