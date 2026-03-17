@@ -200,6 +200,15 @@ class AppointmentController extends Controller
                     });
 
                     $fullName = implode(' ', $nameParts);
+                    $smsPhone = $appointment->phone_number;
+                    $normalized = preg_replace('/\D+/', '', (string) $smsPhone);
+                    if (str_starts_with($normalized, '63') && strlen($normalized) === 12) {
+                        $smsPhone = '0' . substr($normalized, -10);
+                    } elseif (strlen($normalized) === 10 && str_starts_with($normalized, '9')) {
+                        $smsPhone = '0' . $normalized;
+                    } elseif (strlen($normalized) === 11 && str_starts_with($normalized, '09')) {
+                        $smsPhone = $normalized;
+                    }
                     if ($appointmentType === 'Civil Wedding') {
                         $message = "Good day {$fullName}. Your Civil Wedding appointment request is received. Control No.: {$controlNo}. Requested date: {$appointment->requested_date}. Please keep this for reference. - MCR";
                     } else {
@@ -207,7 +216,7 @@ class AppointmentController extends Controller
                     }
 
                     DB::table('sms_requests')->insert([
-                        'phone_number' => $appointment->phone_number,
+                        'phone_number' => $smsPhone,
                         'message' => $message,
                         'status' => 'pending',
                         'created_at' => Carbon::now(),
