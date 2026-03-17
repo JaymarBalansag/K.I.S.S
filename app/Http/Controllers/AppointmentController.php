@@ -189,6 +189,28 @@ class AppointmentController extends Controller
                     'status'           => 'pending',
                 ]);
 
+                if (in_array($appointmentType, ['PMOC', 'PMO'], true)) {
+                    $nameParts = array_filter([
+                        $appointment->first_name,
+                        $appointment->middle_name,
+                        $appointment->last_name,
+                        $appointment->extension,
+                    ], function ($value) {
+                        return $value !== null && trim((string) $value) !== '';
+                    });
+
+                    $fullName = implode(' ', $nameParts);
+                    $message = "Good day {$fullName}. Your {$appointmentType} appointment request is received. Control No.: {$controlNo}. Requested date: {$appointment->requested_date}. Please keep this for reference. - MCR";
+
+                    DB::table('sms_requests')->insert([
+                        'phone_number' => $appointment->phone_number,
+                        'message' => $message,
+                        'status' => 'pending',
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]);
+                }
+
                 return ['controlNumber' => $controlNo];
             });
 
