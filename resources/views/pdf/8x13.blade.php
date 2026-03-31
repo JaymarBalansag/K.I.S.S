@@ -675,9 +675,7 @@
 
 <div class="print-container">
 
-        @unless($transparentBackground)
         <img src="license.jpg" class="bg-image" alt="Background">
-        @endunless
 
         @php
         $splitWords = function ($value, $count = 3) {

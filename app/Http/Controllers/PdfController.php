@@ -9,8 +9,8 @@ class PdfController extends Controller
 {
     public function generateLicense()
     {
-        // 1. Load your trial.blade.php file
-        $pdf = Pdf::loadView('pdf.trial');
+        // Load the 8x13 marriage license view.
+        $pdf = Pdf::loadView('pdf.8x13');
 
         // 2. Set the paper size to Legal (8.5in x 14in)
         // This is crucial so your absolute positioning (px) stays aligned
