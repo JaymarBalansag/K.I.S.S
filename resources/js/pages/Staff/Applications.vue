@@ -108,13 +108,9 @@
                                                 <i class="bi bi-patch-check-fill me-1"></i> Issue
                                             </button>
 
-                                            <button v-if="app.status === 'issued'" @click="openPrintModal(app, '8x13')"
+                                            <button v-if="app.status === 'issued'" @click="openPrintModal(app)"
                                                 class="btn btn-action-glass text-warning">
                                                 <i class="bi bi-printer-fill me-1"></i> Print 8.5x13
-                                            </button>
-                                            <button v-if="app.status === 'issued'" @click="openPrintModal(app, '8x14')"
-                                                class="btn btn-action-glass text-info">
-                                                <i class="bi bi-printer-fill me-1"></i> Print 8.5x14
                                             </button>
 
                                         </div>
@@ -155,13 +151,9 @@
                                     class="btn btn-action-glass text-warning flex-grow-1">
                                     <i class="bi bi-patch-check-fill me-1"></i> Issue
                                 </button>
-                                <button v-if="app.status === 'issued'" @click="openPrintModal(app, '8x13')"
+                                <button v-if="app.status === 'issued'" @click="openPrintModal(app)"
                                     class="btn btn-action-glass text-warning">
                                     <i class="bi bi-printer-fill"></i> 8.5x13
-                                </button>
-                                <button v-if="app.status === 'issued'" @click="openPrintModal(app, '8x14')"
-                                    class="btn btn-action-glass text-info">
-                                    <i class="bi bi-printer-fill"></i> 8.5x14
                                 </button>
 
 
@@ -547,7 +539,7 @@ export default {
             isPrinting: false,
             isPrintPreviewLoading: false,
             selectedPaperSize: '8x13',
-            trialPdfUrl: '/api/pdf/trial-preview-pdf',
+            preview8x13PdfUrl: '/api/pdf/8x13-preview-pdf',
             printPreviewSrc: '',
         };
     },
@@ -714,17 +706,16 @@ export default {
             }
         },
 
-        buildTrialPdfUrl(paperSize = '8x13') {
-            const size = paperSize === '8x14' ? '8x14' : '8x13';
-            return `${this.trialPdfUrl}${this.trialPdfUrl.includes('?') ? '&' : '?'}paper_size=${size}`;
+        build8x13PdfUrl() {
+            return `${this.preview8x13PdfUrl}${this.preview8x13PdfUrl.includes('?') ? '&' : '?'}paper_size=8x13`;
         },
-        openPrintModal(app, paperSize = '8x13') {
+        openPrintModal(app) {
             if (app?.id && app?.control_number) {
-                this.trialPdfUrl = `/api/pdf/trial-preview-pdf?application_id=${app.id}&control_number=${encodeURIComponent(app.control_number)}`;
+                this.preview8x13PdfUrl = `/api/pdf/8x13-preview-pdf?application_id=${app.id}&control_number=${encodeURIComponent(app.control_number)}`;
             } else {
-                this.trialPdfUrl = '/api/pdf/trial-preview-pdf';
+                this.preview8x13PdfUrl = '/api/pdf/8x13-preview-pdf';
             }
-            this.selectedPaperSize = paperSize === '8x14' ? '8x14' : '8x13';
+            this.selectedPaperSize = '8x13';
             this.showPrintModal = true;
             this.loadPrintPreview();
         },
@@ -736,7 +727,7 @@ export default {
         },
         loadPrintPreview() {
             this.isPrintPreviewLoading = true;
-            const baseUrl = this.buildTrialPdfUrl(this.selectedPaperSize);
+            const baseUrl = this.build8x13PdfUrl(this.selectedPaperSize);
             this.printPreviewSrc = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}_preview_ts=${Date.now()}#toolbar=0&navpanes=0&view=FitH`;
         },
         handlePrintPreviewLoaded() {

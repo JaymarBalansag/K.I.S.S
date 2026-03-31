@@ -580,49 +580,41 @@ class MarriageApplicationController extends Controller
         }
     }
 
-    public function trialPreview(Request $request)
+    public function preview8x13(Request $request)
     {
         $applicationId = $request->query('application_id');
         $controlNumber = $request->query('control_number');
-        $paperSize = strtolower((string) $request->query('paper_size', '8x13'));
-        $isEightByFourteen = $paperSize === '8x14';
-        $viewName = $isEightByFourteen ? 'pdf.trial8x14' : 'pdf.trial';
-        $extraViewData = ['transparentBackground' => $isEightByFourteen];
 
         if ($applicationId && $controlNumber) {
             $data = $this->buildApplicationFormData($applicationId, $controlNumber);
             if ($data !== null) {
-                return view($viewName, array_merge($data, $extraViewData));
+                return view('pdf.8x13', $data);
             }
         }
 
-        return view($viewName, array_merge($this->buildPreviewData(), $extraViewData));
+        return view('pdf.8x13', $this->buildPreviewData());
     }
 
-    public function trialPreviewPdf(Request $request)
+    public function preview8x13Pdf(Request $request)
     {
         $applicationId = $request->query('application_id');
         $controlNumber = $request->query('control_number');
-        $paperSize = strtolower((string) $request->query('paper_size', '8x13'));
-        $isEightByFourteen = $paperSize === '8x14';
-        $viewName = $isEightByFourteen ? 'pdf.trial8x14' : 'pdf.trial';
-        $paperDimensions = $isEightByFourteen ? [0, 0, 612, 1008] : [0, 0, 612, 936];
-        $extraViewData = ['transparentBackground' => $isEightByFourteen];
+        $paperDimensions = [0, 0, 612, 936];
 
         if ($applicationId && $controlNumber) {
             $data = $this->buildApplicationFormData($applicationId, $controlNumber);
             if ($data !== null) {
-                $pdf = Pdf::loadView($viewName, array_merge($data, $extraViewData))
+                $pdf = Pdf::loadView('pdf.8x13', $data)
                     ->setPaper($paperDimensions, 'portrait');
 
-                return $pdf->stream('Marriage_Trial.pdf');
+                return $pdf->stream('Marriage_8x13.pdf');
             }
         }
 
-        $pdf = Pdf::loadView($viewName, array_merge($this->buildPreviewData(), $extraViewData))
+        $pdf = Pdf::loadView('pdf.8x13', $this->buildPreviewData())
             ->setPaper($paperDimensions, 'portrait');
 
-        return $pdf->stream('Marriage_Trial.pdf');
+        return $pdf->stream('Marriage_8x13.pdf');
     }
 
     private function buildPreviewData()
