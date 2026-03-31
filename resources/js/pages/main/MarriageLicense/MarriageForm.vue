@@ -819,40 +819,8 @@
                                         <div class="row g-3">
                                             <div class="col-md-12">
                                                 <label class="form-label">Full Address</label>
-                                                <div class="position-relative">
-
-                                                    <div class="row g-2">
-
-
-                                                        <div class="col-md-5">
-                                                            <input class="form-control"
-                                                                v-model="form.groom.streethousenum" autocomplete="off"
-                                                                placeholder="House no., Street">
-                                                        </div>
-                                                        <div class="col-md-7">
-                                                            <input class="form-control" v-model="form.groom.residence"
-                                                                @input="onGroomResidenceInput"
-                                                                @focus="onGroomResidenceFocus"
-                                                                @blur="onGroomResidenceBlur" autocomplete="off"
-                                                                placeholder="Barangay, City/Municipality, Province, Country, Zip code">
-                                                            <div v-if="showGroomResidenceSuggestions && groomResidenceSuggestions.length"
-                                                                class="city-suggestion-menu">
-                                                                <button v-for="suggestion in groomResidenceSuggestions"
-                                                                    :key="suggestion.id" type="button"
-                                                                    class="city-suggestion-item"
-                                                                    @mousedown.prevent="selectGroomResidenceSuggestion(suggestion)">
-                                                                    <span class="city-suggestion-name">{{
-                                                                        suggestion.mainText }}</span>
-                                                                    <span class="city-suggestion-context">{{
-                                                                        suggestion.displayName }}</span>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-
-
-                                                </div>
+                                                <input class="form-control" v-model="form.groom.residence"
+                                                    placeholder="Complete residential address">
                                                 <small class="text-white-50 smallest mt-2 d-block italic"><i
                                                         class="bi bi-info-circle me-1"></i>Tips: Please enter complete
                                                     details for legal records.</small>
@@ -900,34 +868,9 @@
 
                                             <div class="row g-2">
                                                 <small class="text-white-50">Father's Full Residence</small>
-                                                <div class="col-md-5">
-                                                    <div class="position-relative">
-                                                        <input class="form-control"
-                                                            v-model="form.groom.fatherHouseNumStreet" autocomplete="off"
-                                                            placeholder="House no., Street">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-7">
-                                                    <div class="position-relative">
-                                                        <input class="form-control" v-model="form.groom.fatherResidence"
-                                                            @input="onGroomRelatedResidenceInput('fatherResidence')"
-                                                            @focus="onGroomRelatedResidenceFocus('fatherResidence')"
-                                                            @blur="onGroomRelatedResidenceBlur" autocomplete="off"
-                                                            placeholder="Barangay, City/Municipality, Province, Country, Zip code">
-                                                        <div v-if="showGroomRelatedResidenceSuggestions && groomRelatedResidenceField === 'fatherResidence' && groomRelatedResidenceSuggestions.length"
-                                                            class="city-suggestion-menu">
-                                                            <button
-                                                                v-for="suggestion in groomRelatedResidenceSuggestions"
-                                                                :key="suggestion.id" type="button"
-                                                                class="city-suggestion-item"
-                                                                @mousedown.prevent="selectGroomRelatedResidenceSuggestion(suggestion)">
-                                                                <span class="city-suggestion-name">{{
-                                                                    suggestion.mainText }}</span>
-                                                                <span class="city-suggestion-context">{{
-                                                                    suggestion.displayName }}</span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
+                                                <div class="col-12">
+                                                    <input class="form-control" v-model="form.groom.fatherResidence"
+                                                        placeholder="Complete residential address">
                                                 </div>
                                             </div>
                                         </div>
@@ -964,38 +907,11 @@
 
                                             <div class="row g-2">
                                                 <small class="text-white-50">Mother's Full Address</small>
-                                                <div class="col-md-5">
-                                                    <div class="position-relative">
-                                                        <input class="form-control"
-                                                            v-model="form.groom.motherHouseNumStreet" autocomplete="off"
-                                                            placeholder="House no., Street">
-                                                    </div>
+                                                <div class="col-12">
+                                                    <input class="form-control"
+                                                        v-model="form.groom.motherMaidenResidence"
+                                                        placeholder="Complete residential address">
                                                 </div>
-
-                                                <div class="col-md-7">
-                                                    <div class="position-relative">
-                                                        <input class="form-control"
-                                                            v-model="form.groom.motherMaidenResidence"
-                                                            @input="onGroomRelatedResidenceInput('motherMaidenResidence')"
-                                                            @focus="onGroomRelatedResidenceFocus('motherMaidenResidence')"
-                                                            @blur="onGroomRelatedResidenceBlur" autocomplete="off"
-                                                            placeholder="Barangay, City/Municipality, Province, Country, Zip code">
-                                                        <div v-if="showGroomRelatedResidenceSuggestions && groomRelatedResidenceField === 'motherMaidenResidence' && groomRelatedResidenceSuggestions.length"
-                                                            class="city-suggestion-menu">
-                                                            <button
-                                                                v-for="suggestion in groomRelatedResidenceSuggestions"
-                                                                :key="suggestion.id" type="button"
-                                                                class="city-suggestion-item"
-                                                                @mousedown.prevent="selectGroomRelatedResidenceSuggestion(suggestion)">
-                                                                <span class="city-suggestion-name">{{
-                                                                    suggestion.mainText }}</span>
-                                                                <span class="city-suggestion-context">{{
-                                                                    suggestion.displayName }}</span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
                                             </div>
 
 
@@ -1039,41 +955,12 @@
 
 
                                             <div class="row g-2">
-
                                                 <label class="form-label">Full Residence</label>
-                                                <div class="col-md-5">
-                                                    <div class="position-relative">
-                                                        <input class="form-control"
-                                                            v-model="form.consentSource.groom.houseNumStreet"
-                                                            autocomplete="off" placeholder="House no., Street">
-                                                    </div>
+                                                <div class="col-12">
+                                                    <input class="form-control"
+                                                        v-model="form.consentSource.groom.residence"
+                                                        placeholder="Complete residential address">
                                                 </div>
-
-                                                <div class="col-md-7">
-                                                    <div class="position-relative">
-                                                        <input class="form-control"
-                                                            v-model="form.consentSource.groom.residence"
-                                                            @input="onGroomRelatedResidenceInput('consentSourceResidence')"
-                                                            @focus="onGroomRelatedResidenceFocus('consentSourceResidence')"
-                                                            @blur="onGroomRelatedResidenceBlur" autocomplete="off"
-                                                            placeholder="Barangay, City/Municipality, Province, Country, Zip code">
-                                                        <div v-if="showGroomRelatedResidenceSuggestions && groomRelatedResidenceField === 'consentSourceResidence' && groomRelatedResidenceSuggestions.length"
-                                                            class="city-suggestion-menu">
-                                                            <button
-                                                                v-for="suggestion in groomRelatedResidenceSuggestions"
-                                                                :key="suggestion.id" type="button"
-                                                                class="city-suggestion-item"
-                                                                @mousedown.prevent="selectGroomRelatedResidenceSuggestion(suggestion)">
-                                                                <span class="city-suggestion-name">{{
-                                                                    suggestion.mainText }}</span>
-                                                                <span class="city-suggestion-context">{{
-                                                                    suggestion.displayName }}</span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-
                                             </div>
 
                                         </div>
@@ -1234,33 +1121,8 @@
                                         <div class="row g-3">
                                             <div class="col-md-12">
                                                 <label class="form-label">Full Address</label>
-                                                <div class="row g-2">
-                                                    <div class="col-md-5">
-                                                        <input class="form-control" v-model="form.bride.houseNumStreet"
-                                                            autocomplete="off" placeholder="House no., Street">
-                                                    </div>
-                                                    <div class="col-md-7">
-                                                        <div class="position-relative">
-                                                            <input class="form-control" v-model="form.bride.residence"
-                                                                @input="onBrideResidenceInput"
-                                                                @focus="onBrideResidenceFocus"
-                                                                @blur="onBrideResidenceBlur" autocomplete="off"
-                                                                placeholder="Barangay, City/Municipality, Province, Country, Zip code">
-                                                            <div v-if="showBrideResidenceSuggestions && brideResidenceSuggestions.length"
-                                                                class="city-suggestion-menu">
-                                                                <button v-for="suggestion in brideResidenceSuggestions"
-                                                                    :key="suggestion.id" type="button"
-                                                                    class="city-suggestion-item"
-                                                                    @mousedown.prevent="selectBrideResidenceSuggestion(suggestion)">
-                                                                    <span class="city-suggestion-name">{{
-                                                                        suggestion.mainText }}</span>
-                                                                    <span class="city-suggestion-context">{{
-                                                                        suggestion.displayName }}</span>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <input class="form-control" v-model="form.bride.residence"
+                                                    placeholder="Complete residential address">
                                                 <small class="text-white-50 smallest mt-2 d-block italic"><i
                                                         class="bi bi-info-circle me-1"></i>Tips: Please enter complete
                                                     details for legal records.</small>
@@ -1356,34 +1218,9 @@
                                                         Father's Full Residence
                                                     </small>
                                                 </div>
-                                                <div class="col-md-5">
-                                                    <div class="position-relative">
-                                                        <input class="form-control"
-                                                            v-model="form.bride.fatherHouseNumStreet" autocomplete="off"
-                                                            placeholder="House no., Street">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-7">
-                                                    <div class="position-relative">
-                                                        <input class="form-control" v-model="form.bride.fatherResidence"
-                                                            @input="onBrideRelatedResidenceInput('fatherResidence')"
-                                                            @focus="onBrideRelatedResidenceFocus('fatherResidence')"
-                                                            @blur="onBrideRelatedResidenceBlur" autocomplete="off"
-                                                            placeholder="Barangay, City/Municipality, Province, Country, Zip code">
-                                                        <div v-if="showBrideRelatedResidenceSuggestions && brideRelatedResidenceField === 'fatherResidence' && brideRelatedResidenceSuggestions.length"
-                                                            class="city-suggestion-menu">
-                                                            <button
-                                                                v-for="suggestion in brideRelatedResidenceSuggestions"
-                                                                :key="suggestion.id" type="button"
-                                                                class="city-suggestion-item"
-                                                                @mousedown.prevent="selectBrideRelatedResidenceSuggestion(suggestion)">
-                                                                <span class="city-suggestion-name">{{
-                                                                    suggestion.mainText }}</span>
-                                                                <span class="city-suggestion-context">{{
-                                                                    suggestion.displayName }}</span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
+                                                <div class="col-12">
+                                                    <input class="form-control" v-model="form.bride.fatherResidence"
+                                                        placeholder="Complete residential address">
                                                 </div>
                                             </div>
                                         </div>
@@ -1426,35 +1263,10 @@
                                                         Mother's Details
                                                     </small>
                                                 </div>
-                                                <div class="col-md-5">
-                                                    <div class="position-relative">
-                                                        <input class="form-control"
-                                                            v-model="form.bride.motherHouseNumStreet" autocomplete="off"
-                                                            placeholder="House no., Street">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-7">
-                                                    <div class="position-relative">
-                                                        <input class="form-control"
-                                                            v-model="form.bride.motherMaidenResidence"
-                                                            @input="onBrideRelatedResidenceInput('motherMaidenResidence')"
-                                                            @focus="onBrideRelatedResidenceFocus('motherMaidenResidence')"
-                                                            @blur="onBrideRelatedResidenceBlur" autocomplete="off"
-                                                            placeholder="Barangay, City/Municipality, Province, Country, Zip code">
-                                                        <div v-if="showBrideRelatedResidenceSuggestions && brideRelatedResidenceField === 'motherMaidenResidence' && brideRelatedResidenceSuggestions.length"
-                                                            class="city-suggestion-menu">
-                                                            <button
-                                                                v-for="suggestion in brideRelatedResidenceSuggestions"
-                                                                :key="suggestion.id" type="button"
-                                                                class="city-suggestion-item"
-                                                                @mousedown.prevent="selectBrideRelatedResidenceSuggestion(suggestion)">
-                                                                <span class="city-suggestion-name">{{
-                                                                    suggestion.mainText }}</span>
-                                                                <span class="city-suggestion-context">{{
-                                                                    suggestion.displayName }}</span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
+                                                <div class="col-12">
+                                                    <input class="form-control"
+                                                        v-model="form.bride.motherMaidenResidence"
+                                                        placeholder="Complete residential address">
                                                 </div>
                                             </div>
                                         </div>
@@ -1504,35 +1316,10 @@
 
                                             <div class="row g-2">
                                                 <label class="form-label">Full Residence</label>
-                                                <div class="col-md-5">
-                                                    <div class="position-relative">
-                                                        <input class="form-control"
-                                                            v-model="form.consentSource.bride.houseNumStreet"
-                                                            autocomplete="off" placeholder="House no., Street">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-7">
-                                                    <div class="position-relative">
-                                                        <input class="form-control"
-                                                            v-model="form.consentSource.bride.residence"
-                                                            @input="onBrideRelatedResidenceInput('consentSourceResidence')"
-                                                            @focus="onBrideRelatedResidenceFocus('consentSourceResidence')"
-                                                            @blur="onBrideRelatedResidenceBlur" autocomplete="off"
-                                                            placeholder="Barangay, City/Municipality, Province, Country, Zip code">
-                                                        <div v-if="showBrideRelatedResidenceSuggestions && brideRelatedResidenceField === 'consentSourceResidence' && brideRelatedResidenceSuggestions.length"
-                                                            class="city-suggestion-menu">
-                                                            <button
-                                                                v-for="suggestion in brideRelatedResidenceSuggestions"
-                                                                :key="suggestion.id" type="button"
-                                                                class="city-suggestion-item"
-                                                                @mousedown.prevent="selectBrideRelatedResidenceSuggestion(suggestion)">
-                                                                <span class="city-suggestion-name">{{
-                                                                    suggestion.mainText }}</span>
-                                                                <span class="city-suggestion-context">{{
-                                                                    suggestion.displayName }}</span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
+                                                <div class="col-12">
+                                                    <input class="form-control"
+                                                        v-model="form.consentSource.bride.residence"
+                                                        placeholder="Complete residential address">
                                                 </div>
                                             </div>
 
@@ -1732,33 +1519,11 @@ export default {
             groomCityDebounceTimer: null,
             groomCityAbortController: null,
             groomCityBlurTimer: null,
-            groomResidenceSuggestions: [],
-            showGroomResidenceSuggestions: false,
-            groomResidenceDebounceTimer: null,
-            groomResidenceAbortController: null,
-            groomResidenceBlurTimer: null,
-            groomRelatedResidenceField: '',
-            groomRelatedResidenceSuggestions: [],
-            showGroomRelatedResidenceSuggestions: false,
-            groomRelatedResidenceDebounceTimer: null,
-            groomRelatedResidenceAbortController: null,
-            groomRelatedResidenceBlurTimer: null,
             groomDissolvedPlaceSuggestions: [],
             showGroomDissolvedPlaceSuggestions: false,
             groomDissolvedPlaceDebounceTimer: null,
             groomDissolvedPlaceAbortController: null,
             groomDissolvedPlaceBlurTimer: null,
-            brideRelatedResidenceField: '',
-            brideRelatedResidenceSuggestions: [],
-            showBrideRelatedResidenceSuggestions: false,
-            brideRelatedResidenceDebounceTimer: null,
-            brideRelatedResidenceAbortController: null,
-            brideRelatedResidenceBlurTimer: null,
-            brideResidenceSuggestions: [],
-            showBrideResidenceSuggestions: false,
-            brideResidenceDebounceTimer: null,
-            brideResidenceAbortController: null,
-            brideResidenceBlurTimer: null,
             brideCitySuggestions: [],
             showBrideCitySuggestions: false,
             brideCityDebounceTimer: null,
@@ -2003,83 +1768,6 @@ export default {
                 this.brideAgeError = message;
             }
         },
-        getResidenceAddressParts(address, placeName = '') {
-            if (!address || typeof address !== 'object') {
-                return {
-                    houseNumber: '',
-                    street: '',
-                    barangay: '',
-                    cityMunicipality: '',
-                    province: '',
-                    country: '',
-                    zipCode: ''
-                };
-            }
-
-            const cityMunicipality =
-                address.city ||
-                address.town ||
-                address.municipality ||
-                address.village ||
-                address.county ||
-                '';
-            const province =
-                address.state ||
-                address.province ||
-                address.region ||
-                address.state_district ||
-                '';
-            const country = address.country || '';
-
-            let barangay =
-                address.suburb ||
-                address.neighbourhood ||
-                address.quarter ||
-                address.city_district ||
-                address.borough ||
-                address.hamlet ||
-                '';
-
-            const normalizedPlaceName = (placeName || '').trim();
-            const lowerPlaceName = normalizedPlaceName.toLowerCase();
-            const blockedValues = new Set(
-                [cityMunicipality, province, country].filter(Boolean).map((v) => v.toLowerCase())
-            );
-            if (!barangay && normalizedPlaceName && !blockedValues.has(lowerPlaceName)) {
-                barangay = normalizedPlaceName;
-            }
-
-            return {
-                houseNumber: address.house_number || '',
-                street:
-                    address.road ||
-                    address.pedestrian ||
-                    address.path ||
-                    address.residential ||
-                    '',
-                barangay,
-                cityMunicipality,
-                province,
-                country,
-                zipCode: address.postcode || ''
-            };
-        },
-        formatResidenceAddress(address, fallbackDisplayName = '', placeName = '', includeHouseStreet = true) {
-            if (!address || typeof address !== 'object') return fallbackDisplayName;
-
-            const parts = this.getResidenceAddressParts(address, placeName);
-            const orderedParts = [
-                includeHouseStreet ? parts.houseNumber : '',
-                includeHouseStreet ? parts.street : '',
-                parts.barangay,
-                parts.cityMunicipality,
-                parts.province,
-                parts.country,
-                parts.zipCode
-            ].filter(Boolean);
-
-            return orderedParts.length ? orderedParts.join(', ') : fallbackDisplayName;
-        },
         handleFileUpload(event, person, docType) {
             const file = event.target.files[0];
             if (!file) return;
@@ -2313,240 +2001,6 @@ export default {
             }
             this.showGroomCitySuggestions = false;
         },
-        onGroomResidenceInput() {
-            const query = (this.form.groom.residence || '').trim();
-            this.showGroomResidenceSuggestions = true;
-
-            if (this.groomResidenceDebounceTimer) {
-                clearTimeout(this.groomResidenceDebounceTimer);
-            }
-
-            if (this.groomResidenceAbortController) {
-                this.groomResidenceAbortController.abort();
-                this.groomResidenceAbortController = null;
-            }
-
-            if (query.length < 5) {
-                this.groomResidenceSuggestions = [];
-                return;
-            }
-
-            this.groomResidenceDebounceTimer = setTimeout(() => {
-                this.fetchGroomResidenceSuggestions(query);
-            }, 350);
-        },
-        async fetchGroomResidenceSuggestions(query) {
-            this.groomResidenceAbortController = new AbortController();
-
-            try {
-                const response = await fetch(
-                    `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&dedupe=0&q=${encodeURIComponent(query)}`,
-                    {
-                        signal: this.groomResidenceAbortController.signal,
-                        headers: { 'Accept-Language': 'en' }
-                    }
-                );
-
-                if (!response.ok) {
-                    this.groomResidenceSuggestions = [];
-                    return;
-                }
-
-                const data = await response.json();
-                const suggestions = data
-                    .map((item, index) => {
-                        const address = item.address || {};
-                        const countryCode = (address.country_code || '').toLowerCase();
-                        const displayName = item.display_name || '';
-                        const mainText =
-                            item.name ||
-                            address.road ||
-                            address.suburb ||
-                            address.city ||
-                            address.town ||
-                            address.municipality ||
-                            displayName.split(',')[0] ||
-                            '';
-
-                        if (!displayName) return null;
-
-                        let score = 0;
-                        if (countryCode === 'ph') score += 30;
-                        if (displayName.toLowerCase().startsWith(query.toLowerCase())) score += 10;
-
-                        return {
-                            id: item.place_id || `res-${index}`,
-                            mainText,
-                            displayName,
-                            addressParts: this.getResidenceAddressParts(address, item.name || ''),
-                            formattedAddress: this.formatResidenceAddress(address, displayName, item.name || ''),
-                            formattedResidenceOnly: this.formatResidenceAddress(address, displayName, item.name || '', false),
-                            score
-                        };
-                    })
-                    .filter(Boolean)
-                    .sort((a, b) => b.score - a.score);
-
-                const uniqueByDisplay = new Map();
-                suggestions.forEach((item) => {
-                    if (!uniqueByDisplay.has(item.displayName.toLowerCase())) {
-                        uniqueByDisplay.set(item.displayName.toLowerCase(), item);
-                    }
-                });
-
-                this.groomResidenceSuggestions = Array.from(uniqueByDisplay.values()).slice(0, 6);
-            } catch (error) {
-                if (error.name !== 'AbortError') {
-                    this.groomResidenceSuggestions = [];
-                }
-            } finally {
-                this.groomResidenceAbortController = null;
-            }
-        },
-        onGroomResidenceFocus() {
-            if (this.groomResidenceBlurTimer) {
-                clearTimeout(this.groomResidenceBlurTimer);
-                this.groomResidenceBlurTimer = null;
-            }
-            this.showGroomResidenceSuggestions = this.groomResidenceSuggestions.length > 0;
-        },
-        onGroomResidenceBlur() {
-            this.groomResidenceBlurTimer = setTimeout(() => {
-                this.showGroomResidenceSuggestions = false;
-            }, 120);
-        },
-        selectGroomResidenceSuggestion(selected) {
-            const parts = selected.addressParts || {};
-            const mergedStreetHouse = [parts.houseNumber, parts.street].filter(Boolean).join(' ').trim();
-            if (!this.form.groom.streethousenum && mergedStreetHouse) {
-                this.form.groom.streethousenum = mergedStreetHouse;
-            }
-            this.form.groom.residence = selected.formattedResidenceOnly || selected.formattedAddress || selected.displayName;
-            this.showGroomResidenceSuggestions = false;
-        },
-        getGroomRelatedResidenceValue(fieldKey) {
-            if (fieldKey === 'fatherResidence') return this.form.groom.fatherResidence || '';
-            if (fieldKey === 'motherMaidenResidence') return this.form.groom.motherMaidenResidence || '';
-            if (fieldKey === 'consentSourceResidence') return this.form.consentSource.groom.residence || '';
-            return '';
-        },
-        setGroomRelatedResidenceValue(fieldKey, value) {
-            if (fieldKey === 'fatherResidence') this.form.groom.fatherResidence = value;
-            if (fieldKey === 'motherMaidenResidence') this.form.groom.motherMaidenResidence = value;
-            if (fieldKey === 'consentSourceResidence') this.form.consentSource.groom.residence = value;
-        },
-        onGroomRelatedResidenceInput(fieldKey) {
-            const query = this.getGroomRelatedResidenceValue(fieldKey).trim();
-            this.groomRelatedResidenceField = fieldKey;
-            this.showGroomRelatedResidenceSuggestions = true;
-
-            if (this.groomRelatedResidenceDebounceTimer) {
-                clearTimeout(this.groomRelatedResidenceDebounceTimer);
-            }
-
-            if (this.groomRelatedResidenceAbortController) {
-                this.groomRelatedResidenceAbortController.abort();
-                this.groomRelatedResidenceAbortController = null;
-            }
-
-            if (query.length < 5) {
-                this.groomRelatedResidenceSuggestions = [];
-                return;
-            }
-
-            this.groomRelatedResidenceDebounceTimer = setTimeout(() => {
-                this.fetchGroomRelatedResidenceSuggestions(fieldKey, query);
-            }, 350);
-        },
-        async fetchGroomRelatedResidenceSuggestions(fieldKey, query) {
-            this.groomRelatedResidenceAbortController = new AbortController();
-
-            try {
-                const response = await fetch(
-                    `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&dedupe=0&q=${encodeURIComponent(query)}`,
-                    {
-                        signal: this.groomRelatedResidenceAbortController.signal,
-                        headers: { 'Accept-Language': 'en' }
-                    }
-                );
-
-                if (!response.ok) {
-                    this.groomRelatedResidenceSuggestions = [];
-                    return;
-                }
-
-                const data = await response.json();
-                const suggestions = data
-                    .map((item, index) => {
-                        const address = item.address || {};
-                        const countryCode = (address.country_code || '').toLowerCase();
-                        const displayName = item.display_name || '';
-                        const mainText =
-                            item.name ||
-                            address.road ||
-                            address.suburb ||
-                            address.city ||
-                            address.town ||
-                            address.municipality ||
-                            displayName.split(',')[0] ||
-                            '';
-
-                        if (!displayName) return null;
-
-                        let score = 0;
-                        if (countryCode === 'ph') score += 30;
-                        if (displayName.toLowerCase().startsWith(query.toLowerCase())) score += 10;
-
-                        return {
-                            id: item.place_id || `g-rel-res-${index}`,
-                            mainText,
-                            displayName,
-                            formattedAddress: this.formatResidenceAddress(address, displayName, item.name || ''),
-                            score
-                        };
-                    })
-                    .filter(Boolean)
-                    .sort((a, b) => b.score - a.score);
-
-                if (this.groomRelatedResidenceField !== fieldKey) return;
-
-                const uniqueByDisplay = new Map();
-                suggestions.forEach((item) => {
-                    if (!uniqueByDisplay.has(item.displayName.toLowerCase())) {
-                        uniqueByDisplay.set(item.displayName.toLowerCase(), item);
-                    }
-                });
-
-                this.groomRelatedResidenceSuggestions = Array.from(uniqueByDisplay.values()).slice(0, 6);
-            } catch (error) {
-                if (error.name !== 'AbortError') {
-                    this.groomRelatedResidenceSuggestions = [];
-                }
-            } finally {
-                this.groomRelatedResidenceAbortController = null;
-            }
-        },
-        onGroomRelatedResidenceFocus(fieldKey) {
-            this.groomRelatedResidenceField = fieldKey;
-            if (this.groomRelatedResidenceBlurTimer) {
-                clearTimeout(this.groomRelatedResidenceBlurTimer);
-                this.groomRelatedResidenceBlurTimer = null;
-            }
-            this.showGroomRelatedResidenceSuggestions = this.groomRelatedResidenceSuggestions.length > 0;
-        },
-        onGroomRelatedResidenceBlur() {
-            this.groomRelatedResidenceBlurTimer = setTimeout(() => {
-                this.showGroomRelatedResidenceSuggestions = false;
-            }, 120);
-        },
-        selectGroomRelatedResidenceSuggestion(selected) {
-            if (!this.groomRelatedResidenceField) return;
-            this.setGroomRelatedResidenceValue(
-                this.groomRelatedResidenceField,
-                selected.formattedAddress || selected.displayName
-            );
-            this.showGroomRelatedResidenceSuggestions = false;
-        },
         onGroomDissolvedPlaceInput() {
             const query = (this.form.groom.dissolvedCityMunicipality || '').trim();
             this.showGroomDissolvedPlaceSuggestions = true;
@@ -2666,129 +2120,6 @@ export default {
         selectGroomDissolvedPlaceSuggestion(selected) {
             this.form.groom.dissolvedCityMunicipality = selected.formatted || selected.cityMunicipality;
             this.showGroomDissolvedPlaceSuggestions = false;
-        },
-        getBrideRelatedResidenceValue(fieldKey) {
-            if (fieldKey === 'fatherResidence') return this.form.bride.fatherResidence || '';
-            if (fieldKey === 'motherMaidenResidence') return this.form.bride.motherMaidenResidence || '';
-            if (fieldKey === 'consentSourceResidence') return this.form.consentSource.bride.residence || '';
-            return '';
-        },
-        setBrideRelatedResidenceValue(fieldKey, value) {
-            if (fieldKey === 'fatherResidence') this.form.bride.fatherResidence = value;
-            if (fieldKey === 'motherMaidenResidence') this.form.bride.motherMaidenResidence = value;
-            if (fieldKey === 'consentSourceResidence') this.form.consentSource.bride.residence = value;
-        },
-        onBrideRelatedResidenceInput(fieldKey) {
-            const query = this.getBrideRelatedResidenceValue(fieldKey).trim();
-            this.brideRelatedResidenceField = fieldKey;
-            this.showBrideRelatedResidenceSuggestions = true;
-
-            if (this.brideRelatedResidenceDebounceTimer) {
-                clearTimeout(this.brideRelatedResidenceDebounceTimer);
-            }
-
-            if (this.brideRelatedResidenceAbortController) {
-                this.brideRelatedResidenceAbortController.abort();
-                this.brideRelatedResidenceAbortController = null;
-            }
-
-            if (query.length < 5) {
-                this.brideRelatedResidenceSuggestions = [];
-                return;
-            }
-
-            this.brideRelatedResidenceDebounceTimer = setTimeout(() => {
-                this.fetchBrideRelatedResidenceSuggestions(fieldKey, query);
-            }, 350);
-        },
-        async fetchBrideRelatedResidenceSuggestions(fieldKey, query) {
-            this.brideRelatedResidenceAbortController = new AbortController();
-
-            try {
-                const response = await fetch(
-                    `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&dedupe=0&q=${encodeURIComponent(query)}`,
-                    {
-                        signal: this.brideRelatedResidenceAbortController.signal,
-                        headers: { 'Accept-Language': 'en' }
-                    }
-                );
-
-                if (!response.ok) {
-                    this.brideRelatedResidenceSuggestions = [];
-                    return;
-                }
-
-                const data = await response.json();
-                const suggestions = data
-                    .map((item, index) => {
-                        const address = item.address || {};
-                        const countryCode = (address.country_code || '').toLowerCase();
-                        const displayName = item.display_name || '';
-                        const mainText =
-                            item.name ||
-                            address.road ||
-                            address.suburb ||
-                            address.city ||
-                            address.town ||
-                            address.municipality ||
-                            displayName.split(',')[0] ||
-                            '';
-
-                        if (!displayName) return null;
-
-                        let score = 0;
-                        if (countryCode === 'ph') score += 30;
-                        if (displayName.toLowerCase().startsWith(query.toLowerCase())) score += 10;
-
-                        return {
-                            id: item.place_id || `b-rel-res-${index}`,
-                            mainText,
-                            displayName,
-                            formattedAddress: this.formatResidenceAddress(address, displayName, item.name || ''),
-                            score
-                        };
-                    })
-                    .filter(Boolean)
-                    .sort((a, b) => b.score - a.score);
-
-                if (this.brideRelatedResidenceField !== fieldKey) return;
-
-                const uniqueByDisplay = new Map();
-                suggestions.forEach((item) => {
-                    if (!uniqueByDisplay.has(item.displayName.toLowerCase())) {
-                        uniqueByDisplay.set(item.displayName.toLowerCase(), item);
-                    }
-                });
-
-                this.brideRelatedResidenceSuggestions = Array.from(uniqueByDisplay.values()).slice(0, 6);
-            } catch (error) {
-                if (error.name !== 'AbortError') {
-                    this.brideRelatedResidenceSuggestions = [];
-                }
-            } finally {
-                this.brideRelatedResidenceAbortController = null;
-            }
-        },
-        onBrideRelatedResidenceFocus(fieldKey) {
-            this.brideRelatedResidenceField = fieldKey;
-            if (this.brideRelatedResidenceBlurTimer) {
-                clearTimeout(this.brideRelatedResidenceBlurTimer);
-                this.brideRelatedResidenceBlurTimer = null;
-            }
-            this.showBrideRelatedResidenceSuggestions = this.brideRelatedResidenceSuggestions.length > 0;
-        },
-        onBrideRelatedResidenceBlur() {
-            this.brideRelatedResidenceBlurTimer = setTimeout(() => {
-                this.showBrideRelatedResidenceSuggestions = false;
-            }, 120);
-        },
-        selectBrideRelatedResidenceSuggestion(selected) {
-            if (!this.brideRelatedResidenceField) return;
-            this.setBrideRelatedResidenceValue(
-                this.brideRelatedResidenceField,
-                selected.formattedAddress || selected.displayName
-            );
-            this.showBrideRelatedResidenceSuggestions = false;
         },
         onBrideDissolvedPlaceInput() {
             const query = (this.form.bride.dissolvedCityMunicipality || '').trim();
@@ -3018,117 +2349,6 @@ export default {
             }
             this.showBrideCitySuggestions = false;
         },
-        onBrideResidenceInput() {
-            const query = (this.form.bride.residence || '').trim();
-            this.showBrideResidenceSuggestions = true;
-
-            if (this.brideResidenceDebounceTimer) {
-                clearTimeout(this.brideResidenceDebounceTimer);
-            }
-            if (this.brideResidenceAbortController) {
-                this.brideResidenceAbortController.abort();
-                this.brideResidenceAbortController = null;
-            }
-            if (query.length < 5) {
-                this.brideResidenceSuggestions = [];
-                return;
-            }
-
-            this.brideResidenceDebounceTimer = setTimeout(() => {
-                this.fetchBrideResidenceSuggestions(query);
-            }, 350);
-        },
-        async fetchBrideResidenceSuggestions(query) {
-            this.brideResidenceAbortController = new AbortController();
-
-            try {
-                const response = await fetch(
-                    `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=8&dedupe=0&q=${encodeURIComponent(query)}`,
-                    {
-                        signal: this.brideResidenceAbortController.signal,
-                        headers: { 'Accept-Language': 'en' }
-                    }
-                );
-
-                if (!response.ok) {
-                    this.brideResidenceSuggestions = [];
-                    return;
-                }
-
-                const data = await response.json();
-                const suggestions = data
-                    .map((item, index) => {
-                        const address = item.address || {};
-                        const countryCode = (address.country_code || '').toLowerCase();
-                        const displayName = item.display_name || '';
-                        const mainText =
-                            item.name ||
-                            address.road ||
-                            address.suburb ||
-                            address.city ||
-                            address.town ||
-                            address.municipality ||
-                            displayName.split(',')[0] ||
-                            '';
-
-                        if (!displayName) return null;
-
-                        let score = 0;
-                        if (countryCode === 'ph') score += 30;
-                        if (displayName.toLowerCase().startsWith(query.toLowerCase())) score += 10;
-
-                        return {
-                            id: item.place_id || `b-res-${index}`,
-                            mainText,
-                            displayName,
-                            addressParts: this.getResidenceAddressParts(address, item.name || ''),
-                            formattedAddress: this.formatResidenceAddress(address, displayName, item.name || ''),
-                            formattedResidenceOnly: this.formatResidenceAddress(address, displayName, item.name || '', false),
-                            score
-                        };
-                    })
-                    .filter(Boolean)
-                    .sort((a, b) => b.score - a.score);
-
-                const uniqueByDisplay = new Map();
-                suggestions.forEach((item) => {
-                    if (!uniqueByDisplay.has(item.displayName.toLowerCase())) {
-                        uniqueByDisplay.set(item.displayName.toLowerCase(), item);
-                    }
-                });
-
-                this.brideResidenceSuggestions = Array.from(uniqueByDisplay.values()).slice(0, 6);
-            } catch (error) {
-                if (error.name !== 'AbortError') {
-                    this.brideResidenceSuggestions = [];
-                }
-            } finally {
-                this.brideResidenceAbortController = null;
-            }
-        },
-        onBrideResidenceFocus() {
-            if (this.brideResidenceBlurTimer) {
-                clearTimeout(this.brideResidenceBlurTimer);
-                this.brideResidenceBlurTimer = null;
-            }
-            this.showBrideResidenceSuggestions = this.brideResidenceSuggestions.length > 0;
-        },
-        onBrideResidenceBlur() {
-            this.brideResidenceBlurTimer = setTimeout(() => {
-                this.showBrideResidenceSuggestions = false;
-            }, 120);
-        },
-        selectBrideResidenceSuggestion(selected) {
-            const parts = selected.addressParts || {};
-            if (!this.form.bride.housenum && parts.houseNumber) {
-                this.form.bride.housenum = parts.houseNumber;
-            }
-            if (!this.form.bride.street && parts.street) {
-                this.form.bride.street = parts.street;
-            }
-            this.form.bride.residence = selected.formattedResidenceOnly || selected.formattedAddress || selected.displayName;
-            this.showBrideResidenceSuggestions = false;
-        },
         goBack() {
             let prevStep = this.step - 1;
 
@@ -3246,10 +2466,7 @@ export default {
                         this.scrollToError();
                         return;
                     }
-                    if (
-                        (!this.form.groom.streethousenum && !(this.form.groom.housenum && this.form.groom.street)) ||
-                        !this.form.groom.residence
-                    ) {
+                    if (!this.form.groom.residence) {
                         this.message.push("Please fill in full Groom residence.");
                         this.scrollToError();
                         return;
@@ -3286,7 +2503,7 @@ export default {
                         this.scrollToError();
                         return;
                     }
-                    if (!this.form.groom.fatherHouseNumStreet || !this.form.groom.fatherResidence) {
+                    if (!this.form.groom.fatherResidence) {
                         this.message.push("Please complete Groom father's residence.");
                         this.scrollToError();
                         return;
@@ -3301,7 +2518,7 @@ export default {
                         this.scrollToError();
                         return;
                     }
-                    if (!this.form.groom.motherHouseNumStreet || !this.form.groom.motherMaidenResidence) {
+                    if (!this.form.groom.motherMaidenResidence) {
                         this.message.push("Please complete Groom mother's residence.");
                         this.scrollToError();
                         return;
@@ -3317,7 +2534,7 @@ export default {
                             this.scrollToError();
                             return;
                         }
-                        if (!this.form.consentSource.groom.houseNumStreet || !this.form.consentSource.groom.residence) {
+                        if (!this.form.consentSource.groom.residence) {
                             this.message.push("Please complete Groom consent/advice source residence.");
                             this.scrollToError();
                             return;
@@ -3347,7 +2564,6 @@ export default {
                         return;
                     }
                     if (
-                        (!this.form.bride.houseNumStreet && !(this.form.bride.housenum && this.form.bride.street)) ||
                         !this.form.bride.residence
                     ) {
                         this.message.push("Please fill in full Bride residence.");
@@ -3386,7 +2602,7 @@ export default {
                         this.scrollToError();
                         return;
                     }
-                    if (!this.form.bride.fatherHouseNumStreet || !this.form.bride.fatherResidence) {
+                    if (!this.form.bride.fatherResidence) {
                         this.message.push("Please complete Bride father's residence.");
                         this.scrollToError();
                         return;
@@ -3401,7 +2617,7 @@ export default {
                         this.scrollToError();
                         return;
                     }
-                    if (!this.form.bride.motherHouseNumStreet || !this.form.bride.motherMaidenResidence) {
+                    if (!this.form.bride.motherMaidenResidence) {
                         this.message.push("Please complete Bride mother's residence.");
                         this.scrollToError();
                         return;
@@ -3417,7 +2633,7 @@ export default {
                             this.scrollToError();
                             return;
                         }
-                        if (!this.form.consentSource.bride.houseNumStreet || !this.form.consentSource.bride.residence) {
+                        if (!this.form.consentSource.bride.residence) {
                             this.message.push("Please complete Bride consent/advice source residence.");
                             this.scrollToError();
                             return;
@@ -3618,10 +2834,9 @@ export default {
 
                     case 11: // Groom Residence
                         if (
-                            (!this.form.groom.streethousenum && !(this.form.groom.housenum && this.form.groom.street)) ||
                             !this.form.groom.residence
                         ) {
-                            this.message.push("Please fill in full groom residence (House no./Street and Barangay to Zip code).");
+                            this.message.push("Please fill in full groom residence.");
                             this.scrollToError();
                             return;
                         }
@@ -3679,7 +2894,7 @@ export default {
                         break;
 
                     case 16: // Groom Father Residence
-                        if (!this.form.groom.fatherHouseNumStreet || !this.form.groom.fatherResidence) {
+                        if (!this.form.groom.fatherResidence) {
                             this.message.push("Please fill in father's complete residence.");
                             this.scrollToError();
                             return;
@@ -3701,7 +2916,7 @@ export default {
                         break;
 
                     case 18: // Groom Mother Residence
-                        if (!this.form.groom.motherHouseNumStreet || !this.form.groom.motherMaidenResidence) {
+                        if (!this.form.groom.motherMaidenResidence) {
                             this.message.push("Please fill in mother's complete residence.");
                             this.scrollToError();
                             return;
@@ -3726,7 +2941,7 @@ export default {
                     case 20: // Groom consent/advice source residence
                         if (
                             this.groomRequirement !== "no-need" &&
-                            (!this.form.consentSource.groom.houseNumStreet || !this.form.consentSource.groom.residence)
+                            !this.form.consentSource.groom.residence
                         ) {
                             this.message.push("Please fill in groom consent/advice source complete residence.");
                             this.scrollToError();
@@ -3793,10 +3008,9 @@ export default {
 
                     case 26: // Bride Residence
                         if (
-                            (!this.form.bride.houseNumStreet && !(this.form.bride.housenum && this.form.bride.street)) ||
                             !this.form.bride.residence
                         ) {
-                            this.message.push("Please fill in full bride residence (House no., Street, and Barangay to Zip code).");
+                            this.message.push("Please fill in full bride residence.");
                             this.scrollToError();
                             return;
                         }
@@ -3854,7 +3068,7 @@ export default {
                         break;
 
                     case 31: // Bride Father Residence
-                        if (!this.form.bride.fatherHouseNumStreet || !this.form.bride.fatherResidence) {
+                        if (!this.form.bride.fatherResidence) {
                             this.message.push("Please fill in father's complete residence.");
                             this.scrollToError();
                             return;
@@ -3876,7 +3090,7 @@ export default {
                         break;
 
                     case 33: // Bride Mother Residence
-                        if (!this.form.bride.motherHouseNumStreet || !this.form.bride.motherMaidenResidence) {
+                        if (!this.form.bride.motherMaidenResidence) {
                             this.message.push("Please fill in mother's complete residence.");
                             this.scrollToError();
                             return;
@@ -3901,7 +3115,7 @@ export default {
                     case 35: // Bride consent/advice source residence
                         if (
                             this.brideRequirement !== "no-need" &&
-                            (!this.form.consentSource.bride.houseNumStreet || !this.form.consentSource.bride.residence)
+                            !this.form.consentSource.bride.residence
                         ) {
                             this.message.push("Please fill in bride consent/advice source complete residence.");
                             this.scrollToError();
