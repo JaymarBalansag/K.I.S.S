@@ -159,15 +159,6 @@ class MarriageApplicationController extends Controller
                 }
                 return ucfirst(strtolower($raw));
             };
-            $joinAddress = function (...$parts) {
-                $segments = array_values(array_filter(array_map(function ($value) {
-                    if ($value === null) return null;
-                    $trimmed = trim((string) $value);
-                    return $trimmed === '' ? null : $trimmed;
-                }, $parts)));
-
-                return empty($segments) ? null : implode(', ', $segments);
-            };
             $resolveCitizenship = function (array $payload, string $key, ?string $otherKey = null) {
                 $value = $payload[$key] ?? null;
                 if ($value === 'Others' && $otherKey && !empty($payload[$otherKey])) {
@@ -195,25 +186,10 @@ class MarriageApplicationController extends Controller
             foreach (['groom', 'bride'] as $role) {
                 $data = json_decode($request->input($role, '{}'), true) ?? [];
                 $source = $consentSource[$role] ?? [];
-                $residenceAddress = $joinAddress(
-                    $data['streethousenum'] ?? null,
-                    $data['houseNumStreet'] ?? null,
-                    $data['housenum'] ?? null,
-                    $data['street'] ?? null,
-                    $data['residence'] ?? null
-                );
-                $fatherResidence = $joinAddress(
-                    $data['fatherHouseNumStreet'] ?? null,
-                    $data['fatherResidence'] ?? null
-                );
-                $motherResidence = $joinAddress(
-                    $data['motherHouseNumStreet'] ?? null,
-                    $data['motherMaidenResidence'] ?? null
-                );
-                $sourceResidence = $joinAddress(
-                    $source['houseNumStreet'] ?? null,
-                    $source['residence'] ?? null
-                );
+                $residenceAddress = ($value = trim((string) ($data['residence'] ?? ''))) !== '' ? $value : null;
+                $fatherResidence = ($value = trim((string) ($data['fatherResidence'] ?? ''))) !== '' ? $value : null;
+                $motherResidence = ($value = trim((string) ($data['motherMaidenResidence'] ?? ''))) !== '' ? $value : null;
+                $sourceResidence = ($value = trim((string) ($source['residence'] ?? ''))) !== '' ? $value : null;
 
                 // Insert Applicant Info using Query Builder
                 $applicantInsert = [
