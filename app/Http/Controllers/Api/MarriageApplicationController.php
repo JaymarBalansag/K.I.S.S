@@ -321,7 +321,9 @@ class MarriageApplicationController extends Controller
                     "marriage_applications.*",
                     "applicants.first_name",
                     "applicants.last_name"
-                )->paginate(10);
+                )
+                ->whereNull("marriage_applications.deleted_at")
+                ->paginate(10);
 
             // return response()->json("i got past db qery");
 
@@ -358,6 +360,7 @@ class MarriageApplicationController extends Controller
                 )
                 ->where("application_id", "=", $application_id)
                 ->where("control_number", "=", $control_number)
+                ->whereNull("marriage_applications.deleted_at")
                 ->get();
 
             $groom = null;
@@ -440,6 +443,7 @@ class MarriageApplicationController extends Controller
                     "applicants.first_name",
                     "applicants.last_name"
                 )
+                ->whereNull("marriage_applications.deleted_at")
                 ->where(function ($query) use ($searchTerm) {
                     $query->where('applicants.first_name', 'LIKE', "%{$searchTerm}%")
                         ->orWhere('applicants.last_name', 'LIKE', "%{$searchTerm}%")
@@ -480,7 +484,8 @@ class MarriageApplicationController extends Controller
                     "marriage_applications.created_at",
                     // Combine the names here
                     DB::raw("GROUP_CONCAT(CONCAT(applicants.first_name, ' ', applicants.last_name) SEPARATOR ' & ') as applicant_names")
-                );
+                )
+                ->whereNull("marriage_applications.deleted_at");
 
             if ($status !== 'all') {
                 $query->where("marriage_applications.status", "=", trim($status));
@@ -530,6 +535,7 @@ class MarriageApplicationController extends Controller
             $affected = DB::table("marriage_applications")
                 ->where("id", $applicationId)
                 ->where("control_number", $control_number)
+                ->whereNull("deleted_at")
                 ->update([
                     "status" => $action,
                     "updated_at" => now() // Manually update timestamp for Query Builder
@@ -554,6 +560,177 @@ class MarriageApplicationController extends Controller
                 "message" => "Something's wrong with the server: " . $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function trash(Request $request)
+    {
+        try {
+            $query = DB::table("marriage_applications")
+                ->join("applicants", "marriage_applications.id", "=", "applicants.application_id")
+                ->select(
+                    "marriage_applications.id",
+                    "marriage_applications.control_number",
+                    "marriage_applications.status",
+                    "marriage_applications.created_at",
+                    "marriage_applications.deleted_at",
+                    DB::raw("GROUP_CONCAT(CONCAT(applicants.first_name, ' ', applicants.last_name) SEPARATOR ' & ') as applicant_names")
+                )
+                ->whereNotNull("marriage_applications.deleted_at");
+
+            if ($request->has('search') && $request->search != '') {
+                $search = $request->search;
+                $query->where(function ($q) use ($search) {
+                    $q->where('applicants.first_name', 'LIKE', "%$search%")
+                        ->orWhere('applicants.last_name', 'LIKE', "%$search%")
+                        ->orWhere('marriage_applications.control_number', 'LIKE', "%$search%");
+                });
+            }
+
+            $data = $query->groupBy(
+                'marriage_applications.id',
+                'marriage_applications.control_number',
+                'marriage_applications.status',
+                'marriage_applications.created_at',
+                'marriage_applications.deleted_at'
+            )
+                ->orderBy('marriage_applications.deleted_at', 'desc')
+                ->paginate(5);
+
+            return response()->json([
+                "message" => "Trashed applications found",
+                "data" => $data,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                "message" => "Something's wrong: " . $e->getMessage(),
+                "data" => [],
+            ], 500);
+        }
+    }
+
+    public function destroy(int $application_id)
+    {
+        $affected = DB::table("marriage_applications")
+            ->where("id", $application_id)
+            ->whereNull("deleted_at")
+            ->update([
+                "deleted_at" => now(),
+                "updated_at" => now(),
+            ]);
+
+        if ($affected === 0) {
+            return response()->json([
+                "message" => "Application not found or already trashed."
+            ], 404);
+        }
+
+        return response()->json([
+            "message" => "Application moved to trash."
+        ], 200);
+    }
+
+    public function restore(int $application_id)
+    {
+        $affected = DB::table("marriage_applications")
+            ->where("id", $application_id)
+            ->whereNotNull("deleted_at")
+            ->update([
+                "deleted_at" => null,
+                "updated_at" => now(),
+            ]);
+
+        if ($affected === 0) {
+            return response()->json([
+                "message" => "Application not found in trash."
+            ], 404);
+        }
+
+        return response()->json([
+            "message" => "Application restored."
+        ], 200);
+    }
+
+    public function adminUpdate(Request $request, int $application_id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,under_review,approved,rejected,issued',
+            'phone_number' => 'nullable|string|max:30',
+            'foreigner_type' => 'nullable|in:filipino,groom,bride,both',
+            'groom.first_name' => 'required|string|max:255',
+            'groom.middle_name' => 'nullable|string|max:255',
+            'groom.last_name' => 'required|string|max:255',
+            'bride.first_name' => 'required|string|max:255',
+            'bride.middle_name' => 'nullable|string|max:255',
+            'bride.last_name' => 'required|string|max:255',
+        ]);
+
+        $exists = DB::table("marriage_applications")
+            ->where("id", $application_id)
+            ->whereNull("deleted_at")
+            ->exists();
+
+        if (!$exists) {
+            return response()->json([
+                "message" => "Application not found."
+            ], 404);
+        }
+
+        DB::transaction(function () use ($application_id, $validated) {
+            DB::table("marriage_applications")
+                ->where("id", $application_id)
+                ->update([
+                    "status" => $validated["status"],
+                    "phone_number" => $validated["phone_number"] ?? null,
+                    "foreigner_type" => $validated["foreigner_type"] ?? null,
+                    "updated_at" => now(),
+                ]);
+
+            DB::table("applicants")
+                ->where("application_id", $application_id)
+                ->where("applicant_type", "groom")
+                ->update([
+                    "first_name" => $validated["groom"]["first_name"],
+                    "middle_name" => $validated["groom"]["middle_name"] ?? null,
+                    "last_name" => $validated["groom"]["last_name"],
+                    "updated_at" => now(),
+                ]);
+
+            DB::table("applicants")
+                ->where("application_id", $application_id)
+                ->where("applicant_type", "bride")
+                ->update([
+                    "first_name" => $validated["bride"]["first_name"],
+                    "middle_name" => $validated["bride"]["middle_name"] ?? null,
+                    "last_name" => $validated["bride"]["last_name"],
+                    "updated_at" => now(),
+                ]);
+        });
+
+        return response()->json([
+            "message" => "Application updated successfully."
+        ], 200);
+    }
+
+    public function forceDestroy(int $application_id)
+    {
+        $exists = DB::table("marriage_applications")
+            ->where("id", $application_id)
+            ->whereNotNull("deleted_at")
+            ->exists();
+
+        if (!$exists) {
+            return response()->json([
+                "message" => "Application not found in trash."
+            ], 404);
+        }
+
+        DB::table("marriage_applications")
+            ->where("id", $application_id)
+            ->delete();
+
+        return response()->json([
+            "message" => "Application deleted permanently."
+        ], 200);
     }
 
     public function preview8x13(Request $request)
@@ -696,6 +873,7 @@ class MarriageApplicationController extends Controller
             )
             ->where("applicants.application_id", "=", $application_id)
             ->where("marriage_applications.control_number", "=", $control_number)
+            ->whereNull("marriage_applications.deleted_at")
             ->get();
 
         if ($applicants->isEmpty()) {

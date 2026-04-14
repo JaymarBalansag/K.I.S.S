@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
+use Illuminate\Http\Response;
 
 class AppointmentController extends Controller
 {
@@ -246,5 +247,60 @@ class AppointmentController extends Controller
                 'message' => 'Submission Error: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * DELETE /api/Appointments/{id}
+     * Soft-delete an appointment (move to trash)
+     */
+    public function destroy($id)
+    {
+        $appointment = Appointment::findOrFail($id);
+        $appointment->delete();
+
+        return response()->json([
+            'message' => 'Appointment moved to trash.'
+        ], 200);
+    }
+
+    /**
+     * GET /api/Appointments/trash
+     * List trashed appointments (admin)
+     */
+    public function trash()
+    {
+        $appointments = Appointment::onlyTrashed()
+            ->orderByDesc('deleted_at')
+            ->get();
+
+        return response()->json($appointments, 200);
+    }
+
+    /**
+     * PATCH /api/Appointments/{id}/restore
+     * Restore a trashed appointment (admin)
+     */
+    public function restore($id)
+    {
+        $appointment = Appointment::onlyTrashed()->findOrFail($id);
+        $appointment->restore();
+
+        return response()->json([
+            'message' => 'Appointment restored.'
+        ], 200);
+    }
+
+    /**
+     * DELETE /api/Appointments/{id}/force
+     * Permanently delete a trashed appointment (admin)
+     */
+    public function forceDestroy($id)
+    {
+        $appointment = Appointment::onlyTrashed()->findOrFail($id);
+        $appointment->forceDelete();
+
+        return response()->json([
+            'message' => 'Appointment deleted permanently.'
+        ], 200);
     }
 }

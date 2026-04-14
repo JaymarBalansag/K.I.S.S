@@ -93,10 +93,13 @@ const routes = [
                 path: "Staffs", name: "AdminStaffs", component: () => import("../pages/admin/Staffs.vue")
             },
             {
-                path: "Appointments", name: "AdminAppointments", component: () => import("../pages/Staff/Appointments.vue")
+                path: "Appointments", name: "AdminAppointments", component: () => import("../pages/admin/Appointments.vue")
             },
             {
-                path: "Applications", name: "AdminApplications", component: () => import("../pages/Staff/Applications.vue")
+                path: "Applications", name: "AdminApplications", component: () => import("../pages/admin/Applications.vue")
+            },
+            {
+                path: "Trash", name: "AdminTrash", component: () => import("../pages/admin/Trash.vue")
             },
             {
                 path: "SmsRequests", name: "AdminSmsRequests", component: () => import("../pages/admin/SmsRequests.vue")
@@ -144,7 +147,7 @@ router.beforeEach((to, from, next) => {
     }
     
     // Check for Staff permissions
-    if (to.meta.roleIsStaff && role !== 'staff') {
+    if (to.meta.roleIsStaff && role !== 'staff' && role !== 'admin') {
         return next("/home"); 
     }
     

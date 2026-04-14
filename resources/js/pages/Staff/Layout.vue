@@ -24,6 +24,25 @@
                 </button>
             </div>
 
+            <div v-if="isAdmin && (!isCollapsed || mobileShow)" class="px-3 pt-3">
+                <div class="mode-switch glass-toggle rounded-pill p-1 d-flex">
+                    <button
+                        class="btn btn-sm flex-fill rounded-pill fw-semibold"
+                        :class="!isAdminView ? 'btn-info text-dark' : 'btn-outline-light text-white'"
+                        @click="switchToStaffView"
+                    >
+                        Staff View
+                    </button>
+                    <button
+                        class="btn btn-sm flex-fill rounded-pill fw-semibold"
+                        :class="isAdminView ? 'btn-info text-dark' : 'btn-outline-light text-white'"
+                        @click="switchToAdminView"
+                    >
+                        Admin View
+                    </button>
+                </div>
+            </div>
+
             <nav class="nav flex-column p-3 gap-2 flex-grow-1">
                 <router-link to="/Staff/Dashboard" @click="closeMobile"
                     class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
@@ -108,12 +127,24 @@ export default {
         return {
             isCollapsed: false,
             mobileShow: false,
-            isMobile: false
+            isMobile: false,
+            role: 'guest'
         };
+    },
+    computed: {
+        isAdmin() {
+            return this.role === 'admin';
+        },
+        isAdminView() {
+            return this.$route.path.startsWith('/Admin');
+        }
     },
     mounted() {
         this.checkScreen();
         window.addEventListener('resize', this.checkScreen);
+        const userInfoString = localStorage.getItem("userInfo");
+        const user = userInfoString ? JSON.parse(userInfoString) : null;
+        this.role = user?.role || 'guest';
     },
     beforeUnmount() {
         window.removeEventListener('resize', this.checkScreen);
@@ -125,6 +156,13 @@ export default {
         },
         closeMobile() {
             if (this.isMobile) this.mobileShow = false;
+        },
+        switchToAdminView() {
+            this.$router.push('/Admin/Dashboard');
+        },
+        switchToStaffView() {
+            if (this.$route.path.startsWith('/Staff')) return;
+            this.$router.push('/Staff/Dashboard');
         },
         async handleLogout() {
             const result = await Swal.fire({
@@ -208,6 +246,11 @@ export default {
     opacity: 1;
     background: rgba(13, 110, 253, 0.2) !important;
     border: 1px solid rgba(13, 110, 253, 0.3);
+}
+
+.glass-toggle {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .glass-pill {
