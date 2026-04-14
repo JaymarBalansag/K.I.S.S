@@ -1,5 +1,5 @@
 <template>
-    <div class="management-page" :style="{ backgroundImage: 'url(/background.jpg)' }">
+    <div class="management-page" >
         <main class="content-overlay">
             <div class="container py-5 mt-5">
                 <div class="row justify-content-center text-center mb-5 mt-4">
@@ -202,7 +202,7 @@ export default {
 
 .content-overlay {
     min-height: 100vh;
-    background: rgba(15, 23, 42, 0.5);
+    /* background: rgba(15, 23, 42, 0.5); */
     /* Darker tint for better text contrast */
 }
 
