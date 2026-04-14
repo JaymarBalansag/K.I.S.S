@@ -160,6 +160,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
 import { logout } from '../../controller/Authentication';
 export default {
     name: 'AdminLayout',
@@ -205,9 +206,32 @@ export default {
             this.$router.push('/Staff/Dashboard');
         },
         async handleLogout() {
-            if (confirm("Logout from LCRO Admin?")) {
-                const res = await logout();
-                this.$router.push('/staff-portal');
+            const result = await Swal.fire({
+                title: 'Logout from LCRO Admin?',
+                text: 'You will need to login again to access your dashboard.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, logout!'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await logout();
+
+                    await Swal.fire({
+                        title: 'Logged Out!',
+                        text: 'You have been successfully logged out.',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    this.$router.push('/staff-portal');
+                } catch (error) {
+                    Swal.fire('Error', 'Something went wrong during logout.', 'error');
+                }
             }
         }
     }
