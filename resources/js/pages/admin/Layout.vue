@@ -14,7 +14,7 @@
             <div
                 class="sidebar-header p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center">
                 <h5 v-if="!isCollapsed || mobileShow"
-                    class="text-white fw-bold mb-0 text-nowrap animate__animated animate__fadeIn">LCRO Staff</h5>
+                    class="text-white fw-bold mb-0 text-nowrap animate__animated animate__fadeIn">Admin Dashboard</h5>
                 <button @click="isCollapsed = !isCollapsed"
                     class="btn btn-sm btn-link text-white opacity-75 d-none d-lg-block p-0">
                     <i class="bi fs-4" :class="isCollapsed ? 'bi-text-indent-left' : 'bi-text-indent-right'"></i>
@@ -25,17 +25,18 @@
             </div>
 
             <div v-if="isAdmin && (!isCollapsed || mobileShow)" class="px-3 pt-3">
-                <div class="mode-switch glass-toggle rounded-pill p-1 d-flex">
+                <div class="mode-switch glass-toggle rounded-pill p-1 d-flex position-relative">
+                    <div class="mode-switch-indicator rounded-pill" :class="{ 'staff-active': !isAdminView }"></div>
                     <button
-                        class="btn btn-sm flex-fill rounded-pill fw-semibold"
-                        :class="isAdminView ? 'btn-info text-dark' : 'btn-outline-light text-white'"
+                        class="btn btn-sm flex-fill rounded-pill fw-semibold mode-switch-btn"
+                        :class="{ active: isAdminView }"
                         @click="switchToAdminView"
                     >
                         Admin View
                     </button>
                     <button
-                        class="btn btn-sm flex-fill rounded-pill fw-semibold"
-                        :class="!isAdminView ? 'btn-info text-dark' : 'btn-outline-light text-white'"
+                        class="btn btn-sm flex-fill rounded-pill fw-semibold mode-switch-btn"
+                        :class="{ active: !isAdminView }"
                         @click="switchToStaffView"
                     >
                         Staff View
@@ -271,6 +272,43 @@ export default {
 .glass-toggle {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+}
+
+.mode-switch {
+    min-height: 44px;
+}
+
+.mode-switch-indicator {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+    background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%);
+    box-shadow: 0 8px 18px rgba(34, 211, 238, 0.28);
+    transition: transform 0.25s ease;
+}
+
+.mode-switch-indicator.staff-active {
+    transform: translateX(100%);
+}
+
+.mode-switch-btn {
+    position: relative;
+    z-index: 1;
+    border: 0 !important;
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.72) !important;
+    transition: color 0.2s ease;
+}
+
+.mode-switch-btn.active {
+    color: #062630 !important;
+}
+
+.mode-switch-btn:not(.active):hover {
+    color: #ffffff !important;
 }
 
 .glass-pill {
