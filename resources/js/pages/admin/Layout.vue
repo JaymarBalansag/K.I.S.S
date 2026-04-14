@@ -98,11 +98,11 @@
                                     <i class="bi bi-person me-2"></i> Home
                                 </router-link>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <router-link class="dropdown-item rounded-2 text-white py-2" to="/Admin/Settings">
                                     <i class="bi bi-gear me-2"></i> Settings
                                 </router-link>
-                            </li>
+                            </li> -->
                             <li>
                                 <hr class="dropdown-divider border-white border-opacity-10">
                             </li>
