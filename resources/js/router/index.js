@@ -99,6 +99,9 @@ const routes = [
                 path: "Applications", name: "AdminApplications", component: () => import("../pages/Staff/Applications.vue")
             },
             {
+                path: "SmsRequests", name: "AdminSmsRequests", component: () => import("../pages/admin/SmsRequests.vue")
+            },
+            {
                 path: "Staffs/Add", name: "AddStaff", component: () => import("../pages/admin/AddStaffForm.vue")
             },
             {

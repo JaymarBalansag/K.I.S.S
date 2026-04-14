@@ -166,6 +166,8 @@ export default {
     background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)),
         url('/background.jpg') no-repeat center center fixed;
     background-size: cover;
+    overflow-x: hidden;
+    overflow-y: visible;
 }
 
 /* GLASS EFFECT */

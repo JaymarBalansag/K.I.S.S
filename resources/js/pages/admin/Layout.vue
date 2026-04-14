@@ -56,6 +56,14 @@
                     <span v-if="!isCollapsed || mobileShow"
                         class="ms-3 animate__animated animate__fadeIn text-nowrap">Applications</span>
                 </router-link>
+
+                <router-link to="/Admin/SmsRequests"
+                    @click="closeMobile"
+                    class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
+                    <i class="bi bi-chat-left-text-fill fs-5"></i>
+                    <span v-if="!isCollapsed || mobileShow"
+                        class="ms-3 animate__animated animate__fadeIn text-nowrap">SMS Requests</span>
+                </router-link>
                 <!-- <router-link to="/Admin/Position"
                     class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
                     <i class="bi bi-people-fill fs-5"></i>
@@ -165,6 +173,8 @@ export default {
     background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)),
         url('/background.jpg') no-repeat center center fixed;
     background-size: cover;
+    overflow-x: hidden;
+    overflow-y: visible;
 }
 
 /* GLASS EFFECT */

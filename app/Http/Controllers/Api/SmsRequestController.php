@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreSmsRequestRequest;
+use App\Http\Requests\UpdateSmsRequestRequest;
+use App\Http\Resources\SmsRequestResource;
 use App\Models\SmsRequest;
 use Illuminate\Http\Request;
 
@@ -12,6 +15,7 @@ class SmsRequestController extends Controller
     {
         $validated = $request->validate([
             'status' => 'nullable|string|in:pending,sent,failed',
+            'search' => 'nullable|string|max:255',
         ]);
 
         $query = SmsRequest::query()->orderByDesc('id');
@@ -20,7 +24,16 @@ class SmsRequestController extends Controller
             $query->where('status', $validated['status']);
         }
 
-        return response()->json($query->get(), 200);
+        if (!empty($validated['search'])) {
+            $search = $validated['search'];
+            $query->where(function ($builder) use ($search) {
+                $builder
+                    ->where('phone_number', 'like', "%{$search}%")
+                    ->orWhere('message', 'like', "%{$search}%");
+            });
+        }
+
+        return SmsRequestResource::collection($query->get());
     }
 
     public function getPending(Request $request)
@@ -31,29 +44,24 @@ class SmsRequestController extends Controller
             ->limit(5)
             ->get();
 
-        return response()->json($messages, 200);
+        return SmsRequestResource::collection($messages);
     }
 
-    public function acknowledge(Request $request, int $id)
+    public function acknowledge(Request $request, SmsRequest $smsRequest)
     {
         $validated = $request->validate([
             'status' => 'required|string|in:sent,failed',
         ]);
 
-        $smsRequest = SmsRequest::findOrFail($id);
         $smsRequest->status = $validated['status'];
         $smsRequest->save();
 
-        return response()->json($smsRequest, 200);
+        return new SmsRequestResource($smsRequest);
     }
 
-    public function store(Request $request)
+    public function store(StoreSmsRequestRequest $request)
     {
-        $validated = $request->validate([
-            'phone_number' => 'required|string|max:30',
-            'message' => 'required|string',
-            'status' => 'nullable|string|in:pending,sent,failed',
-        ]);
+        $validated = $request->validated();
 
         $smsRequest = SmsRequest::create([
             'phone_number' => $validated['phone_number'],
@@ -61,20 +69,29 @@ class SmsRequestController extends Controller
             'status' => $validated['status'] ?? 'pending',
         ]);
 
-        return response()->json($smsRequest, 201);
+        return (new SmsRequestResource($smsRequest))
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function update(Request $request, int $id)
+    public function show(SmsRequest $smsRequest)
     {
-        $validated = $request->validate([
-            'status' => 'required|string|in:pending,sent,failed',
-        ]);
+        return new SmsRequestResource($smsRequest);
+    }
 
-        $smsRequest = SmsRequest::findOrFail($id);
+    public function update(UpdateSmsRequestRequest $request, SmsRequest $smsRequest)
+    {
+        $smsRequest->update($request->validated());
 
-        $smsRequest->status = $validated['status'];
-        $smsRequest->save();
+        return new SmsRequestResource($smsRequest);
+    }
 
-        return response()->json($smsRequest, 200);
+    public function destroy(SmsRequest $smsRequest)
+    {
+        $smsRequest->delete();
+
+        return response()->json([
+            'message' => 'SMS request deleted successfully.',
+        ], 200);
     }
 }

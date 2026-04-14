@@ -11,4 +11,9 @@ class SmsRequest extends Model
         'message',
         'status',
     ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 }
