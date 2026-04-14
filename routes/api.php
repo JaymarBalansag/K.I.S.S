@@ -43,12 +43,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/sms/logout', 'logout');
     });
 
-    Route::get('/sms-requests', [SmsRequestController::class, 'index']);
-    Route::post('/sms-requests', [SmsRequestController::class, 'store']);
-    Route::put('/sms-requests/{id}', [SmsRequestController::class, 'update']);
-
     Route::middleware('is_admin')->group(function () {
         Route::apiResource('Staffs', App\Http\Controllers\UserController::class);
+        Route::apiResource('sms-requests', SmsRequestController::class);
+
+        Route::delete('/applications/{id}', [MarriageApplicationController::class, 'destroy']);
+        Route::get('/applications/trash', [MarriageApplicationController::class, 'trash']);
+        Route::patch('/applications/{id}/restore', [MarriageApplicationController::class, 'restore']);
+        Route::patch('/applications/{id}', [MarriageApplicationController::class, 'adminUpdate']);
+        Route::delete('/applications/{id}/force', [MarriageApplicationController::class, 'forceDestroy']);
+
+        Route::get('/Appointments/trash', [App\Http\Controllers\AppointmentController::class, 'trash']);
+        Route::patch('/Appointments/{id}/restore', [App\Http\Controllers\AppointmentController::class, 'restore']);
+        Route::delete('/Appointments/{id}/force', [App\Http\Controllers\AppointmentController::class, 'forceDestroy']);
     });
 
     Route::middleware('is_staff')->group(function () {

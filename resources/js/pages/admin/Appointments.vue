@@ -1,0 +1,381 @@
+<template>
+    <main class="content-overlay">
+        <div class="container py-5 mt-5">
+            <div class="row justify-content-center text-center mb-4 mt-4">
+                <div class="col-lg-9 col-xl-8">
+                    <span
+                        class="badge bg-primary bg-opacity-75 rounded-pill px-4 py-2 mb-3 shadow-sm text-uppercase fw-bold animate__animated animate__fadeInDown">
+                        Appointments Management
+                    </span>
+                    <h2 class="text-white fw-bold text-shadow-heavy">Admin Appointment Overview</h2>
+                    <p class="text-white opacity-75 mb-0">Manage appointment records with admin CRUD tools.</p>
+                </div>
+            </div>
+
+            <div class="row justify-content-center mb-4 g-3">
+                <div class="col-md-4">
+                    <div class="search-box">
+                        <i class="bi bi-search search-icon"></i>
+                        <input v-model="searchQuery" type="text" class="form-control glass-input"
+                            placeholder="Search Name or Control No...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select v-model="filterType" class="form-select glass-input">
+                        <option value="all">All Application Types</option>
+                        <option v-for="type in applicationTypes" :key="type" :value="type">
+                            {{ type }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select v-model="filterStatus" class="form-select glass-input">
+                        <option value="all">All Statuses</option>
+                        <option value="approved">Approved</option>
+                        <option value="pending">Pending</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button class="btn btn-outline-light w-100" @click="goToTrash">
+                        <i class="bi bi-trash3 me-1"></i> Trash
+                    </button>
+                </div>
+            </div>
+
+            <div class="staff-content animate__animated animate__fadeInUp">
+                <div v-if="loading" class="text-center text-white py-5">
+                    <div class="spinner-border text-info" role="status"></div>
+                    <p class="mt-2 opacity-75">Connecting to server...</p>
+                </div>
+
+                <div v-else-if="filteredAppointments && filteredAppointments.length > 0">
+                    <div class="table-responsive d-none d-md-block">
+                        <table class="table glass-table align-middle">
+                            <thead>
+                                <tr class="text-uppercase small opacity-75 ls-1">
+                                    <th class="px-4 py-3 text-white border-0">Control No.</th>
+                                    <th class="py-3 text-white border-0">Client Name</th>
+                                    <th class="py-3 text-white border-0">Type</th>
+                                    <th class="py-3 text-white border-0">Requested Date</th>
+                                    <th class="py-3 text-white border-0">Status</th>
+                                    <th class="py-3 text-center text-white border-0">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="apt in filteredAppointments" :key="apt.id" class="glass-row transition">
+                                    <td class="px-4 fw-bold text-info border-0 rounded-start-4">
+                                        {{ apt.control_number }}
+                                    </td>
+                                    <td class="text-white border-0">
+                                        <div class="fw-bold">{{ formatFullName(apt) }}</div>
+                                        <small class="opacity-50">{{ apt.phone_number }}</small>
+                                    </td>
+                                    <td class="text-white border-0">
+                                        <span class="small opacity-75">{{ apt.appointment_type }}</span>
+                                    </td>
+                                    <td class="text-white opacity-75 border-0">
+                                        {{ formatDate(apt.requested_date) }}
+                                    </td>
+                                    <td class="border-0">
+                                        <span :class="getStatusClass(apt.status)">
+                                            {{ getStatusLabel(apt.status) }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center border-0 rounded-end-4 px-4">
+                                        <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                            <button @click="viewDetails(apt)" class="btn btn-action-glass text-info">
+                                                View
+                                            </button>
+                                            <button @click="moveToTrash(apt)" class="btn btn-action-glass text-danger">
+                                                Trash
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-md-none px-2">
+                        <div v-for="apt in filteredAppointments" :key="'mob-' + apt.id"
+                            class="mobile-staff-card glass-row rounded-4 p-4 mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h6 class="text-white fw-bold mb-0">{{ formatFullName(apt) }}</h6>
+                                <span :class="getStatusClass(apt.status)">{{ getStatusLabel(apt.status) }}</span>
+                            </div>
+                            <p class="small text-info mt-1 mb-3">{{ apt.control_number }}</p>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button @click="viewDetails(apt)"
+                                    class="btn btn-action-glass text-info flex-grow-1">View</button>
+                                <button @click="moveToTrash(apt)"
+                                    class="btn btn-action-glass text-danger flex-grow-1">Trash</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-else class="text-center text-white opacity-50 py-5">
+                    <i class="bi bi-clipboard-x display-4"></i>
+                    <p class="mt-3">No records found matching your criteria.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</template>
+
+<script>
+import Swal from 'sweetalert2';
+import api from '../../controller/api';
+
+export default {
+    name: 'AdminAppointmentsManagement',
+    data() {
+        return {
+            appointments: [],
+            loading: true,
+            filterStatus: 'all',
+            searchQuery: '',
+            filterType: 'all'
+        };
+    },
+    computed: {
+        applicationTypes() {
+            if (!Array.isArray(this.appointments)) return [];
+            const types = this.appointments
+                .map((apt) => String(apt.appointment_type || '').trim())
+                .filter(Boolean);
+            return [...new Set(types)].sort((a, b) => a.localeCompare(b));
+        },
+        filteredAppointments() {
+            if (!Array.isArray(this.appointments)) return [];
+
+            return this.appointments.filter(apt => {
+                const statusValue = apt.status || 'pending';
+                const matchesStatus = this.filterStatus === 'all' ||
+                    (this.filterStatus === 'approved' && statusValue === 'confirmed') ||
+                    (this.filterStatus === 'pending' && statusValue === 'pending') ||
+                    (this.filterStatus === 'rejected' && statusValue === 'cancelled');
+
+                const fullName = `${apt.first_name || ''} ${apt.last_name || ''}`.toLowerCase();
+                const controlNo = (apt.control_number || '').toLowerCase();
+                const query = this.searchQuery.toLowerCase();
+                const matchesSearch = fullName.includes(query) || controlNo.includes(query);
+                const typeValue = String(apt.appointment_type || '').trim();
+                const matchesType = this.filterType === 'all' || typeValue === this.filterType;
+
+                return matchesStatus && matchesSearch && matchesType;
+            });
+        }
+    },
+    mounted() {
+        this.fetchAppointments();
+    },
+    methods: {
+        goToTrash() {
+            this.$router.push('/Admin/Trash');
+        },
+        async fetchAppointments() {
+            this.loading = true;
+            try {
+                const response = await api.get('Appointments');
+
+                if (Array.isArray(response.data)) {
+                    this.appointments = response.data;
+                } else if (response.data && Array.isArray(response.data.data)) {
+                    this.appointments = response.data.data;
+                } else {
+                    this.appointments = [];
+                }
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                this.appointments = [];
+                if (error.response?.status === 401 || error.response?.status === 403) {
+                    Swal.fire('Access Denied', 'Please log in as Admin to view records.', 'warning');
+                } else {
+                    Swal.fire('Error', 'Could not load data from server.', 'error');
+                }
+            } finally {
+                this.loading = false;
+            }
+        },
+        formatFullName(apt) {
+            return `${apt.first_name || ''} ${apt.last_name || ''}`;
+        },
+        formatDate(dateStr) {
+            if (!dateStr) return 'N/A';
+            return new Date(dateStr).toLocaleDateString('en-US', {
+                month: 'short', day: 'numeric', year: 'numeric'
+            });
+        },
+        getStatusClass(status) {
+            const base = "badge glass-pill px-3 py-2 ";
+            if (status === 'confirmed') return base + "status-approved";
+            if (status === 'cancelled') return base + "status-rejected";
+            return base + "status-pending";
+        },
+        getStatusLabel(status) {
+            if (status === 'confirmed') return 'Approved';
+            if (status === 'cancelled') return 'Rejected';
+            return status || 'pending';
+        },
+        async moveToTrash(apt) {
+            const result = await Swal.fire({
+                title: 'Move to trash?',
+                text: `This will move ${apt.control_number} to Trash.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                background: '#0f172a',
+                color: '#fff',
+            });
+
+            if (!result.isConfirmed) {
+                return;
+            }
+
+            try {
+                await api.delete(`Appointments/${apt.id}`);
+                this.appointments = this.appointments.filter(item => item.id !== apt.id);
+                Swal.fire({
+                    title: 'Moved to Trash',
+                    text: 'Appointment moved to trash.',
+                    icon: 'success',
+                    background: '#0f172a',
+                    color: '#fff'
+                });
+            } catch (error) {
+                Swal.fire('Error', 'Failed to move appointment to trash.', 'error');
+            }
+        },
+        viewDetails(apt) {
+            Swal.fire({
+                title: '<span class="text-white">Appointment Details</span>',
+                html: `
+                    <div class="text-start text-white p-2" style="font-size: 0.9rem;">
+                        <div class="mb-2 opacity-50">Control Number</div>
+                        <div class="mb-3 fw-bold text-info fs-5">${apt.control_number}</div>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="opacity-50">Client</div>
+                                <strong>${this.formatFullName(apt)}</strong>
+                            </div>
+                            <div class="col-6">
+                                <div class="opacity-50">Type</div>
+                                <strong>${apt.appointment_type}</strong>
+                            </div>
+                            <div class="col-6">
+                                <div class="opacity-50">Phone</div>
+                                <strong>${apt.phone_number}</strong>
+                            </div>
+                            <div class="col-6">
+                                <div class="opacity-50">Date</div>
+                                <strong>${this.formatDate(apt.requested_date)}</strong>
+                            </div>
+                        </div>
+                    </div>`,
+                background: '#0f172a',
+                confirmButtonColor: '#0dcaf0',
+                customClass: { popup: 'glass-row rounded-4 border-white border-opacity-10' }
+            });
+        }
+    }
+};
+</script>
+
+<style scoped>
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    color: rgba(255, 255, 255, 0.5);
+    z-index: 5;
+}
+
+.glass-input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px;
+    padding-left: 45px;
+    color: #fff !important;
+}
+
+.glass-input::placeholder {
+    color: white;
+}
+
+.glass-input:focus {
+    border-color: #0dcaf0 !important;
+    box-shadow: 0 0 15px rgba(13, 202, 240, 0.2);
+    outline: none;
+    color: #fff !important;
+}
+
+.form-select.glass-input {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: #fff !important;
+    padding-left: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+.form-select.glass-input:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: #fff !important;
+}
+
+.form-select.glass-input option {
+    background: #0f172a;
+    color: #fff;
+}
+
+.glass-table {
+    --bs-table-bg: transparent !important;
+    border-collapse: separate !important;
+    border-spacing: 0 12px !important;
+}
+
+.glass-row {
+    background: rgba(255, 255, 255, 0.07) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.btn-action-glass {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.status-pending {
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.status-approved {
+    color: #0dfaf0;
+    border: 1px solid rgba(13, 250, 240, 0.3);
+}
+
+.status-rejected {
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.4);
+}
+
+.text-info {
+    color: #0dcaf0 !important;
+}
+
+.content-overlay {
+    color: #fff;
+}
+</style>

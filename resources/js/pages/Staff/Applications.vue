@@ -18,17 +18,17 @@
             <!-- For filters and search bar -->
             <div class="row g-3 mb-4 animate__animated animate__fadeIn">
                 <div class="col-md-5">
-                    <div class="input-group shadow-sm">
-                        <span class="input-group-text bg-white border-end-0 text-muted">
+                    <div class="input-group glass-input-group">
+                        <span class="input-group-text glass-addon border-end-0">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" v-model="search" class="form-control border-start-0 ps-0"
+                        <input type="text" v-model="search" class="form-control glass-input border-start-0 ps-0"
                             placeholder="Search by Groom, Bride, or Control Number...">
                     </div>
                 </div>
 
                 <div class="col-md-3">
-                    <select v-model="status" class="form-select shadow-sm">
+                    <select v-model="status" class="form-select glass-input">
                         <option value="all">All Statuses</option>
                         <option value="pending">Pending</option>
                         <option value="approved">Approved</option>
@@ -38,14 +38,14 @@
                 </div>
 
                 <div class="col-md-2">
-                    <select v-model="order" class="form-select shadow-sm">
+                    <select v-model="order" class="form-select glass-input">
                         <option value="desc">Newest First</option>
                         <option value="asc">Oldest First</option>
                     </select>
                 </div>
 
                 <div class="col-md-2 text-md-end">
-                    <button class="btn btn-outline-secondary w-100 shadow-sm text-white" @click="resetFilters">
+                    <button class="btn btn-action-glass w-100 text-white" @click="resetFilters">
                         <i class="bi bi-x-circle me-1"></i> Clear
                     </button>
                 </div>
@@ -835,6 +835,43 @@ export default {
     /* Ensure the table itself doesn't trap the menu */
     position: relative;
     z-index: 1;
+}
+
+.glass-input-group {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-addon {
+    background: transparent !important;
+    border: none !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.glass-input {
+    background: transparent !important;
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-input:focus {
+    border-color: rgba(13, 202, 240, 0.6) !important;
+    box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.2);
+}
+
+.glass-input::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.form-select.glass-input option {
+    background: #0f172a;
+    color: #fff;
 }
 
 .modal-overlay {

@@ -14,7 +14,7 @@
             <div
                 class="sidebar-header p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center">
                 <h5 v-if="!isCollapsed || mobileShow"
-                    class="text-white fw-bold mb-0 text-nowrap animate__animated animate__fadeIn">LCRO Staff</h5>
+                    class="text-white fw-bold mb-0 text-nowrap animate__animated animate__fadeIn">Admin Dashboard</h5>
                 <button @click="isCollapsed = !isCollapsed"
                     class="btn btn-sm btn-link text-white opacity-75 d-none d-lg-block p-0">
                     <i class="bi fs-4" :class="isCollapsed ? 'bi-text-indent-left' : 'bi-text-indent-right'"></i>
@@ -22,6 +22,26 @@
                 <button @click="mobileShow = false" class="btn btn-sm btn-link text-white d-lg-none">
                     <i class="bi bi-x-lg"></i>
                 </button>
+            </div>
+
+            <div v-if="isAdmin && (!isCollapsed || mobileShow)" class="px-3 pt-3">
+                <div class="mode-switch glass-toggle rounded-pill p-1 d-flex position-relative">
+                    <div class="mode-switch-indicator rounded-pill" :class="{ 'staff-active': !isAdminView }"></div>
+                    <button
+                        class="btn btn-sm flex-fill rounded-pill fw-semibold mode-switch-btn"
+                        :class="{ active: isAdminView }"
+                        @click="switchToAdminView"
+                    >
+                        Admin View
+                    </button>
+                    <button
+                        class="btn btn-sm flex-fill rounded-pill fw-semibold mode-switch-btn"
+                        :class="{ active: !isAdminView }"
+                        @click="switchToStaffView"
+                    >
+                        Staff View
+                    </button>
+                </div>
             </div>
 
             <nav class="nav flex-column p-3 gap-2 flex-grow-1">
@@ -55,6 +75,22 @@
                     <i class="bi bi-file-earmark-text fs-5"></i>
                     <span v-if="!isCollapsed || mobileShow"
                         class="ms-3 animate__animated animate__fadeIn text-nowrap">Applications</span>
+                </router-link>
+
+                <router-link to="/Admin/SmsRequests"
+                    @click="closeMobile"
+                    class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
+                    <i class="bi bi-chat-left-text-fill fs-5"></i>
+                    <span v-if="!isCollapsed || mobileShow"
+                        class="ms-3 animate__animated animate__fadeIn text-nowrap">SMS Requests</span>
+                </router-link>
+
+                <router-link to="/Admin/Trash"
+                    @click="closeMobile"
+                    class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
+                    <i class="bi bi-trash3-fill fs-5"></i>
+                    <span v-if="!isCollapsed || mobileShow"
+                        class="ms-3 animate__animated animate__fadeIn text-nowrap">Trash</span>
                 </router-link>
                 <!-- <router-link to="/Admin/Position"
                     class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
@@ -98,11 +134,11 @@
                                     <i class="bi bi-person me-2"></i> Home
                                 </router-link>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <router-link class="dropdown-item rounded-2 text-white py-2" to="/Admin/Settings">
                                     <i class="bi bi-gear me-2"></i> Settings
                                 </router-link>
-                            </li>
+                            </li> -->
                             <li>
                                 <hr class="dropdown-divider border-white border-opacity-10">
                             </li>
@@ -124,6 +160,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
 import { logout } from '../../controller/Authentication';
 export default {
     name: 'AdminLayout',
@@ -131,12 +168,24 @@ export default {
         return {
             isCollapsed: false,
             mobileShow: false,
-            isMobile: false
+            isMobile: false,
+            role: 'guest'
         };
+    },
+    computed: {
+        isAdmin() {
+            return this.role === 'admin';
+        },
+        isAdminView() {
+            return this.$route.path.startsWith('/Admin');
+        }
     },
     mounted() {
         this.checkScreen();
         window.addEventListener('resize', this.checkScreen);
+        const userInfoString = localStorage.getItem("userInfo");
+        const user = userInfoString ? JSON.parse(userInfoString) : null;
+        this.role = user?.role || 'guest';
     },
     beforeUnmount() {
         window.removeEventListener('resize', this.checkScreen);
@@ -149,10 +198,40 @@ export default {
         closeMobile() {
             if (this.isMobile) this.mobileShow = false;
         },
+        switchToAdminView() {
+            if (this.$route.path.startsWith('/Admin')) return;
+            this.$router.push('/Admin/Dashboard');
+        },
+        switchToStaffView() {
+            this.$router.push('/Staff/Dashboard');
+        },
         async handleLogout() {
-            if (confirm("Logout from LCRO Admin?")) {
-                const res = await logout();
-                this.$router.push('/staff-portal');
+            const result = await Swal.fire({
+                title: 'Logout from LCRO Admin?',
+                text: 'You will need to login again to access your dashboard.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, logout!'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await logout();
+
+                    await Swal.fire({
+                        title: 'Logged Out!',
+                        text: 'You have been successfully logged out.',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    this.$router.push('/staff-portal');
+                } catch (error) {
+                    Swal.fire('Error', 'Something went wrong during logout.', 'error');
+                }
             }
         }
     }
@@ -165,6 +244,8 @@ export default {
     background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)),
         url('/background.jpg') no-repeat center center fixed;
     background-size: cover;
+    overflow-x: hidden;
+    overflow-y: visible;
 }
 
 /* GLASS EFFECT */
@@ -210,6 +291,48 @@ export default {
     opacity: 1;
     background: rgba(13, 110, 253, 0.2) !important;
     border: 1px solid rgba(13, 110, 253, 0.3);
+}
+
+.glass-toggle {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+}
+
+.mode-switch {
+    min-height: 44px;
+}
+
+.mode-switch-indicator {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+    background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%);
+    box-shadow: 0 8px 18px rgba(34, 211, 238, 0.28);
+    transition: transform 0.25s ease;
+}
+
+.mode-switch-indicator.staff-active {
+    transform: translateX(100%);
+}
+
+.mode-switch-btn {
+    position: relative;
+    z-index: 1;
+    border: 0 !important;
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.72) !important;
+    transition: color 0.2s ease;
+}
+
+.mode-switch-btn.active {
+    color: #062630 !important;
+}
+
+.mode-switch-btn:not(.active):hover {
+    color: #ffffff !important;
 }
 
 .glass-pill {

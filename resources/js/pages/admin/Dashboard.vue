@@ -95,7 +95,8 @@ export default {
             applicationCount: 0,
             pendingApplications: 0,
             issuedApplications: 0,
-            staffCount: 0
+            staffCount: 0,
+            smsRequests: []
         };
     },
     computed: {
@@ -116,6 +117,13 @@ export default {
         issuedProgress() {
             if (!this.applicationCount) return 0;
             return Math.min(100, Math.round((this.issuedApplications / this.applicationCount) * 100));
+        },
+        pendingSmsRequests() {
+            return this.smsRequests.filter((sms) => String(sms.status || 'pending') === 'pending').length;
+        },
+        smsRequestProgress() {
+            if (!this.smsRequests.length) return 0;
+            return Math.min(100, Math.round((this.pendingSmsRequests / this.smsRequests.length) * 100));
         },
         stats() {
             return [
@@ -154,6 +162,15 @@ export default {
                     progress: 100,
                     subtitle: 'Active user records',
                     link: '/Admin/Staffs'
+                },
+                {
+                    label: 'SMS Requests',
+                    value: this.smsRequests.length,
+                    icon: 'bi-chat-left-dots-fill',
+                    color: 'secondary',
+                    progress: this.smsRequestProgress,
+                    subtitle: `${this.pendingSmsRequests} pending queue`,
+                    link: '/Admin/SmsRequests'
                 }
             ];
         }
@@ -184,12 +201,13 @@ export default {
         async fetchDashboard() {
             this.loading = true;
             try {
-                const [appointmentsRes, appAllRes, appPendingRes, appIssuedRes, staffsRes] = await Promise.all([
+                const [appointmentsRes, appAllRes, appPendingRes, appIssuedRes, staffsRes, smsRequestsRes] = await Promise.all([
                     api.get('Appointments'),
                     api.get('applications/all/desc', { params: { page: 1 } }),
                     api.get('applications/pending/desc', { params: { page: 1 } }),
                     api.get('applications/issued/desc', { params: { page: 1 } }),
-                    api.get('Staffs')
+                    api.get('Staffs'),
+                    api.get('sms-requests')
                 ]);
 
                 const appointments = Array.isArray(appointmentsRes?.data)
@@ -200,8 +218,10 @@ export default {
                 const appPendingPayload = appPendingRes?.data?.data || {};
                 const appIssuedPayload = appIssuedRes?.data?.data || {};
                 const staffRows = Array.isArray(staffsRes?.data?.data) ? staffsRes.data.data : [];
+                const smsRows = Array.isArray(smsRequestsRes?.data?.data) ? smsRequestsRes.data.data : [];
 
                 this.appointments = appointments;
+                this.smsRequests = smsRows;
                 this.recentAppointments = [...appointments]
                     .sort((a, b) => new Date(b.requested_date) - new Date(a.requested_date))
                     .slice(0, 5);
@@ -213,6 +233,7 @@ export default {
                 this.staffCount = staffRows.filter((user) => String(user.role || '').toLowerCase() === 'staff').length;
             } catch (error) {
                 this.appointments = [];
+                this.smsRequests = [];
                 this.recentAppointments = [];
                 this.recentApplications = [];
                 this.applicationCount = 0;
