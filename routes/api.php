@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SmsRequestController;
 use App\Http\Controllers\Api\MarriageApplicationController;
 use App\Http\Controllers\Api\MarriageLicenseApplicationController;
+use App\Http\Controllers\Api\ManualMarriageLicenseApplicationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -30,6 +31,7 @@ Route::apiResource('Appointments', App\Http\Controllers\AppointmentController::c
 Route::get('/applications/print/{id}/{control_number}', [MarriageApplicationController::class, 'printApplication']);
 Route::get('/pdf/8x13-preview', [MarriageApplicationController::class, 'preview8x13'])->name('pdf.8x13.preview');
 Route::get('/pdf/8x13-preview-pdf', [MarriageApplicationController::class, 'preview8x13Pdf'])->name('pdf.8x13.preview.pdf');
+Route::get('/manual-applications/preview-pdf', [ManualMarriageLicenseApplicationController::class, 'previewPdf']);
 Route::middleware('sms_key')->group(function () {
     Route::get('/sms-requests/pending', [SmsRequestController::class, 'getPending']);
     Route::put('/sms-requests/{id}/ack', [SmsRequestController::class, 'acknowledge']);
@@ -60,6 +62,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('is_staff')->group(function () {
         Route::apiResource('Appointments', App\Http\Controllers\AppointmentController::class)->except(['store']);
+        Route::get('/manual-applications', [ManualMarriageLicenseApplicationController::class, 'index']);
+        Route::post('/manual-applications', [ManualMarriageLicenseApplicationController::class, 'store']);
+        Route::get('/manual-applications/{manualMarriageLicenseApplication}', [ManualMarriageLicenseApplicationController::class, 'show']);
         Route::controller(MarriageApplicationController::class)->group(function () {
             Route::get('/applications', 'getApplications');
             Route::get('/view/applicants/{application_id}/{control_number}', 'viewApplication');

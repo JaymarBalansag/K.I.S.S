@@ -65,6 +65,13 @@
                     <span v-if="!isCollapsed || mobileShow"
                         class="ms-3 animate__animated animate__fadeIn text-nowrap">Applications</span>
                 </router-link>
+
+                <router-link to="/Staff/WalkInApplications" @click="closeMobile"
+                    class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
+                    <i class="bi bi-pencil-square fs-5"></i>
+                    <span v-if="!isCollapsed || mobileShow"
+                        class="ms-3 animate__animated animate__fadeIn text-nowrap">Walk-In Applications</span>
+                </router-link>
             </nav>
         </aside>
 

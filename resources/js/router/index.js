@@ -75,6 +75,9 @@ const routes = [
             {
                 path: "Applications", name: "StaffApplications", component: () => import("../pages/Staff/Applications.vue")
             },
+            {
+                path: "WalkInApplications", name: "StaffWalkInApplications", component: () => import("../pages/Staff/WalkInApplications.vue")
+            },
         ]
 
     },
