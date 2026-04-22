@@ -40,7 +40,7 @@ Route::middleware('sms_key')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(App\Http\Controllers\Api\AuthenticationController::class)->group(function () {
-        Route::post('/add-user', 'AddUser');
+        Route::post('/add-user', 'AddUser')->middleware('is_admin');
         Route::post('/logout', 'logout');
         Route::post('/sms/logout', 'logout');
     });
