@@ -43,9 +43,16 @@
                                             class="input-group-text bg-transparent border-white border-opacity-25 text-white">
                                             <i class="bi bi-lock"></i>
                                         </span>
-                                        <input type="password" v-model="password"
+                                        <input :type="passwordInputType" v-model="password"
                                             class="form-control glass-input border-start-0 ps-0" placeholder="••••••••"
                                             required>
+                                        <button
+                                            type="button"
+                                            class="input-group-text bg-transparent border-white border-opacity-25 text-white"
+                                            :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                                            @click="showPassword = !showPassword">
+                                            <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                                        </button>
                                     </div>
                                 </div>
 
@@ -95,12 +102,16 @@ export default {
             message: [],
             email: '',
             password: '',
+            showPassword: false,
             nowMs: Date.now(),
             cooldownUntilMs: 0,
             cooldownIntervalId: null,
         };
     },
     computed: {
+        passwordInputType() {
+            return this.showPassword ? "text" : "password";
+        },
         cooldownRemaining() {
             if (!this.cooldownUntilMs) return 0;
             return Math.max(0, Math.ceil((this.cooldownUntilMs - this.nowMs) / 1000));
