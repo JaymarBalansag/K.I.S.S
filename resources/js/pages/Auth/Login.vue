@@ -56,6 +56,19 @@
                                     </div>
                                 </div>
 
+                                <div class="form-check mb-3">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        id="rememberEmail"
+                                        v-model="rememberEmail"
+                                        :disabled="loading || isCooldown"
+                                    >
+                                    <label class="form-check-label text-white-50 small" for="rememberEmail">
+                                        Save email on this device
+                                    </label>
+                                </div>
+
                                 <button type="submit"
                                     class="btn btn-white-glass w-100 py-3 fw-bold rounded-3 mt-2 shadow bg-info"
                                     :disabled="loading || isCooldown">
@@ -103,6 +116,7 @@ export default {
             email: '',
             password: '',
             showPassword: false,
+            rememberEmail: false,
             nowMs: Date.now(),
             cooldownUntilMs: 0,
             cooldownIntervalId: null,
@@ -121,6 +135,12 @@ export default {
         },
     },
     mounted() {
+        const savedEmail = localStorage.getItem("saved_login_email");
+        if (savedEmail) {
+            this.email = savedEmail;
+            this.rememberEmail = true;
+        }
+
         const storedUntil = Number(localStorage.getItem("staff_login_cooldown_until_ms") || "0");
         if (storedUntil && storedUntil > Date.now()) {
             this.cooldownUntilMs = storedUntil;
@@ -138,6 +158,30 @@ export default {
             window.clearInterval(this.cooldownIntervalId);
             this.cooldownIntervalId = null;
         }
+    },
+    watch: {
+        rememberEmail(next) {
+            if (!next) {
+                localStorage.removeItem("saved_login_email");
+                return;
+            }
+
+            const email = (this.email || "").trim();
+            if (email) {
+                localStorage.setItem("saved_login_email", email);
+            }
+        },
+        email(next) {
+            if (!this.rememberEmail) return;
+
+            const email = (next || "").trim();
+            if (!email) {
+                localStorage.removeItem("saved_login_email");
+                return;
+            }
+
+            localStorage.setItem("saved_login_email", email);
+        },
     },
     methods: {
         clearCooldown() {
