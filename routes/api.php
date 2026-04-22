@@ -20,8 +20,8 @@ Route::get('/ping', function () {
 });
 
 Route::get('/download', [App\Http\Controllers\PdfController::class, 'generateLicense']);
-Route::post('/login', [App\Http\Controllers\Api\AuthenticationController::class, 'login']);
-Route::post('/sms/login', [App\Http\Controllers\Api\AuthenticationController::class, 'smsLogin']);
+Route::post('/login', [App\Http\Controllers\Api\AuthenticationController::class, 'login'])->middleware('throttle:staff-login');
+Route::post('/sms/login', [App\Http\Controllers\Api\AuthenticationController::class, 'smsLogin'])->middleware('throttle:staff-login');
 
 Route::controller(MarriageApplicationController::class)->group(function () {
     Route::post('/submit/marriage-license-application', 'store');
@@ -40,7 +40,7 @@ Route::middleware('sms_key')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(App\Http\Controllers\Api\AuthenticationController::class)->group(function () {
-        Route::post('/add-user', 'AddUser');
+        Route::post('/add-user', 'AddUser')->middleware('is_admin');
         Route::post('/logout', 'logout');
         Route::post('/sms/logout', 'logout');
     });
