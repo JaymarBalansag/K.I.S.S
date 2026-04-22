@@ -50,8 +50,15 @@
                                 </div>
 
                                 <button type="submit"
-                                    class="btn btn-white-glass w-100 py-3 fw-bold rounded-3 mt-2 shadow bg-info">
-                                    Sign In <i class="bi bi-arrow-right ms-2"></i>
+                                    class="btn btn-white-glass w-100 py-3 fw-bold rounded-3 mt-2 shadow bg-info"
+                                    :disabled="loading || isCooldown">
+                                    <span v-if="loading" class="me-2 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    <template v-if="isCooldown">
+                                        Please wait ({{ cooldownRemaining }}s)
+                                    </template>
+                                    <template v-else>
+                                        Sign In <i class="bi bi-arrow-right ms-2"></i>
+                                    </template>
                                 </button>
                             </form>
 
@@ -87,11 +94,81 @@ export default {
             loading : false,
             message: [],
             email: '',
-            password: ''
+            password: '',
+            nowMs: Date.now(),
+            cooldownUntilMs: 0,
+            cooldownIntervalId: null,
         };
     },
+    computed: {
+        cooldownRemaining() {
+            if (!this.cooldownUntilMs) return 0;
+            return Math.max(0, Math.ceil((this.cooldownUntilMs - this.nowMs) / 1000));
+        },
+        isCooldown() {
+            return this.cooldownRemaining > 0;
+        },
+    },
+    mounted() {
+        const storedUntil = Number(localStorage.getItem("staff_login_cooldown_until_ms") || "0");
+        if (storedUntil && storedUntil > Date.now()) {
+            this.cooldownUntilMs = storedUntil;
+        }
+
+        this.cooldownIntervalId = window.setInterval(() => {
+            this.nowMs = Date.now();
+            if (this.cooldownUntilMs && this.cooldownUntilMs <= this.nowMs) {
+                this.clearCooldown();
+            }
+        }, 250);
+    },
+    beforeUnmount() {
+        if (this.cooldownIntervalId) {
+            window.clearInterval(this.cooldownIntervalId);
+            this.cooldownIntervalId = null;
+        }
+    },
     methods: {
+        clearCooldown() {
+            this.cooldownUntilMs = 0;
+            localStorage.removeItem("staff_login_cooldown_until_ms");
+        },
+        startCooldown(seconds) {
+            const until = Date.now() + Math.max(1, Number(seconds || 1)) * 1000;
+            this.cooldownUntilMs = until;
+            localStorage.setItem("staff_login_cooldown_until_ms", String(until));
+        },
+        recordFailedAttempt() {
+            const key = "staff_login_attempts";
+            const now = Date.now();
+            const windowMs = 60 * 1000;
+
+            let payload;
+            try {
+                payload = JSON.parse(localStorage.getItem(key) || "null");
+            } catch {
+                payload = null;
+            }
+
+            const windowStartMs = typeof payload?.windowStartMs === "number" ? payload.windowStartMs : now;
+            const count = typeof payload?.count === "number" ? payload.count : 0;
+
+            const inWindow = now - windowStartMs <= windowMs;
+            const nextWindowStartMs = inWindow ? windowStartMs : now;
+            const nextCount = (inWindow ? count : 0) + 1;
+
+            localStorage.setItem(key, JSON.stringify({ windowStartMs: nextWindowStartMs, count: nextCount }));
+
+            if (nextCount >= 5) {
+                this.startCooldown(60);
+            }
+        },
         async handleLogin() {
+            if (this.isCooldown) {
+                this.message = ["Too many attempts. Please wait before trying again."];
+                return;
+            }
+
             this.loading = true;
             this.message = []; // Clear previous messages
             try {
@@ -99,6 +176,8 @@ export default {
 
                 localStorage.setItem("access_token", res.data.token);
                 const user = res.data.user;
+                localStorage.removeItem("staff_login_attempts");
+                this.clearCooldown();
                 // Ensure res has data before proceeding
                 if (user) {
 
@@ -122,6 +201,21 @@ export default {
                     this.message.push("Invalid credentials. Please check your email and password.");
                 }
             } catch (error) {
+                const status = error.response?.status;
+
+                if (status === 429) {
+                    const retryAfterHeader = Number(error.response?.headers?.["retry-after"] || 0);
+                    const retryAfterBody = Number(error.response?.data?.retry_after || 0);
+                    const retryAfter = retryAfterHeader || retryAfterBody || 60;
+                    this.startCooldown(retryAfter);
+                    this.message.push("Too many attempts. Please try again shortly.");
+                    return;
+                }
+
+                if (status === 401) {
+                    this.recordFailedAttempt();
+                }
+
                 this.message.push(error.response?.data?.message || "Something went wrong during login.");
             } finally {
                 this.loading = false;

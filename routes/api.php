@@ -20,8 +20,8 @@ Route::get('/ping', function () {
 });
 
 Route::get('/download', [App\Http\Controllers\PdfController::class, 'generateLicense']);
-Route::post('/login', [App\Http\Controllers\Api\AuthenticationController::class, 'login']);
-Route::post('/sms/login', [App\Http\Controllers\Api\AuthenticationController::class, 'smsLogin']);
+Route::post('/login', [App\Http\Controllers\Api\AuthenticationController::class, 'login'])->middleware('throttle:staff-login');
+Route::post('/sms/login', [App\Http\Controllers\Api\AuthenticationController::class, 'smsLogin'])->middleware('throttle:staff-login');
 
 Route::controller(MarriageApplicationController::class)->group(function () {
     Route::post('/submit/marriage-license-application', 'store');
