@@ -85,22 +85,9 @@ export default {
         this.$router.push(service.link);
         
       },
-      isCohabitingMessage() {
-        Swal.fire({
-            title: "Cohabitation",
-            text: "Couples or partners who have cohabited for 5 years or more do not need a marriage license.",
-            icon: "warning"
-        });
-      }
+      
     },
-    mounted() {
-        const isCohabiting = sessionStorage.getItem("isCohabiting");
-
-        if(isCohabiting){
-            this.isCohabitingMessage();
-            sessionStorage.removeItem("isCohabiting")
-        }
-    }
+    
 };
 </script>
 

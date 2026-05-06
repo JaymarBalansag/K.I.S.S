@@ -140,7 +140,7 @@ export default {
               // Eligible for cohabitation exemption: return to home.
               sessionStorage.setItem('cohabitingDuration', '5_or_more');
               sessionStorage.setItem('isCohabiting', true);
-              this.$router.push('/home');
+              this.$router.push('/cohab_form');
             }
           });
           return;

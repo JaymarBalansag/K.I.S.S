@@ -3,10 +3,10 @@
         <main class="flex-grow-1 py-5 mt-5">
             <div class="container py-4">
                 <div class="text-start mb-4">
-                    <a @click.prevent="$router.back()"
+                    <a @click.prevent="this.$router.push('/home')"
                         class="text-white text-decoration-none opacity-75 hover-opacity-100 back-link"
                         style="cursor: pointer;">
-                        <span class="me-2">&larr;</span> Back
+                        <span class="me-2">&larr;</span> Home
                     </a>
                 </div>
 
@@ -249,6 +249,13 @@ export default {
         };
     },
     methods: {
+        isCohabitingMessage() {
+            Swal.fire({
+                title: "Cohabitation",
+                text: "Couples or partners who have cohabited for 5 years or more do not need a marriage license.",
+                icon: "warning"
+            });
+        },
         resetForm() {
             this.form = initialForm();
         },
@@ -354,7 +361,15 @@ export default {
                 this.submitting = false;
             }
         }
-    }
+    },
+    mounted() {
+        const isCohabiting = sessionStorage.getItem("isCohabiting");
+
+        if(isCohabiting){
+            this.isCohabitingMessage();
+            sessionStorage.removeItem("isCohabiting")
+        }
+    },
 };
 </script>
 
