@@ -39,19 +39,19 @@
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">
                                                 First Name
                                             </label>
-                                            <input type="text" v-model.trim="form.groom.firstName"
+                                            <input type="text" v-model.trim="form.groom.first_name"
                                                 class="form-control custom-input" placeholder="Juan" required />
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">Middle
                                                 Name</label>
-                                            <input type="text" v-model.trim="form.groom.middleName"
+                                            <input type="text" v-model.trim="form.groom.middle_name"
                                                 class="form-control custom-input" placeholder="Santos" />
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">Last
                                                 Name</label>
-                                            <input type="text" v-model.trim="form.groom.lastName"
+                                            <input type="text" v-model.trim="form.groom.last_name"
                                                 class="form-control custom-input" placeholder="Dela Cruz" required />
                                         </div>
                                         <div class="col-md-3">
@@ -63,7 +63,7 @@
 
                                         <div class="col-md-3">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">ID Type</label>
-                                            <select v-model="form.groom.idType"
+                                            <select v-model="form.groom.id_type"
                                                     class="form-select custom-input form-control" required>
                                                 <option disabled value="">Select…</option>
                                                 <option value="Drivers Lic.">Driver's License</option>
@@ -82,15 +82,22 @@
                                         <div class="col-md-4">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">Valid
                                                 ID Number</label>
-                                            <input type="text" v-model.trim="form.groom.idNumber"
+                                            <input type="text" v-model.trim="form.groom.id_number"
                                                 class="form-control custom-input" placeholder="ID Number" required/>
                                         </div>
 
                                         <div class="col-md-4">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">Valid
                                                 Issued At</label>
-                                            <input type="text" v-model.trim="form.groom.issuedAt"
+                                            <input type="text" v-model.trim="form.groom.issued_at"
                                                 class="form-control custom-input" placeholder="Issued At" required/>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label small fw-bold text-uppercase tracking-wider">Valid
+                                                Issued On</label>
+                                            <input type="text" v-model.trim="form.groom.issued_on"
+                                                class="form-control custom-input" placeholder="Issued On" required />
                                         </div>
 
                                         <!-- Bride Full Name -->
@@ -99,19 +106,19 @@
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">
                                                 First Name
                                             </label>
-                                            <input type="text" v-model.trim="form.bride.firstName"
+                                            <input type="text" v-model.trim="form.bride.first_name"
                                                 class="form-control custom-input" placeholder="Juan" required />
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">Middle
                                                 Name</label>
-                                            <input type="text" v-model.trim="form.bride.middleName"
+                                            <input type="text" v-model.trim="form.bride.middle_name"
                                                 class="form-control custom-input" placeholder="Santos" />
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">Last
                                                 Name</label>
-                                            <input type="text" v-model.trim="form.bride.lastName"
+                                            <input type="text" v-model.trim="form.bride.last_name"
                                                 class="form-control custom-input" placeholder="Dela Cruz" required />
                                         </div>
                                         <div class="col-md-3">
@@ -123,7 +130,7 @@
 
                                         <div class="col-md-3">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">ID Type</label>
-                                            <select v-model="form.bride.idType"
+                                            <select v-model="form.bride.id_type"
                                                     class="form-select custom-input form-control" required>
                                                 <option disabled value="">Select…</option>
                                                 <option value="Drivers Lic.">Driver's License</option>
@@ -142,15 +149,22 @@
                                         <div class="col-md-4">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">Valid
                                                 ID Number</label>
-                                            <input type="text" v-model.trim="form.bride.idNumber"
+                                            <input type="text" v-model.trim="form.bride.id_number"
                                                 class="form-control custom-input" placeholder="ID Number" required />
                                         </div>
 
                                         <div class="col-md-4">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">Valid
                                                 Issued At</label>
-                                            <input type="text" v-model.trim="form.bride.issuedAt"
-                                                class="form-control custom-input" placeholder="Issued At" required />
+                                            <input type="text" v-model.trim="form.bride.issued_at"
+                                                class="form-control custom-input" placeholder="Issued At" />
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label small fw-bold text-uppercase tracking-wider">Valid
+                                                Issued On</label>
+                                            <input type="text" v-model.trim="form.bride.issued_on"
+                                                class="form-control custom-input" placeholder="Issued On" required />
                                         </div>
 
                                         <!-- Both Information -->
@@ -164,7 +178,7 @@
 
                                         <div class="col-md-4">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">Start of Cohabitation</label>
-                                            <input type="date" v-model.trim="form.cohabitationStartDate"
+                                            <input type="date" v-model.trim="form.cohabitation_start_date"
                                                 class="form-control custom-input" placeholder="Start of Cohabitation" required/>
                                         </div>
                                     </div>
@@ -202,25 +216,27 @@ import Swal from 'sweetalert2';
 
 const initialForm = () => ({
     groom: {
-        firstName: '',
-        middleName: '',
-        lastName: '',
+        first_name: '',
+        middle_name: '',
+        last_name: '',
         suffix: '',
-        idType: '',
-        idNumber: '',
-        issuedAt: '',
+        id_type: '',
+        id_number: '',
+        issued_at: '',
+        issued_on: '',
     },
     bride: {
-        firstName: '',
-        middleName: '',
-        lastName: '',
+        first_name: '',
+        middle_name: '',
+        last_name: '',
         suffix: '',
-        idType: '',
-        idNumber: '',
-        issuedAt: '',
+        id_type: '',
+        id_number: '',
+        issued_at: '',
+        issued_on: '',
     },
     residence: '',
-    cohabitationStartDate: '',
+    cohabitation_start_date: '',
 
 });
 

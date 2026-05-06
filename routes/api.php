@@ -31,6 +31,10 @@ Route::controller(MarriageApplicationController::class)->group(function () {
 // Endpoints for public
 Route::get('/Appointments/availability', [App\Http\Controllers\AppointmentController::class, 'availability']);
 Route::apiResource('Appointments', App\Http\Controllers\AppointmentController::class)->only(['store']);
+Route::controller(App\Http\Controllers\CohabitationController::class)->group(function () {
+    Route::post('/cohabitation', 'insertCohabitation');
+});
+
 
 // Endpoints for printing and previewing
 Route::get('/applications/print/{id}/{control_number}', [MarriageApplicationController::class, 'printApplication']);
