@@ -69,6 +69,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/Appointments/trash', [App\Http\Controllers\AppointmentController::class, 'trash']);
         Route::patch('/Appointments/{id}/restore', [App\Http\Controllers\AppointmentController::class, 'restore']);
         Route::delete('/Appointments/{id}/force', [App\Http\Controllers\AppointmentController::class, 'forceDestroy']);
+
+        Route::controller(App\Http\Controllers\CohabitationController::class)->group(function () {
+            Route::get('/cohabitations/trash', 'trash');
+            Route::patch('/cohabitations/{id}/restore', 'restore');
+            Route::delete('/cohabitations/{id}/force', 'forceDestroy');
+            Route::delete('/cohabitations/{cohabitation}', 'destroy');
+        });
     });
 
     Route::middleware('is_staff')->group(function () {

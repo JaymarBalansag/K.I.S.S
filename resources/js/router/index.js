@@ -108,6 +108,9 @@ const routes = [
                 path: "Applications", name: "AdminApplications", component: () => import("../pages/admin/Applications.vue")
             },
             {
+                path: "Cohabitations", name: "AdminCohabitations", component: () => import("../pages/admin/Cohabitations.vue")
+            },
+            {
                 path: "Trash", name: "AdminTrash", component: () => import("../pages/admin/Trash.vue")
             },
             {
