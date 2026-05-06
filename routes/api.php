@@ -76,6 +76,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/manual-applications', [ManualMarriageLicenseApplicationController::class, 'index']);
         Route::post('/manual-applications', [ManualMarriageLicenseApplicationController::class, 'store']);
         Route::get('/manual-applications/{manualMarriageLicenseApplication}', [ManualMarriageLicenseApplicationController::class, 'show']);
+
+        Route::controller(App\Http\Controllers\CohabitationController::class)->group(function () {
+            Route::get('/cohabitations', 'index');
+            Route::get('/cohabitations/{cohabitation}', 'show');
+            Route::patch('/cohabitations/{cohabitation}', 'update');
+        });
+
         Route::controller(MarriageApplicationController::class)->group(function () {
             Route::get('/applications', 'getApplications');
             Route::get('/view/applicants/{application_id}/{control_number}', 'viewApplication');

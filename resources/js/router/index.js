@@ -81,6 +81,9 @@ const routes = [
             {
                 path: "WalkInApplications", name: "StaffWalkInApplications", component: () => import("../pages/Staff/WalkInApplications.vue")
             },
+            {
+                path: "Cohabitations", name: "StaffCohabitations", component: () => import("../pages/Staff/Cohabitations.vue")
+            },
         ]
 
     },

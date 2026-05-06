@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class CohabitationController extends Controller
 {
@@ -99,9 +100,70 @@ class CohabitationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
+            'order' => ['nullable', Rule::in(['asc', 'desc'])],
+            'per_page' => 'nullable|integer|min:1|max:100',
+        ]);
+
+        $order = $validated['order'] ?? 'desc';
+        $perPage = $validated['per_page'] ?? 15;
+        $search = $validated['search'] ?? null;
+
+        $query = Cohabitation::query()
+            ->with('partners')
+            ->orderBy('id', $order);
+
+        if (filled($search)) {
+            $query->where(function ($builder) use ($search) {
+                $builder
+                    ->where('control_number', 'like', "%{$search}%")
+                    ->orWhere('residence', 'like', "%{$search}%")
+                    ->orWhereHas('partners', function ($partnerQuery) use ($search) {
+                        $partnerQuery
+                            ->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('middle_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhere('id_number', 'like', "%{$search}%")
+                            ->orWhere('issued_at', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        $paginated = $query->paginate($perPage);
+
+        $paginated->setCollection(
+            $paginated->getCollection()->map(function (Cohabitation $cohabitation) {
+                $partners = $cohabitation->partners ?? collect();
+                $groom = $partners->firstWhere('partner_type', 'groom');
+                $bride = $partners->firstWhere('partner_type', 'bride');
+
+                $formatName = function ($partner) {
+                    if (!$partner) return '';
+                    return trim(implode(' ', array_filter([
+                        $partner->first_name,
+                        $partner->middle_name,
+                        $partner->last_name,
+                        $partner->suffix,
+                    ], fn ($value) => filled($value))));
+                };
+
+                return [
+                    'id' => $cohabitation->id,
+                    'control_number' => $cohabitation->control_number,
+                    'groom_name' => $formatName($groom),
+                    'bride_name' => $formatName($bride),
+                    'cohabitation_start_date' => $cohabitation->cohabitation_start_date,
+                    'created_at' => $cohabitation->created_at,
+                ];
+            })
+        );
+
+        return response()->json([
+            'data' => $paginated,
+        ]);
     }
 
     /**
@@ -125,7 +187,9 @@ class CohabitationController extends Controller
      */
     public function show(Cohabitation $cohabitation)
     {
-        //
+        return response()->json([
+            'data' => $cohabitation->load('partners'),
+        ]);
     }
 
     /**
@@ -141,7 +205,49 @@ class CohabitationController extends Controller
      */
     public function update(Request $request, Cohabitation $cohabitation)
     {
-        //
+        $validated = $request->validate([
+            'residence' => 'required|string|max:2000',
+            'form' => 'required|array',
+            'form.groom' => 'required|array',
+            'form.bride' => 'required|array',
+
+            'form.groom.id_type' => 'required|string|max:255',
+            'form.groom.id_number' => 'required|string|max:255',
+            'form.groom.issued_at' => 'required|string|max:255',
+            'form.groom.issued_on' => 'required|date',
+
+            'form.bride.id_type' => 'required|string|max:255',
+            'form.bride.id_number' => 'required|string|max:255',
+            'form.bride.issued_at' => 'required|string|max:255',
+            'form.bride.issued_on' => 'required|date',
+        ]);
+
+        $record = DB::transaction(function () use ($validated, $cohabitation) {
+            $cohabitation->update([
+                'residence' => $validated['residence'],
+            ]);
+
+            foreach (['groom', 'bride'] as $type) {
+                $partner = $cohabitation->partners()->where('partner_type', $type)->first();
+                if (!$partner) {
+                    abort(422, "Missing {$type} partner record for this cohabitation.");
+                }
+
+                $partner->update([
+                    'id_type' => $validated['form'][$type]['id_type'],
+                    'id_number' => $validated['form'][$type]['id_number'],
+                    'issued_at' => $validated['form'][$type]['issued_at'],
+                    'issued_on' => Carbon::parse($validated['form'][$type]['issued_on'])->toDateString(),
+                ]);
+            }
+
+            return $cohabitation->load('partners');
+        });
+
+        return response()->json([
+            'message' => 'Cohabitation updated successfully.',
+            'data' => $record,
+        ]);
     }
 
     /**
