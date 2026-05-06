@@ -93,6 +93,31 @@
                     </table>
                 </div>
 
+                <div v-if="records.length > 0" class="d-md-none px-2">
+                    <div v-for="row in records" :key="'mob-' + row.id" class="mobile-staff-card glass-row rounded-4 p-4 mb-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="text-white fw-bold mb-0 pe-2">{{ row.couple }}</h6>
+                            <span class="badge glass-pill px-3 py-2 status-issued">COHAB</span>
+                        </div>
+
+                        <p class="small text-white opacity-50 mb-1">Start: {{ formatDate(row.cohabitation_start_date) }}</p>
+                        <p class="small text-white opacity-50 mb-1">Submitted: {{ formatDateTime(row.created_at) }}</p>
+                        <p class="small text-white opacity-50 mb-4">Ref: {{ row.control_number }}</p>
+
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-action-glass text-info flex-grow-1" @click="openView(row)">
+                                <i class="bi bi-eye-fill me-1"></i> View
+                            </button>
+                            <button class="btn btn-action-glass text-white flex-grow-1" @click="openEdit(row)">
+                                <i class="bi bi-pencil-square me-1"></i> Edit
+                            </button>
+                            <button class="btn btn-action-glass text-warning" @click="showPrintComingSoon">
+                                <i class="bi bi-printer-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <nav v-if="totalPages > 1" class="mt-4">
                     <ul class="pagination justify-content-center glass-pagination">
                         <li class="page-item" :class="{ disabled: page <= 1 }">
@@ -525,6 +550,10 @@ select.glass-input option {
 .glass-row:hover {
     background: rgba(255, 255, 255, 0.12) !important;
     transform: translateY(-3px);
+}
+
+.mobile-staff-card {
+    overflow: hidden;
 }
 
 .btn-action-glass {
