@@ -23,15 +23,22 @@ Route::get('/download', [App\Http\Controllers\PdfController::class, 'generateLic
 Route::post('/login', [App\Http\Controllers\Api\AuthenticationController::class, 'login'])->middleware('throttle:staff-login');
 Route::post('/sms/login', [App\Http\Controllers\Api\AuthenticationController::class, 'smsLogin'])->middleware('throttle:staff-login');
 
+// Endpoints for marriage license application
 Route::controller(MarriageApplicationController::class)->group(function () {
     Route::post('/submit/marriage-license-application', 'store');
 });
+
+// Endpoints for public
 Route::get('/Appointments/availability', [App\Http\Controllers\AppointmentController::class, 'availability']);
 Route::apiResource('Appointments', App\Http\Controllers\AppointmentController::class)->only(['store']);
+
+// Endpoints for printing and previewing
 Route::get('/applications/print/{id}/{control_number}', [MarriageApplicationController::class, 'printApplication']);
 Route::get('/pdf/8x13-preview', [MarriageApplicationController::class, 'preview8x13'])->name('pdf.8x13.preview');
 Route::get('/pdf/8x13-preview-pdf', [MarriageApplicationController::class, 'preview8x13Pdf'])->name('pdf.8x13.preview.pdf');
 Route::get('/manual-applications/preview-pdf', [ManualMarriageLicenseApplicationController::class, 'previewPdf']);
+
+// Endpoint for local system
 Route::middleware('sms_key')->group(function () {
     Route::get('/sms-requests/pending', [SmsRequestController::class, 'getPending']);
     Route::put('/sms-requests/{id}/ack', [SmsRequestController::class, 'acknowledge']);
