@@ -12,6 +12,39 @@ use Illuminate\Validation\Rule;
 
 class CohabitationController extends Controller
 {
+    private function formatIndexCollection($paginated)
+    {
+        $paginated->setCollection(
+            $paginated->getCollection()->map(function (Cohabitation $cohabitation) {
+                $partners = $cohabitation->partners ?? collect();
+                $groom = $partners->firstWhere('partner_type', 'groom');
+                $bride = $partners->firstWhere('partner_type', 'bride');
+
+                $formatName = function ($partner) {
+                    if (!$partner) return '';
+                    return trim(implode(' ', array_filter([
+                        $partner->first_name,
+                        $partner->middle_name,
+                        $partner->last_name,
+                        $partner->suffix,
+                    ], fn ($value) => filled($value))));
+                };
+
+                return [
+                    'id' => $cohabitation->id,
+                    'control_number' => $cohabitation->control_number,
+                    'groom_name' => $formatName($groom),
+                    'bride_name' => $formatName($bride),
+                    'cohabitation_start_date' => $cohabitation->cohabitation_start_date,
+                    'created_at' => $cohabitation->created_at,
+                    'deleted_at' => $cohabitation->deleted_at,
+                ];
+            })
+        );
+
+        return $paginated;
+    }
+
     // Insert Cohabitation Information
     public function insertCohabitation(Request $request)
     {
@@ -133,33 +166,47 @@ class CohabitationController extends Controller
         }
 
         $paginated = $query->paginate($perPage);
+        $paginated = $this->formatIndexCollection($paginated);
 
-        $paginated->setCollection(
-            $paginated->getCollection()->map(function (Cohabitation $cohabitation) {
-                $partners = $cohabitation->partners ?? collect();
-                $groom = $partners->firstWhere('partner_type', 'groom');
-                $bride = $partners->firstWhere('partner_type', 'bride');
+        return response()->json([
+            'data' => $paginated,
+        ]);
+    }
 
-                $formatName = function ($partner) {
-                    if (!$partner) return '';
-                    return trim(implode(' ', array_filter([
-                        $partner->first_name,
-                        $partner->middle_name,
-                        $partner->last_name,
-                        $partner->suffix,
-                    ], fn ($value) => filled($value))));
-                };
+    public function trash(Request $request)
+    {
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
+            'order' => ['nullable', Rule::in(['asc', 'desc'])],
+            'per_page' => 'nullable|integer|min:1|max:100',
+        ]);
 
-                return [
-                    'id' => $cohabitation->id,
-                    'control_number' => $cohabitation->control_number,
-                    'groom_name' => $formatName($groom),
-                    'bride_name' => $formatName($bride),
-                    'cohabitation_start_date' => $cohabitation->cohabitation_start_date,
-                    'created_at' => $cohabitation->created_at,
-                ];
-            })
-        );
+        $order = $validated['order'] ?? 'desc';
+        $perPage = $validated['per_page'] ?? 15;
+        $search = $validated['search'] ?? null;
+
+        $query = Cohabitation::onlyTrashed()
+            ->with('partners')
+            ->orderBy('id', $order);
+
+        if (filled($search)) {
+            $query->where(function ($builder) use ($search) {
+                $builder
+                    ->where('control_number', 'like', "%{$search}%")
+                    ->orWhere('residence', 'like', "%{$search}%")
+                    ->orWhereHas('partners', function ($partnerQuery) use ($search) {
+                        $partnerQuery
+                            ->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('middle_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhere('id_number', 'like', "%{$search}%")
+                            ->orWhere('issued_at', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        $paginated = $query->paginate($perPage);
+        $paginated = $this->formatIndexCollection($paginated);
 
         return response()->json([
             'data' => $paginated,
@@ -205,7 +252,7 @@ class CohabitationController extends Controller
      */
     public function update(Request $request, Cohabitation $cohabitation)
     {
-        $validated = $request->validate([
+        $rules = [
             'residence' => 'required|string|max:2000',
             'form' => 'required|array',
             'form.groom' => 'required|array',
@@ -220,12 +267,24 @@ class CohabitationController extends Controller
             'form.bride.id_number' => 'required|string|max:255',
             'form.bride.issued_at' => 'required|string|max:255',
             'form.bride.issued_on' => 'required|date',
-        ]);
+        ];
+
+        if ($request->user() && $request->user()->role === 'admin') {
+            $rules['cohabitation_start_date'] = 'required|date';
+        }
+
+        $validated = $request->validate($rules);
 
         $record = DB::transaction(function () use ($validated, $cohabitation) {
-            $cohabitation->update([
+            $updatePayload = [
                 'residence' => $validated['residence'],
-            ]);
+            ];
+
+            if (array_key_exists('cohabitation_start_date', $validated)) {
+                $updatePayload['cohabitation_start_date'] = Carbon::parse($validated['cohabitation_start_date'])->toDateString();
+            }
+
+            $cohabitation->update($updatePayload);
 
             foreach (['groom', 'bride'] as $type) {
                 $partner = $cohabitation->partners()->where('partner_type', $type)->first();
@@ -255,6 +314,30 @@ class CohabitationController extends Controller
      */
     public function destroy(Cohabitation $cohabitation)
     {
-        //
+        $cohabitation->delete();
+
+        return response()->json([
+            'message' => 'Cohabitation moved to trash.',
+        ]);
+    }
+
+    public function restore(string $id)
+    {
+        $cohabitation = Cohabitation::withTrashed()->findOrFail($id);
+        $cohabitation->restore();
+
+        return response()->json([
+            'message' => 'Cohabitation restored successfully.',
+        ]);
+    }
+
+    public function forceDestroy(string $id)
+    {
+        $cohabitation = Cohabitation::withTrashed()->findOrFail($id);
+        $cohabitation->forceDelete();
+
+        return response()->json([
+            'message' => 'Cohabitation permanently deleted.',
+        ]);
     }
 }

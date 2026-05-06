@@ -77,6 +77,14 @@
                         class="ms-3 animate__animated animate__fadeIn text-nowrap">Applications</span>
                 </router-link>
 
+                <router-link to="/Admin/Cohabitations"
+                    @click="closeMobile"
+                    class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
+                    <i class="bi bi-people-fill fs-5"></i>
+                    <span v-if="!isCollapsed || mobileShow"
+                        class="ms-3 animate__animated animate__fadeIn text-nowrap">Cohabitations</span>
+                </router-link>
+
                 <router-link to="/Admin/SmsRequests"
                     @click="closeMobile"
                     class="nav-link glass-nav-link text-white rounded-3 px-3 py-2 d-flex align-items-center transition">
