@@ -473,32 +473,41 @@ export default {
 
 <style scoped>
 .glass-input-group {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 14px;
-    overflow: hidden;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .glass-addon {
     background: transparent !important;
-    border: 0 !important;
-    color: rgba(255, 255, 255, 0.75);
+    border: none !important;
+    color: rgba(255, 255, 255, 0.6) !important;
 }
 
 .glass-input {
-    background: rgba(255, 255, 255, 0.06) !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    background: transparent !important;
     color: #fff !important;
-    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    color: #fff !important;
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .glass-input:focus {
-    box-shadow: 0 0 0 4px rgba(13, 202, 240, 0.18);
-    border-color: rgba(13, 202, 240, 0.35) !important;
+    border-color: rgba(13, 202, 240, 0.6) !important;
+    box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.2);
 }
 
 .glass-input::placeholder {
     color: rgba(255, 255, 255, 0.6);
+}
+
+select.glass-input option {
+    background: #0f172a;
+    color: #fff;
 }
 
 .glass-table {
@@ -614,4 +623,3 @@ export default {
     color: white;
 }
 </style>
-
