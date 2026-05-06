@@ -49,8 +49,8 @@
                         <div class="card border-0 shadow-lg glass-card overflow-hidden">
 
                             <div class="calendar-header p-3 p-md-4 border-bottom bg-dark bg-opacity-10">
-                                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-                                    <div class="d-flex align-items-center gap-2 order-2 order-md-1">
+                                <div class="calendar-nav d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                                    <div class="nav-group nav-group-left d-flex align-items-center gap-2 order-2 order-md-1">
                                         <button @click="changeYear(-1)" class="btn btn-sm btn-dark shadow-sm rounded-pill px-3">
                                             <i class="bi bi-chevron-double-left me-1"></i>Year
                                         </button>
@@ -67,7 +67,7 @@
                                         </h2>
                                     </div>
 
-                                    <div class="d-flex align-items-center gap-2 order-3 order-md-3">
+                                    <div class="nav-group nav-group-right d-flex align-items-center gap-2 order-3 order-md-3">
                                         <button @click="changeMonth(1)"
                                             class="btn btn-primary shadow-sm rounded-circle p-2 d-flex align-items-center justify-content-center"
                                             style="width: 40px; height: 40px;">
@@ -90,7 +90,7 @@
 
                                 <div class="d-grid calendar-grid bg-white bg-opacity-25">
                                     <div v-for="blank in firstDayPadding" :key="'blank-' + blank"
-                                        class="calendar-day padding d-none d-md-flex"></div>
+                                        class="calendar-day padding"></div>
 
                                     <div v-for="date in daysInMonth" :key="date" class="calendar-day" :class="{
                                         'selected': isSelected(date),
@@ -279,6 +279,11 @@ export default {
     transition: all 0.2s ease-in-out;
 }
 
+.calendar-day.padding {
+    visibility: hidden;
+    pointer-events: none;
+}
+
 .available-thursday:not(.selected) {
     background: rgb(48, 155, 27);
     border: 1px dashed rgba(13, 110, 253, 0.3);
@@ -358,6 +363,17 @@ export default {
 }
 
 @media (max-width: 576px) {
+    .calendar-nav {
+        display: grid !important;
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+
+    .nav-group {
+        width: 100%;
+        justify-content: center;
+    }
+
     .calendar-day {
         aspect-ratio: 1 / 1.2;
     }
