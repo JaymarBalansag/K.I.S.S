@@ -5,6 +5,9 @@ const routes = [
         path: '/', redirect: '/home',
     },
     {
+        path: '/cohab_form', name: 'CohabForm', component: () => import('../pages/main/CohabitationForm/CohabitionForm.vue')
+    },
+    {
         path: '/staff-portal', name: 'Login', component: () => import('../pages/Auth/Login.vue')
     },
     {
