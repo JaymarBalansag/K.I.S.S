@@ -96,7 +96,7 @@
                                         <div class="col-md-4">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">Valid
                                                 Issued On</label>
-                                            <input type="text" v-model.trim="form.groom.issued_on"
+                                            <input type="date" v-model.trim="form.groom.issued_on"
                                                 class="form-control custom-input" placeholder="Issued On" required />
                                         </div>
 
@@ -163,7 +163,7 @@
                                         <div class="col-md-4">
                                             <label class="form-label small fw-bold text-uppercase tracking-wider">Valid
                                                 Issued On</label>
-                                            <input type="text" v-model.trim="form.bride.issued_on"
+                                            <input type="date" v-model.trim="form.bride.issued_on"
                                                 class="form-control custom-input" placeholder="Issued On" required />
                                         </div>
 
@@ -252,17 +252,104 @@ export default {
         resetForm() {
             this.form = initialForm();
         },
+        formatErrors(errorData) {
+            const errors = errorData?.errors;
+            if (!errors || typeof errors !== 'object') return [];
+            return Object.values(errors).flat().filter(Boolean);
+        },
         async handleSubmit() {
             this.submitting = true;
             try {
+                const confirm = await Swal.fire({
+                    icon: 'question',
+                    title: 'Submit cohabitation form?',
+                    text: 'Please review your entries before continuing.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit',
+                    cancelButtonText: 'Cancel',
+                    confirmButtonColor: '#1e3c72',
+                    cancelButtonColor: '#6c757d',
+                });
+
+                if (!confirm.isConfirmed) return;
+
+                const payload = {
+                    residence: this.form.residence,
+                    cohabitation_start_date: this.form.cohabitation_start_date,
+                    form: {
+                        groom: { ...this.form.groom },
+                        bride: { ...this.form.bride },
+                    },
+                };
+
+                const response = await window.axios.post('/api/cohabitation', payload);
+                const responseBody = response?.data ?? null;
+                const record = responseBody?.data ?? null;
+                const controlNumber =
+                    record?.control_number ??
+                    record?.controlNumber ??
+                    responseBody?.control_number ??
+                    responseBody?.controlNumber ??
+                    null;
+
                 await Swal.fire({
                     icon: 'success',
-                    title: 'Saved',
-                    text: 'Cohabitation details captured successfully.',
+                    title: 'Application Submitted!',
+                    background: 'rgba(14, 20, 38, 0.96)',
+                    color: '#ffffff',
+                    html: `
+                        <div style="text-align:center">
+                            <p style="margin:0 0 6px;color:rgba(255,255,255,0.78);font-size:0.95rem;">
+                                Your Control Number is:
+                            </p>
+
+                            <div style="font-weight:900;font-size:1.7rem;letter-spacing:1px;color:#cfe2ff;margin:0 0 12px;">
+                                ${controlNumber ? String(controlNumber) : '—'}
+                            </div>
+
+                            <div style="background:rgba(255,193,7,0.12);border:1px solid rgba(255,193,7,0.35);border-radius:12px;padding:10px 12px;text-align:left;">
+                                <div style="font-weight:800;font-size:0.8rem;letter-spacing:0.5px;color:#fbbf24;margin-bottom:4px;text-align:center;">
+                                    ACTION REQUIRED
+                                </div>
+                                <div style="color:rgba(255,255,255,0.80);font-size:0.94rem;line-height:1.35;margin:0;">
+                                    Please screenshot this screen or write down the control number now.
+                                </div>
+                            </div>
+                        </div>
+                    `,
                     confirmButtonText: 'Done',
-                    confirmButtonColor: '#1e3c72'
+                    confirmButtonColor: '#1e3c72',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
                 });
+
                 this.resetForm();
+            } catch (error) {
+                const status = error?.response?.status;
+                const messages = this.formatErrors(error?.response?.data);
+
+                if (status === 422 && messages.length) {
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Please check your inputs',
+                        background: 'rgba(14, 20, 38, 0.96)',
+                        color: '#ffffff',
+                        html: `<ul style="text-align:left;margin:0;padding-left:18px;">${messages
+                            .map((msg) => `<li style="margin:4px 0;">${String(msg)}</li>`)
+                            .join('')}</ul>`,
+                        confirmButtonColor: '#1e3c72',
+                    });
+                    return;
+                }
+
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Submission failed',
+                    text: 'Please try again.',
+                    background: 'rgba(14, 20, 38, 0.96)',
+                    color: '#ffffff',
+                    confirmButtonColor: '#1e3c72',
+                });
             } finally {
                 this.submitting = false;
             }
