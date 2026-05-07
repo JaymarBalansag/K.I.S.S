@@ -92,7 +92,7 @@
                                                 <i class="bi bi-eye-fill me-1"></i> View
                                             </button>
 
-                                            <button @click="handleEditClick(app)" class="btn btn-action-glass text-warning"
+                                            <button @click="handleEditClick(app)" class="btn btn-action-glass text-white"
                                                 :class="{ 'opacity-75': !canEditApplication(app) }">
                                                 <i class="bi bi-pencil-square me-1"></i> Edit
                                             </button>
@@ -101,30 +101,30 @@
                                                 <button class="btn btn-action-glass text-white dropdown-toggle"
                                                     type="button" data-bs-toggle="dropdown" aria-expanded="false"
                                                     @click="setOpenDropdown(app.id)">
-                                                    <i class="bi bi-three-dots me-1"></i> Actions
+                                                    <i class="bi bi-three-dots me-1 text-white-50"></i> Actions
                                                 </button>
                                                 <ul class="dropdown-menu glass-dropdown">
                                                     <li v-if="app.status === 'pending'">
                                                         <button class="dropdown-item text-white"
                                                             @click="setOpenDropdown(null); validateApproval(app, 'approved')">
-                                                            <i class="bi bi-check-circle-fill me-2 text-success"></i>Approve
+                                                            <i class="bi bi-check-circle-fill me-2 opacity-75"></i>Approve
                                                         </button>
                                                     </li>
                                                     <li v-if="app.status === 'pending'">
                                                         <button class="dropdown-item text-white"
                                                             @click="setOpenDropdown(null); validateApproval(app, 'rejected')">
-                                                            <i class="bi bi-x-circle-fill me-2 text-danger"></i>Reject
+                                                            <i class="bi bi-x-circle-fill me-2 opacity-75"></i>Reject
                                                         </button>
                                                     </li>
                                                     <li v-if="app.status === 'approved'">
                                                         <button class="dropdown-item text-white"
                                                             @click="setOpenDropdown(null); validateApproval(app, 'issued')">
-                                                            <i class="bi bi-patch-check-fill me-2 text-info"></i>Issue
+                                                            <i class="bi bi-patch-check-fill me-2 opacity-75"></i>Issue
                                                         </button>
                                                     </li>
                                                     <li v-if="app.status === 'issued'">
                                                         <button class="dropdown-item text-white" @click="setOpenDropdown(null); openPrintModal(app)">
-                                                            <i class="bi bi-printer-fill me-2 text-warning"></i>Print 8.5x13
+                                                            <i class="bi bi-printer-fill me-2 opacity-75"></i>Print 8.5x13
                                                         </button>
                                                     </li>
                                                 </ul>
@@ -149,11 +149,11 @@
 
                             <div class="d-flex gap-2">
                                 <button @click="openViewApplicants(app)"
-                                    class="btn btn-action-glass text-info flex-grow-1">
+                                    class="btn btn-action-glass text-white flex-grow-1">
                                     <i class="bi bi-eye-fill me-1"></i> View
                                 </button>
 
-                                <button @click="handleEditClick(app)" class="btn btn-action-glass text-warning"
+                                <button @click="handleEditClick(app)" class="btn btn-action-glass text-white"
                                     :class="{ 'opacity-75': !canEditApplication(app) }">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
@@ -162,30 +162,30 @@
                                     <button class="btn btn-action-glass text-white dropdown-toggle" type="button"
                                         data-bs-toggle="dropdown" aria-expanded="false"
                                         @click="setOpenDropdown(app.id)">
-                                        <i class="bi bi-three-dots"></i>
+                                        <i class="bi bi-three-dots text-white-50"></i>
                                     </button>
                                     <ul class="dropdown-menu glass-dropdown">
                                         <li v-if="app.status === 'pending'">
                                             <button class="dropdown-item text-white"
                                                 @click="setOpenDropdown(null); validateApproval(app, 'approved')">
-                                                <i class="bi bi-check-circle-fill me-2 text-success"></i>Approve
+                                                <i class="bi bi-check-circle-fill me-2 opacity-75"></i>Approve
                                             </button>
                                         </li>
                                         <li v-if="app.status === 'pending'">
                                             <button class="dropdown-item text-white"
                                                 @click="setOpenDropdown(null); validateApproval(app, 'rejected')">
-                                                <i class="bi bi-x-circle-fill me-2 text-danger"></i>Reject
+                                                <i class="bi bi-x-circle-fill me-2 opacity-75"></i>Reject
                                             </button>
                                         </li>
                                         <li v-if="app.status === 'approved'">
                                             <button class="dropdown-item text-white"
                                                 @click="setOpenDropdown(null); validateApproval(app, 'issued')">
-                                                <i class="bi bi-patch-check-fill me-2 text-info"></i>Issue
+                                                <i class="bi bi-patch-check-fill me-2 opacity-75"></i>Issue
                                             </button>
                                         </li>
                                         <li v-if="app.status === 'issued'">
                                             <button class="dropdown-item text-white" @click="setOpenDropdown(null); openPrintModal(app)">
-                                                <i class="bi bi-printer-fill me-2 text-warning"></i>Print 8.5x13
+                                                <i class="bi bi-printer-fill me-2 opacity-75"></i>Print 8.5x13
                                             </button>
                                         </li>
                                     </ul>
@@ -373,15 +373,15 @@
                     </p>
                 </div>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-action-glass text-warning px-4" @click="handleEditClick(selectedApp, 'groom')"
+                    <button class="btn btn-action-glass text-white px-4" @click="handleEditClick(selectedApp, 'groom')"
                         :disabled="!selectedApp">
                         <i class="bi bi-person me-1"></i> Edit Groom
                     </button>
-                    <button class="btn btn-action-glass text-warning px-4" @click="handleEditClick(selectedApp, 'bride')"
+                    <button class="btn btn-action-glass text-white px-4" @click="handleEditClick(selectedApp, 'bride')"
                         :disabled="!selectedApp">
                         <i class="bi bi-person-heart me-1"></i> Edit Bride
                     </button>
-                    <button class="btn btn-action-glass text-info px-4" @click="openDocumentModal">
+                    <button class="btn btn-action-glass text-white px-4" @click="openDocumentModal">
                         <i class="bi bi-archive-fill me-1"></i> Check Documents
                     </button>
                     <button class="btn btn-action-glass text-secondary" @click="closeViewApplicants">Close</button>
