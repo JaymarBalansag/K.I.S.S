@@ -4,7 +4,11 @@
   <meta charset="utf-8" />
   <title>Joint Affidavit of Cohabitation</title>
   <style>
-    @page { size: 8.5in 13in; margin: 1in 1in; }
+    @font-face {
+      font-family: "Bookman Old Style";
+      src: url('fonts/bookmanoldstyle.ttf') format('truetype');
+    }
+    @page { size: 8.5in 11in; margin: 0.8in 1in; }
     body { font-family: "Bookman Old Style", serif; color: #000; font-size: 19px; line-height: 1.25; }
     .header { font-size: 16px; margin-bottom: 28px; }
     .title { text-align: center; font-weight: 700; font-size: 24px; margin: 16px 0 28px; }
@@ -15,9 +19,9 @@
     .signatures-table { width: 100%; border-collapse: collapse; }
     .sig-cell { width: 50%; vertical-align: top; padding-right: 20px; }
     .sig-cell:last-child { padding-right: 0; }
-    .sig-name { font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #000; display: block; width: 100%; margin-bottom: 4px; }
+    .sig-name { font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #000; display: inline-block; width: auto; margin: 0 auto 4px; padding-bottom: 2px; }
     .sig-affiant { display: block; margin-top: 6px; font-size: 19px; text-align: center; }
-    .sig-line { display: block; margin-top: 6px; font-size: 19px; line-height: 1.25; }
+    .sig-line { display: block; margin-top: 6px; font-size: 14px; line-height: 1.25; }
     .small { font-size: 19px; }
   </style>
 </head>
@@ -27,9 +31,7 @@
     Province of Leyte &nbsp;&nbsp;     ) S.S<br>
     Municipality of Abuyog &nbsp;      )
   </div>
-  <br>
   <div class="title"><b>JOINT AFFIDAVIT OF COHABITATION</b></div>
-  <br>
   <div class="content">
     <p style="text-indent: 40px;">We, <strong>{{ $groomName }}</strong> and <strong>{{ $brideName }}</strong>, of legal ages, Filipino Citizens, both single (living together) and both residents of <strong>{{ $city }}</strong> having been duly sworn in accordance with law, hereby depose and say:</p>
     <ol>
@@ -38,7 +40,6 @@
       <li>As such, we are executing this Affidavit to attest to the foregoing facts and for purposes of contracting marriage without need of securing marriage license pursuant to the provisions of Article 34 of the Family Code of the Philippines for all legal intents and purposes this may serve.</li>
     </ol>
     <p style="text-indent: 40px;">IN WITNESS WHEREOF, we have hereunto set our hands this {{ $ordinalDay }} day of {{ $issuedMonth }} {{ $issuedYear }} at {{ $city }}, {{ $province }}, Philippines.</p>
-    <br>
     <br>
     <table class="signatures-table">
       <tr>

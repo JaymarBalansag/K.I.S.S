@@ -676,7 +676,7 @@
         height: 15px; /* Adjust height as needed */
         background-color: white;
         z-index: 3; /* Must be higher than the background image (z-index 1) */
-        
+
         /* Centering the text inside the square */
         display: flex;
         align-items: center;
@@ -685,13 +685,13 @@
         font-size: 7pt;
         font-weight: bold;
         }
-        
+
         /* Positioning the Groom's square */
         .g-signature {
         top: 1065px; /* Aligning near the signature line */
         left: 185px;
         }
-        
+
         /* Positioning the Bride's square */
         .b-signature {
         top: 1065px;
