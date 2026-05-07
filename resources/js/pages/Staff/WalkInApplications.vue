@@ -15,92 +15,130 @@
             </div>
 
             <form class="glass-panel rounded-5 p-4 p-lg-5 mb-4" @submit.prevent="submitForm">
-                <div class="walkthrough-grid">
-                    <aside class="guide-panel">
-                        <div class="guide-card">
-                            <p class="guide-eyebrow">How This Works</p>
-                            <h4 class="text-white fw-bold mb-3">Encode one person at a time</h4>
-                            <div class="guide-step">
-                                <span>1</span>
-                                <p>Start with the contact number and the groom details.</p>
+                <div class="walkin-form">
+                    <div class="sticky-top-bar">
+                        <div class="top-bar-row">
+                            <div class="person-toggle">
+                                <button
+                                    v-for="personKey in personOrder"
+                                    :key="`top-${personKey}`"
+                                    type="button"
+                                    class="person-tab person-tab-lg"
+                                    :class="{ active: activePerson === personKey }"
+                                    @click="setActivePerson(personKey)"
+                                >
+                                    <span>{{ personLabels[personKey] }}</span>
+                                    <small>{{ personCompletion(personKey) ? 'Complete' : 'Missing required' }}</small>
+                                </button>
                             </div>
-                            <div class="guide-step">
-                                <span>2</span>
-                                <p>Switch to the bride tab after the first section is complete.</p>
-                            </div>
-                            <div class="guide-step">
-                                <span>3</span>
-                                <p>Save once both sides are complete, then print right away.</p>
+
+                            <div class="top-progress">
+                                <div
+                                    v-for="personKey in personOrder"
+                                    :key="`progress-${personKey}`"
+                                    class="progress-chip"
+                                    :class="{ ready: personCompletion(personKey) }"
+                                >
+                                    <i class="bi me-2"
+                                        :class="personCompletion(personKey) ? 'bi-check-circle-fill' : 'bi-exclamation-circle-fill'"></i>
+                                    <span class="me-2 fw-semibold">{{ personLabels[personKey] }}</span>
+                                    <span class="opacity-75">{{ personCompletion(personKey) ? 'Ready' : 'Needs details' }}</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="guide-card compact">
-                            <p class="guide-eyebrow">Progress</p>
-                            <button
-                                v-for="personKey in personOrder"
-                                :key="`switch-${personKey}`"
-                                type="button"
-                                class="person-switch-btn"
-                                :class="{ active: activePerson === personKey }"
-                                @click="activePerson = personKey"
-                            >
+                        <details class="howto-details">
+                            <summary>
+                                <span class="guide-eyebrow mb-0">How this works</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </summary>
+                            <div class="howto-body">
+                                <div class="guide-step">
+                                    <span>1</span>
+                                    <p>Start with the contact number and the groom details.</p>
+                                </div>
+                                <div class="guide-step">
+                                    <span>2</span>
+                                    <p>Use the section buttons (Identity, Address, Parents, Optional) one at a time.</p>
+                                </div>
+                                <div class="guide-step">
+                                    <span>3</span>
+                                    <p>Switch to the bride when you're done, then save and print.</p>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="walkin-stack">
+                        <div class="contact-card rounded-4 p-3 p-md-4">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
                                 <div>
-                                    <strong>{{ personLabels[personKey] }}</strong>
-                                    <small>{{ completionLabel(personKey) }}</small>
+                                    <p class="guide-eyebrow mb-2">Shared Details</p>
+                                    <h5 class="text-white fw-bold mb-1">Contact Number</h5>
+                                    <p class="text-white-50 mb-0">Optional, but helpful when the couple wants updates later.</p>
                                 </div>
-                                <i class="bi" :class="personCompletion(personKey) ? 'bi-check-circle-fill text-success' : 'bi-chevron-right'"></i>
-                            </button>
+                                <div class="contact-input-wrap">
+                                    <input v-model="form.phone_number" type="text" class="form-control glass-input"
+                                        placeholder="09XXXXXXXXX">
+                                </div>
+                            </div>
                         </div>
-                    </aside>
 
-                    <div class="form-panel">
-                        <div class="row g-4">
-                            <div class="col-12">
-                                <div class="contact-card rounded-4 p-3 p-md-4">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-                                        <div>
-                                            <p class="guide-eyebrow mb-2">Shared Details</p>
-                                            <h5 class="text-white fw-bold mb-1">Contact Number</h5>
-                                            <p class="text-white-50 mb-0">Optional, but helpful when the couple wants updates later.</p>
-                                        </div>
-                                        <div class="contact-input-wrap">
-                                            <input v-model="form.phone_number" type="text" class="form-control glass-input"
-                                                placeholder="09XXXXXXXXX">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <div class="person-tabs">
-                                    <button
-                                        v-for="personKey in personOrder"
-                                        :key="`tab-${personKey}`"
-                                        type="button"
-                                        class="person-tab"
-                                        :class="{ active: activePerson === personKey }"
-                                        @click="activePerson = personKey"
-                                    >
-                                        <span>{{ personLabels[personKey] }}</span>
-                                        <small>{{ personCompletion(activePerson === personKey ? activePerson : personKey) ? 'Ready to save' : 'Needs details' }}</small>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <section class="person-card rounded-5 p-4">
+                        <section class="person-card rounded-5 p-4">
                                     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
                                         <div>
                                             <span class="person-pill">{{ personLabels[activePerson] }}</span>
                                             <h4 class="text-white fw-bold mt-3 mb-1">{{ personLabels[activePerson] }} Information</h4>
-                                            <p class="text-white-50 mb-0">Required fields come first. Optional printable items are tucked at the bottom.</p>
+                                            <p class="text-white-50 mb-0">Use the tabs below to fill one section at a time.</p>
                                         </div>
                                         <div class="completion-pill" :class="{ ready: personCompletion(activePerson) }">
                                             {{ completionLabel(activePerson) }}
                                         </div>
                                     </div>
 
-                                    <div class="section-card">
+                                    <div class="section-switch mb-3">
+                                        <button type="button" class="section-switch-btn"
+                                            :class="{ active: activeSection === 'identity' }"
+                                            @click="activeSection = 'identity'">
+                                            <div>
+                                                <strong>Identity</strong>
+                                                <small>Name, birth date, civil status.</small>
+                                            </div>
+                                            <i class="bi"
+                                                :class="sectionCompletion(activePerson, 'identity') ? 'bi-check-circle-fill text-success' : 'bi-chevron-right'"></i>
+                                        </button>
+                                        <button type="button" class="section-switch-btn"
+                                            :class="{ active: activeSection === 'address' }"
+                                            @click="activeSection = 'address'">
+                                            <div>
+                                                <strong>Birthplace & Address</strong>
+                                                <small>Birthplace and residence.</small>
+                                            </div>
+                                            <i class="bi"
+                                                :class="sectionCompletion(activePerson, 'address') ? 'bi-check-circle-fill text-success' : 'bi-chevron-right'"></i>
+                                        </button>
+                                        <button type="button" class="section-switch-btn"
+                                            :class="{ active: activeSection === 'parents' }"
+                                            @click="activeSection = 'parents'">
+                                            <div>
+                                                <strong>Parents</strong>
+                                                <small>Father and mother details.</small>
+                                            </div>
+                                            <i class="bi"
+                                                :class="sectionCompletion(activePerson, 'parents') ? 'bi-check-circle-fill text-success' : 'bi-chevron-right'"></i>
+                                        </button>
+                                        <button type="button" class="section-switch-btn"
+                                            :class="{ active: activeSection === 'optional' }"
+                                            @click="activeSection = 'optional'">
+                                            <div>
+                                                <strong>Optional</strong>
+                                                <small>Previous marriage, ID, consent.</small>
+                                            </div>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="section-card" v-show="activeSection === 'identity'">
                                         <div class="section-header">
                                             <h6>Identity</h6>
                                             <p>Name, birthday, age, and civil profile.</p>
@@ -122,7 +160,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="section-card">
+                                    <div class="section-card" v-show="activeSection === 'address'">
                                         <div class="section-header">
                                             <h6>Birthplace & Residence</h6>
                                             <p>Address details used in the printable form.</p>
@@ -141,7 +179,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="section-card">
+                                    <div class="section-card" v-show="activeSection === 'parents'">
                                         <div class="section-header">
                                             <h6>Parents</h6>
                                             <p>Required for the printed marriage license application.</p>
@@ -160,15 +198,11 @@
                                         </div>
                                     </div>
 
-                                    <details class="optional-section">
-                                        <summary>
-                                            <div class="optional-summary-text">
-                                                <span class="optional-kicker">Click to expand</span>
-                                                <strong>Optional Printable Details</strong>
-                                                <small>Open this section for previous marriage details, ID details, and extra notes.</small>
-                                            </div>
-                                            <i class="bi bi-chevron-down optional-chevron"></i>
-                                        </summary>
+                                    <div class="section-card" v-show="activeSection === 'optional'">
+                                        <div class="section-header">
+                                            <h6>Optional Printable Details</h6>
+                                            <p>Fill these only if applicable. Leave blank if not needed.</p>
+                                        </div>
                                         <div class="row g-3">
                                             <div v-for="field in optionalFields" :key="`${activePerson}-${field.key}`" :class="field.col">
                                                 <label class="form-label text-white fw-semibold">{{ field.label }}</label>
@@ -180,7 +214,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="optional-subtitle">Person Giving Consent</div>
+                                        <div class="optional-subtitle">Person Giving Consent (Optional)</div>
                                         <div class="row g-3">
                                             <div v-for="field in consentFields" :key="`${activePerson}-${field.key}`" :class="field.col">
                                                 <label class="form-label text-white fw-semibold">{{ field.label }}</label>
@@ -191,17 +225,28 @@
                                                     class="form-control glass-input" :placeholder="field.placeholder || field.label">
                                             </div>
                                         </div>
-                                    </details>
+                                    </div>
 
-                                    <div class="form-footer">
-                                        <button
-                                            v-if="activePerson === 'groom'"
-                                            type="button"
-                                            class="btn btn-outline-light px-4 py-2 rounded-pill"
-                                            @click="activePerson = 'bride'"
-                                        >
-                                            Continue to Bride
-                                        </button>
+                                    <div class="sticky-bottom-actions">
+                                        <div class="bottom-left">
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-light px-4 py-2 rounded-pill"
+                                                @click="setActivePerson(activePerson === 'groom' ? 'bride' : 'groom')"
+                                            >
+                                                <i class="bi me-2"
+                                                    :class="activePerson === 'groom' ? 'bi-arrow-right-circle' : 'bi-arrow-left-circle'"></i>
+                                                {{ activePerson === 'groom' ? 'Next: Bride' : 'Back: Groom' }}
+                                            </button>
+                                            <div
+                                                v-if="!personCompletion('groom') || !personCompletion('bride')"
+                                                class="save-hint"
+                                            >
+                                                <i class="bi bi-info-circle me-1"></i>
+                                                Fill required fields (marked *) for both Groom and Bride before saving.
+                                            </div>
+                                        </div>
+
                                         <div class="footer-actions">
                                             <button type="button" class="btn btn-outline-light px-4 py-2 rounded-pill" @click="resetForm" :disabled="isSaving">
                                                 Reset
@@ -213,8 +258,6 @@
                                         </div>
                                     </div>
                                 </section>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </form>
@@ -380,6 +423,7 @@ export default {
                 bride: createPerson('Female'),
             },
             activePerson: 'groom',
+            activeSection: 'identity',
             personOrder: ['groom', 'bride'],
             personLabels: { groom: 'Groom', bride: 'Bride' },
             primaryFields: [
@@ -523,6 +567,11 @@ export default {
                 bride: createPerson('Female'),
             };
             this.activePerson = 'groom';
+            this.activeSection = 'identity';
+        },
+        setActivePerson(personKey) {
+            this.activePerson = personKey;
+            this.activeSection = 'identity';
         },
         async viewRecord(id) {
             try {
@@ -590,39 +639,31 @@ export default {
         personCompletion(personKey) {
             const person = this.form[personKey];
             const requiredKeys = [
-                'first_name',
-                'last_name',
-                'birth_date',
-                'age',
-                'sex',
-                'citizenship',
-                'religion',
-                'civil_status',
-                'birth_city',
-                'birth_province',
-                'birth_country',
-                'residence_address',
-                'father_first_name',
-                'father_last_name',
-                'father_citizenship',
-                'father_residence',
-                'mother_first_name',
-                'mother_last_name',
-                'mother_citizenship',
-                'mother_residence',
-                'consent_name',
-                'consent_relationship',
-                'consent_citizenship',
-                'consent_residence',
+                ...this.primaryFields.filter((field) => field.required).map((field) => field.key),
+                ...this.locationFields.filter((field) => field.required).map((field) => field.key),
+                ...this.parentFields.filter((field) => field.required).map((field) => field.key),
             ];
 
-            return requiredKeys.every((key) => {
-                const value = person[key];
-                return value !== null && value !== undefined && String(value).trim() !== '';
-            });
+            return requiredKeys.every((key) => this.hasValue(person[key]));
         },
         completionLabel(personKey) {
             return this.personCompletion(personKey) ? 'Required fields complete' : 'Required fields missing';
+        },
+        sectionCompletion(personKey, sectionKey) {
+            const person = this.form[personKey];
+            const requiredKeysBySection = {
+                identity: this.primaryFields.filter((field) => field.required).map((field) => field.key),
+                address: this.locationFields.filter((field) => field.required).map((field) => field.key),
+                parents: this.parentFields.filter((field) => field.required).map((field) => field.key),
+            };
+
+            const requiredKeys = requiredKeysBySection[sectionKey] || [];
+            return requiredKeys.length > 0 && requiredKeys.every((key) => this.hasValue(person[key]));
+        },
+        hasValue(value) {
+            if (value === null || value === undefined) return false;
+            if (typeof value === 'number') return Number.isFinite(value);
+            return String(value).trim() !== '';
         }
     },
     mounted() {
@@ -632,6 +673,140 @@ export default {
 </script>
 
 <style scoped>
+.walkin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.walkin-stack {
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.sticky-top-bar {
+    position: sticky;
+    top: 0.75rem;
+    z-index: 30;
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    padding: 1rem;
+    border-radius: 1.25rem;
+    background: rgba(15, 23, 42, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+}
+
+.top-bar-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.person-toggle {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    flex: 1 1 340px;
+}
+
+.person-tab-lg {
+    padding: 1rem 1.1rem;
+    border-radius: 1.1rem;
+    min-height: 68px;
+}
+
+.top-progress {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.65rem;
+    flex: 0 1 auto;
+}
+
+.progress-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.55rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.86rem;
+}
+
+.progress-chip.ready {
+    background: rgba(34, 197, 94, 0.12);
+    border-color: rgba(34, 197, 94, 0.22);
+}
+
+.howto-details {
+    margin-top: 0.9rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.howto-details summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.howto-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.howto-details i {
+    color: rgba(191, 219, 254, 0.9);
+    transition: transform 0.2s ease;
+}
+
+.howto-details[open] i {
+    transform: rotate(180deg);
+}
+
+.howto-body {
+    margin-top: 0.9rem;
+}
+
+.sticky-bottom-actions {
+    position: sticky;
+    bottom: 0.75rem;
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.25rem;
+    padding: 1rem;
+    border-radius: 1.25rem;
+    background: rgba(15, 23, 42, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px);
+}
+
+.bottom-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.save-hint {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.88rem;
+}
+
 .walkthrough-grid {
     display: grid;
     grid-template-columns: minmax(240px, 290px) minmax(0, 1fr);
@@ -647,10 +822,51 @@ export default {
 .guide-card,
 .contact-card,
 .section-card,
-.optional-section {
+.optional-section,
+.section-switch-btn {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 1.25rem;
+}
+
+.section-switch {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.section-switch-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: left;
+    transition: 0.2s ease;
+}
+
+.section-switch-btn strong {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.section-switch-btn small {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.1rem;
+}
+
+.section-switch-btn.active {
+    border-color: rgba(13, 202, 240, 0.45);
+    background: rgba(13, 202, 240, 0.12);
+}
+
+.section-switch-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.18);
 }
 
 .guide-card {
