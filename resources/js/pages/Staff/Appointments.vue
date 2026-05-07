@@ -78,16 +78,16 @@
                                     </td>
                                     <td class="text-center border-0 rounded-end-4 px-4">
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button @click="viewDetails(apt)" class="btn btn-action-glass text-info">
-                                                View
+                                            <button @click="viewDetails(apt)" class="btn btn-action-glass text-white">
+                                                <i class="bi bi-eye me-1"></i> View
                                             </button>
                                             <button v-if="apt.status === 'pending'" @click="approveAppointment(apt.id)"
-                                                class="btn btn-action-glass text-success">
-                                                Accept
+                                                class="btn btn-action-glass text-white">
+                                                <i class="bi bi-check-circle me-1"></i> Accept
                                             </button>
                                             <button v-if="apt.status === 'pending'" @click="rejectAppointment(apt.id)"
-                                                class="btn btn-action-glass text-danger">
-                                                Reject
+                                                class="btn btn-action-glass text-white">
+                                                <i class="bi bi-x-circle me-1"></i> Reject
                                             </button>
                                         </div>
                                     </td>
@@ -106,11 +106,17 @@
                             <p class="small text-info mt-1 mb-3">{{ apt.control_number }}</p>
                             <div class="d-flex gap-2">
                                 <button @click="viewDetails(apt)"
-                                    class="btn btn-action-glass text-info flex-grow-1">View</button>
+                                    class="btn btn-action-glass text-white flex-grow-1">
+                                    <i class="bi bi-eye me-1"></i> View
+                                </button>
                                 <button v-if="apt.status === 'pending'" @click="approveAppointment(apt.id)"
-                                    class="btn btn-action-glass text-success flex-grow-1">Accept</button>
+                                    class="btn btn-action-glass text-white flex-grow-1">
+                                    <i class="bi bi-check-circle me-1"></i> Accept
+                                </button>
                                 <button v-if="apt.status === 'pending'" @click="rejectAppointment(apt.id)"
-                                    class="btn btn-action-glass text-danger flex-grow-1">Reject</button>
+                                    class="btn btn-action-glass text-white flex-grow-1">
+                                    <i class="bi bi-x-circle me-1"></i> Reject
+                                </button>
                             </div>
                         </div>
                     </div>
