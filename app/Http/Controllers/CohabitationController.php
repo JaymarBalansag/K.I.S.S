@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cohabitation;
 use App\Models\Cohabitation_Partner;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -339,5 +340,102 @@ class CohabitationController extends Controller
         return response()->json([
             'message' => 'Cohabitation permanently deleted.',
         ]);
+    }
+
+    public function affidavit(string $id)
+    {
+        $cohabitation = Cohabitation::findOrFail($id);
+        $partners = $cohabitation->partners;
+
+        $groom = $partners->first(function ($partner) {
+            return strcasecmp(trim($partner->partner_type ?? ''), 'groom') === 0;
+        });
+
+        $bride = $partners->first(function ($partner) {
+            return strcasecmp(trim($partner->partner_type ?? ''), 'bride') === 0;
+        });
+
+        if (!$groom && $partners->isNotEmpty()) {
+            $groom = $partners->first();
+        }
+
+        if (!$bride && $partners->count() > 1) {
+            $bride = $partners->skip(1)->first();
+        }
+
+        if (!$bride && $partners->isNotEmpty()) {
+            $bride = $partners->first();
+        }
+
+        if (!$groom || !$bride) {
+            abort(404, 'Partners not found');
+        }
+
+        // Cohabitation proof documents are not stored by cohabitation_id in the documents table.
+        // Use a transparent placeholder image while preserving the layout.
+        $imageDataUrl = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+
+        // Helper functions
+        $buildPersonFullName = function ($partner) {
+            if (!$partner) return '';
+            return trim(($partner->first_name ?? '') . ' ' . ($partner->middle_name ?? '') . ' ' . ($partner->last_name ?? ''));
+        };
+
+        $getMonthName = function ($monthNumber) {
+            $month = (int) $monthNumber;
+            if ($month < 1 || $month > 12) return '';
+            $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            return $months[$month - 1];
+        };
+
+        $getYearsLivingTogether = function ($cohabitation) {
+            if (!$cohabitation || !$cohabitation->cohabitation_start_date) return '';
+            $currentYear = date('Y');
+            $sinceYear = (int) date('Y', strtotime($cohabitation->cohabitation_start_date));
+            if ($sinceYear <= 0 || $sinceYear > $currentYear) return '';
+            return (string) ($currentYear - $sinceYear);
+        };
+
+        $ordinalSuffix = function ($day) {
+            $n = (int) $day;
+            if ($n % 100 >= 11 && $n % 100 <= 13) return 'th';
+            return match ($n % 10) {
+                1 => 'st',
+                2 => 'nd',
+                3 => 'rd',
+                default => 'th',
+            };
+        };
+
+        // Prepare data
+        $groomName = $buildPersonFullName($groom) ?: 'GROOM FULL NAME';
+        $brideName = $buildPersonFullName($bride) ?: 'BRIDE FULL NAME';
+        $city = explode(',', $cohabitation->residence)[0] ?? 'Abuyog';
+        $province = explode(',', $cohabitation->residence)[1] ?? 'Leyte';
+        $monthName = $getMonthName(date('m', strtotime($cohabitation->cohabitation_start_date)));
+        $sinceYear = $cohabitation->cohabitation_start_date ? date('Y', strtotime($cohabitation->cohabitation_start_date)) : '';
+        $yearsTogether = $getYearsLivingTogether($cohabitation);
+        $today = now();
+        $issuedDay = $today->day;
+        $issuedMonth = $today->format('F');
+        $issuedYear = $today->year;
+        $ordinalDay = $issuedDay . $ordinalSuffix($issuedDay);
+
+        $groomIdType = $groom->id_type ?? '';
+        $groomIdNumber = $groom->id_number ?? '';
+        $groomIssuedAt = $groom->issued_at ?? '';
+        $groomIssuedOn = $groom->issued_on ? Carbon::parse($groom->issued_on)->format('F d, Y') : '';
+        $brideIdType = $bride->id_type ?? '';
+        $brideIdNumber = $bride->id_number ?? '';
+        $brideIssuedAt = $bride->issued_at ?? '';
+        $brideIssuedOn = $bride->issued_on ? Carbon::parse($bride->issued_on)->format('F d, Y') : '';
+
+        return Pdf::loadView('pdf.cohabaffidavit', compact(
+            'groomName', 'brideName', 'city', 'province', 'monthName', 'sinceYear', 'yearsTogether',
+            'issuedDay', 'issuedMonth', 'issuedYear', 'ordinalDay', 'imageDataUrl',
+            'groomIdType', 'groomIdNumber', 'groomIssuedAt', 'groomIssuedOn', 'brideIdType', 'brideIdNumber', 'brideIssuedAt', 'brideIssuedOn'
+        ))
+        ->setPaper([0, 0, 612, 936], 'portrait')
+        ->stream('Joint_Affidavit_of_Cohabitation.pdf');
     }
 }

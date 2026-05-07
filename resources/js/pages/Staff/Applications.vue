@@ -391,8 +391,16 @@
                             <div class="text-white small fw-bold">{{ doc.doc_type }}</div>
                             <div class="x-small text-secondary fw-semibold">Uploaded: {{ doc.created_at }}</div>
                         </div>
-                        <button @click="openCurrentDocument(doc.document_url)"
-                            class="btn btn-sm btn-outline-info rounded-pill px-3">View</button>
+                        <div class="d-flex gap-2">
+                            <button @click="openCurrentDocument(doc.document_url)"
+                                class="btn btn-sm btn-outline-info rounded-pill px-3">View</button>
+                            <button
+                                v-if="isCohabitationDoc(doc)"
+                                @click="printCohabitationAffidavit(doc)"
+                                class="btn btn-sm btn-outline-warning rounded-pill px-3">
+                                Print
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="document-grid animate__animated animate__fadeIn" v-else-if="activeTab === 'bride'">
@@ -408,8 +416,16 @@
                             <div class="text-white small fw-bold">{{ doc.doc_type }}</div>
                             <div class="x-small text-secondary fw-semibold">Uploaded: {{ doc.created_at }}</div>
                         </div>
-                        <button @click="openCurrentDocument(doc.document_url)"
-                            class="btn btn-sm btn-outline-info rounded-pill px-3">View</button>
+                        <div class="d-flex gap-2">
+                            <button @click="openCurrentDocument(doc.document_url)"
+                                class="btn btn-sm btn-outline-info rounded-pill px-3">View</button>
+                            <button
+                                v-if="isCohabitationDoc(doc)"
+                                @click="printCohabitationAffidavit(doc)"
+                                class="btn btn-sm btn-outline-warning rounded-pill px-3">
+                                Print
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -587,6 +603,157 @@ export default {
         closeCurrentDocument() {
             this.showDocument = false;
             this.currentFilePath = '';
+        },
+        isCohabitationDoc(doc) {
+            const type = (doc?.doc_type || '').toLowerCase();
+            return type.includes('cohabitation') || type.includes('joint affidavit');
+        },
+        getApplicantByType(type) {
+            return (this.applicant || []).find(person =>
+                (person?.applicant_type || '').toLowerCase() === type
+            ) || null;
+        },
+        buildPersonFullName(person) {
+            if (!person) return '';
+            return [person.first_name, person.middle_name, person.last_name]
+                .filter(Boolean)
+                .join(' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        },
+        getMonthName(monthNumber) {
+            const month = Number(monthNumber);
+            if (!Number.isFinite(month) || month < 1 || month > 12) return '';
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            return monthNames[month - 1];
+        },
+        getYearsLivingTogether(groom, bride) {
+            const person = groom || bride;
+            if (!person?.living_together_since_year) return '';
+            const currentYear = new Date().getFullYear();
+            const sinceYear = Number(person.living_together_since_year);
+            if (!Number.isFinite(sinceYear) || sinceYear <= 0 || sinceYear > currentYear) return '';
+            return String(currentYear - sinceYear);
+        },
+        async toDataUrl(url) {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Could not load cohabitation image.');
+            }
+            const blob = await response.blob();
+            return await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        },
+        buildCohabitationAffidavitHtml({ groom, bride, imageDataUrl }) {
+            const groomName = this.buildPersonFullName(groom) || 'GROOM FULL NAME';
+            const brideName = this.buildPersonFullName(bride) || 'BRIDE FULL NAME';
+            const city = groom?.residence_city || bride?.residence_city || 'Abuyog';
+            const province = groom?.residence_province || bride?.residence_province || 'Leyte';
+            const monthName = this.getMonthName(groom?.living_together_since_month || bride?.living_together_since_month);
+            const sinceYear = groom?.living_together_since_year || bride?.living_together_since_year || '';
+            const yearsTogether = this.getYearsLivingTogether(groom, bride);
+            const today = new Date();
+            const issuedDay = today.getDate();
+            const issuedMonth = today.toLocaleString('en-US', { month: 'long' });
+            const issuedYear = today.getFullYear();
+
+            return `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Joint Affidavit of Cohabitation</title>
+  <style>
+    @page { size: 8.5in 13in; margin: 0.6in 0.8in; }
+    body { font-family: "Times New Roman", serif; color: #000; font-size: 18px; line-height: 1.25; }
+    .header { font-size: 16px; margin-bottom: 28px; }
+    .title { text-align: center; font-weight: 700; font-size: 38px; margin: 16px 0 28px; }
+    .content p { text-align: justify; margin: 0 0 16px; }
+    ol { margin: 10px 0 22px 28px; }
+    li { margin-bottom: 14px; text-align: justify; }
+    .signatures { display: flex; justify-content: space-between; gap: 40px; margin-top: 26px; }
+    .sig-col { width: 48%; }
+    .sig-name { font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #000; display: inline-block; min-width: 260px; }
+    .image-wrap { margin-top: 18px; text-align: center; page-break-inside: avoid; }
+    .image-wrap img { max-width: 100%; max-height: 3.8in; object-fit: contain; border: 1px solid #ccc; }
+    .small { font-size: 16px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    Republic of the Philippines<br>
+    Province of ${province}<br>
+    Municipality of ${city}
+  </div>
+  <div class="title">JOINT AFFIDAVIT OF COHABITATION</div>
+  <div class="content">
+    <p>We, <strong>${groomName}</strong> and <strong>${brideName}</strong>, of legal ages, Filipino Citizens, both single (living together) and both residents of <strong>${city}</strong> having been duly sworn in accordance with law, hereby depose and say:</p>
+    <ol>
+      <li>That we have been living together as husband and wife under the same roof, continuously and without any interruption, since ${monthName || '____________'} ${sinceYear || '____________'} or a period of more than ${yearsTogether || '___'} years;</li>
+      <li>That during our cohabitation and even until present, we remain both of single status and hence, there exists no legal impediment for us to marry each other; and</li>
+      <li>As such, we are executing this Affidavit to attest to the foregoing facts and for purposes of contracting marriage without need of securing marriage license pursuant to the provisions of Article 34 of the Family Code of the Philippines for all legal intents and purposes this may serve.</li>
+    </ol>
+    <p>IN WITNESS WHEREOF, we have hereunto set our hands this ${issuedDay}${this.ordinalSuffix(issuedDay)} day of ${issuedMonth} ${issuedYear} at ${city}, ${province}, Philippines.</p>
+    <div class="signatures">
+      <div class="sig-col small">
+        <div class="sig-name">${groomName.toUpperCase()}</div><br>
+        Affiant
+      </div>
+      <div class="sig-col small">
+        <div class="sig-name">${brideName.toUpperCase()}</div><br>
+        Affiant
+      </div>
+    </div>
+    <p class="small" style="margin-top: 30px;">SUBSCRIBED AND SWORN TO before me this ____ day of ${issuedMonth}, ${issuedYear} at ${city}, ${province}, Philippines.</p>
+    <div class="image-wrap">
+      <div class="small" style="margin-bottom: 8px;"><strong>Attached Cohabitation Proof</strong></div>
+      <img src="${imageDataUrl}" alt="Cohabitation proof">
+    </div>
+  </div>
+</body>
+</html>`;
+        },
+        ordinalSuffix(day) {
+            const n = Number(day);
+            if (![1, 2, 3].includes(n % 10) || [11, 12, 13].includes(n % 100)) return 'th';
+            if (n % 10 === 1) return 'st';
+            if (n % 10 === 2) return 'nd';
+            return 'rd';
+        },
+        async printCohabitationAffidavit(doc) {
+            try {
+                const groom = this.getApplicantByType('groom');
+                const bride = this.getApplicantByType('bride');
+                const imageDataUrl = await this.toDataUrl(doc.document_url);
+                const html = this.buildCohabitationAffidavitHtml({ groom, bride, imageDataUrl });
+                const printWindow = window.open('', '_blank');
+
+                if (!printWindow) {
+                    throw new Error('Unable to open print window. Please allow pop-ups.');
+                }
+
+                printWindow.document.open();
+                printWindow.document.write(html);
+                printWindow.document.close();
+                printWindow.focus();
+                printWindow.onload = () => {
+                    printWindow.print();
+                };
+            } catch (error) {
+                Swal.fire({
+                    title: 'Print Failed',
+                    text: error?.message || 'Unable to prepare cohabitation affidavit PDF.',
+                    icon: 'error',
+                    background: '#1e293b',
+                    color: '#fff'
+                });
+            }
         },
 
         async fetchApplications() {

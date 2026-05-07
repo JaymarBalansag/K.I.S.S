@@ -668,6 +668,35 @@
         .b-civil-registrar {
             left: 500px;
         }
+
+        /* Styling the squares */
+        .g-signature, .b-signature {
+        position: absolute;
+        width: 200px; /* Adjust width as needed */
+        height: 15px; /* Adjust height as needed */
+        background-color: white;
+        z-index: 3; /* Must be higher than the background image (z-index 1) */
+        
+        /* Centering the text inside the square */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 7pt;
+        font-weight: bold;
+        }
+        
+        /* Positioning the Groom's square */
+        .g-signature {
+        top: 1065px; /* Aligning near the signature line */
+        left: 185px;
+        }
+        
+        /* Positioning the Bride's square */
+        .b-signature {
+        top: 1065px;
+        left: 555px;
+        }
     </style>
 </head>
 
@@ -817,6 +846,9 @@
         <div class="data b-Issued-at">{{ $bride['issued_at'] ?? '' }}</div>
         <div class="data b-civil-registrar">{{ $bride['civil_registrar'] ?? '' }}</div>
 
+
+        <div class="g-signature">(Name and Signature of Applicant)</div>
+        <div class="b-signature">(Name and Signature of Applicant)</div>
     </div>
 </body>
 
