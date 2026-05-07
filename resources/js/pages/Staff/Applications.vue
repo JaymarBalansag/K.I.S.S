@@ -445,9 +445,8 @@
             </div>
         </div>
     </div>
-    <div v-if="showDocument" class="modal-overlay-custom animate__animated animate__fadeIn">
-        <div
-            class="modal-body-custom preview-large rounded-4 shadow-2xl p-0 border border-white border-opacity-20 bg-dark">
+    <div v-if="showDocument" class="modal-overlay-docviewer animate__animated animate__fadeIn">
+        <div class="docviewer-panel rounded-4 shadow-2xl p-0">
 
             <div
                 class="modal-glass-header p-3 d-flex justify-content-between align-items-center border-bottom border-white border-opacity-10">
@@ -464,9 +463,10 @@
             </div>
 
             <div
-                class="document-viewer-content bg-black bg-opacity-40 p-2 d-flex justify-content-center align-items-center">
+                class="document-viewer-content docviewer-surface p-2 d-flex justify-content-center align-items-center">
 
-                <iframe v-if="currentFileIsPDF" :src="currentFilePath" class="w-100 h-100 rounded-3 border-0"></iframe>
+                <iframe v-if="currentFileIsPDF" :src="pdfIframeSrc" class="docviewer-frame w-100 h-100 rounded-3 border-0"
+                    allowfullscreen></iframe>
 
                 <div v-else
                     class="image-zoom-container w-100 h-100 d-flex justify-content-center align-items-center overflow-auto">
@@ -477,7 +477,7 @@
             </div>
 
             <div
-                class="p-3 bg-black bg-opacity-40 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center">
+                class="p-3 docviewer-footer border-top border-white border-opacity-10 d-flex justify-content-between align-items-center">
                 <div class="d-flex gap-4">
                     <div class="timestamp-group">
                         <span class="x-small text-secondary text-uppercase d-block opacity-50">Reference</span>
@@ -489,6 +489,10 @@
                         @click="closeCurrentDocument">
                         <i class="bi bi-arrow-left me-2"></i>Back to List
                     </button>
+                    <a :href="currentFileIsPDF ? pdfIframeSrc : currentFilePath" target="_blank"
+                        class="btn btn-outline-light text-white border-white border-opacity-25 px-4">
+                        <i class="bi bi-box-arrow-up-right me-2"></i>Open
+                    </a>
                     <a :href="currentFilePath" target="_blank" class="btn btn-info text-white px-4">
                         <i class="bi bi-download me-2"></i>Download
                     </a>
@@ -564,6 +568,21 @@ export default {
             if (!this.selectedApp) return [];
             return [...this.selectedApp.groomDocuments, ...this.selectedApp.brideDocuments];
         },
+        pdfIframeSrc() {
+            if (!this.currentFileIsPDF || !this.currentFilePath) return this.currentFilePath;
+
+            const [base, hash = ''] = this.currentFilePath.split('#', 2);
+            const params = new URLSearchParams(hash);
+
+            params.set('toolbar', '1');
+            params.set('navpanes', '0');
+            params.set('scrollbar', '1');
+            params.set('zoom', 'page-width');
+            params.set('view', 'FitH');
+
+            const fragment = params.toString();
+            return fragment ? `${base}#${fragment}` : base;
+        },
     },
     methods: {
         async openViewApplicants(app) {
@@ -597,7 +616,8 @@ export default {
         openCurrentDocument(path) {
             this.currentFilePath = path;
             // Simple check to see if it's a PDF
-            this.currentFileIsPDF = path.toLowerCase().endsWith('.pdf');
+            const normalized = (path || '').split('#')[0].split('?')[0].toLowerCase();
+            this.currentFileIsPDF = normalized.endsWith('.pdf');
             this.showDocument = true
         },
         closeCurrentDocument() {
@@ -1192,6 +1212,47 @@ export default {
     overflow-y: auto;
     color: white;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Document Viewer (PDF/Image) */
+.modal-overlay-docviewer {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(12px) saturate(160%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 14px;
+}
+
+.docviewer-panel {
+    width: min(98vw, 1280px);
+    height: min(94vh, 980px);
+    max-height: 94vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
+}
+
+.docviewer-surface {
+    flex: 1;
+    min-height: 0;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.docviewer-frame {
+    background: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.docviewer-footer {
+    background: rgba(255, 255, 255, 0.06);
 }
 
 /* Muted Groom & Bride Cards */
