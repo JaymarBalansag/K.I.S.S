@@ -5,24 +5,32 @@
   <title>Joint Affidavit of Cohabitation</title>
   <style>
     @font-face {
-      font-family: "Bookman Old Style";
-      src: url('fonts/bookmanoldstyle.ttf') format('truetype');
+        font-family: "Bookman Old Style";
+        src: url('fonts/bookmanoldstyle.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
     }
-    @page { size: 8.5in 11in; margin: 0.8in 1in; }
-    body { font-family: "Bookman Old Style", serif; color: #000; font-size: 19px; line-height: 1.25; }
-    .header { font-size: 16px; margin-bottom: 28px; }
-    .title { text-align: center; font-weight: 700; font-size: 24px; margin: 16px 0 28px; }
+    @page { size: 8.5in 11in; margin: 0.8in 1in; 
+    }
+    body { font-family: "Bookman Old Style", serif; color: #000; font-size: 12pt; line-height: 1.25; 
+    }
+    .header { font-size: 12pt; margin-bottom: 28px; }
+    .title { text-align: center; font-weight: 700; font-size: 18pt; margin: 16px 0 28px; }
     .content p { text-align: justify; margin: 0 0 16px; }
     ol { margin: 10px 0 22px 28px; }
     li { margin-bottom: 14px; text-align: justify; }
     .signatures { width: 100%; margin-top: 26px; border-collapse: collapse; }
     .signatures-table { width: 100%; border-collapse: collapse; }
-    .sig-cell { width: 50%; vertical-align: top; padding-right: 20px; }
+    .sig-cell { width: 50%; vertical-align: top; padding-right: 20px; text-align: center; }
     .sig-cell:last-child { padding-right: 0; }
     .sig-name { font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #000; display: inline-block; width: auto; margin: 0 auto 4px; padding-bottom: 2px; }
-    .sig-affiant { display: block; margin-top: 6px; font-size: 19px; text-align: center; }
-    .sig-line { display: block; margin-top: 6px; font-size: 14px; line-height: 1.25; }
-    .small { font-size: 19px; }
+    .sig-affiant { display: block; margin-top: 6px; font-size: 12pt; text-align: center; }
+    .sig-line { display: block; margin-top: 6px; font-size: 10pt; line-height: 1.25; }
+    .footer-wrap { width: 100%; text-align: right; }
+    .footer-box { display: inline-block; text-align: center; }
+    .footer { margin-top: 36px; font-weight: 700; text-align: center; }
+    .registrar { display: block; margin-top: 4px; font-size: 12pt; text-align: center; }
+    .small { font-size: 12pt; }
   </style>
 </head>
 <body>
@@ -39,7 +47,7 @@
       <li>That during our cohabitation and even until present, we remain both of single status and hence, there exists no legal impediment for us to marry each other; and</li>
       <li>As such, we are executing this Affidavit to attest to the foregoing facts and for purposes of contracting marriage without need of securing marriage license pursuant to the provisions of Article 34 of the Family Code of the Philippines for all legal intents and purposes this may serve.</li>
     </ol>
-    <p style="text-indent: 40px;">IN WITNESS WHEREOF, we have hereunto set our hands this {{ $ordinalDay }} day of {{ $issuedMonth }} {{ $issuedYear }} at {{ $city }}, {{ $province }}, Philippines.</p>
+    <p style="text-indent: 40px;">IN WITNESS WHEREOF, we have hereunto set our hands this ______ day of ________________ at Abuyog, Leyte, Philippines.</p>
     <br>
     <table class="signatures-table">
       <tr>
@@ -61,6 +69,13 @@
     </table>
     <p class="small" style="margin-top: 30px; text-indent: 40px;">SUBSCRIBED AND SWORN TO before me this ____ day of ________________ at Abuyog, Leyte, Philippines, affiants having exhibited to me their competent proof of their true identities as indicated below their respective
     names.</p>
+
+    <div class="footer-wrap">
+      <div class="footer-box">
+        <div class="footer">ATTY. MADILYN C. MADOLIN-MERANO</div>
+        <span class="registrar">Municipal Civila registrar</span>
+      </div>
+    </div>
   </div>
 </body>
 </html>
