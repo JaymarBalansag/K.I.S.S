@@ -31,7 +31,9 @@
     .signatures { width: 100%; margin-top: 26px; border-collapse: collapse; }
     .signatures-table { width: 100%; border-collapse: collapse; }
     .sig-cell { width: 50%; vertical-align: top; padding-right: 20px; text-align: center; }
+    .sig-cell { width: 50%; vertical-align: top; padding-right: 20px; text-align: center; }
     .sig-cell:last-child { padding-right: 0; }
+    .sig-name { font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #000; display: inline-block; width: auto; margin: 0 auto 4px; padding-bottom: 2px; }
     .sig-name { font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #000; display: inline-block; width: auto; margin: 0 auto 4px; padding-bottom: 2px; }
     .sig-affiant { display: block; margin-top: 6px; font-size: 19px; text-align: center; }
 <<<<<<< HEAD
@@ -88,6 +90,9 @@
     </table>
     <p class="small" style="margin-top: 30px; text-indent: 40px;">SUBSCRIBED AND SWORN TO before me this ____ day of ________________ at Abuyog, Leyte, Philippines, affiants having exhibited to me their competent proof of their true identities as indicated below their respective
     names.</p>
+        <br>
+    <div class="footer">ATTY. MADILYN C. MADOLIN-MERANO</div>
+    <span class="registrar">Municipal Civila registrar</span>
         <br>
     <div class="footer">ATTY. MADILYN C. MADOLIN-MERANO</div>
     <span class="registrar">Municipal Civila registrar</span>
