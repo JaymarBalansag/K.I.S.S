@@ -1106,4 +1106,134 @@ class MarriageApplicationController extends Controller
             return response()->json(["message" => "Server Error: " . $e->getMessage()], 500);
         }
     }
+
+    public function cohabitationAffidavit(int $application_id, string $control_number)
+    {
+        try {
+            $applicants = DB::table("applicants")
+                ->join("marriage_applications", "applicants.application_id", "=", "marriage_applications.id")
+                ->select(
+                    "applicants.*",
+                    "marriage_applications.control_number",
+                    "marriage_applications.status",
+                    "marriage_applications.submitted_at",
+                )
+                ->where("application_id", "=", $application_id)
+                ->where("control_number", "=", $control_number)
+                ->whereNull("marriage_applications.deleted_at")
+                ->get();
+
+            if ($applicants->isEmpty()) {
+                abort(404, 'Application not found');
+            }
+
+            $groom = null;
+            $bride = null;
+
+            foreach ($applicants as $person) {
+                if ($person->applicant_type === 'groom') {
+                    $groom = $person;
+                } elseif ($person->applicant_type === 'bride') {
+                    $bride = $person;
+                }
+            }
+
+            if (!$groom || !$bride) {
+                abort(404, 'Applicants not found');
+            }
+
+            // Find cohabitation document
+            $cohabitationDoc = DB::table("documents")
+                ->select(
+                    "documents.*",
+                    DB::raw("
+                CASE
+                    WHEN documents.file_path IS NOT NULL
+                    THEN CONCAT('" . asset('storage') . "/', documents.file_path)
+                    ELSE NULL
+                END as document_url
+            ")
+                )
+                ->where("application_id", "=", $application_id)
+                ->where(function ($query) {
+                    $query->where('doc_type', 'like', '%cohabitation%')
+                          ->orWhere('doc_type', 'like', '%joint affidavit%');
+                })
+                ->first();
+
+            if (!$cohabitationDoc) {
+                abort(404, 'Cohabitation document not found');
+            }
+
+            // Fetch and base64 encode the image
+            $imageUrl = $cohabitationDoc->document_url;
+            $imageData = base64_encode(file_get_contents($imageUrl));
+            $extension = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'png';
+            $imageDataUrl = 'data:image/' . $extension . ';base64,' . $imageData;
+
+            // Helper functions
+            $buildPersonFullName = function ($person) {
+                if (!$person) return '';
+                return trim(($person->first_name ?? '') . ' ' . ($person->middle_name ?? '') . ' ' . ($person->last_name ?? ''));
+            };
+
+            $getMonthName = function ($monthNumber) {
+                $month = (int) $monthNumber;
+                if ($month < 1 || $month > 12) return '';
+                $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                return $months[$month - 1];
+            };
+
+            $getYearsLivingTogether = function ($groom, $bride) {
+                $person = $groom ?: $bride;
+                if (!$person || !$person->living_together_since_year) return '';
+                $currentYear = date('Y');
+                $sinceYear = (int) $person->living_together_since_year;
+                if ($sinceYear <= 0 || $sinceYear > $currentYear) return '';
+                return (string) ($currentYear - $sinceYear);
+            };
+
+            $ordinalSuffix = function ($day) {
+                $n = (int) $day;
+                if ($n % 100 >= 11 && $n % 100 <= 13) return 'th';
+                return match ($n % 10) {
+                    1 => 'st',
+                    2 => 'nd',
+                    3 => 'rd',
+                    default => 'th',
+                };
+            };
+
+            // Prepare data
+            $groomName = $buildPersonFullName($groom) ?: 'GROOM FULL NAME';
+            $brideName = $buildPersonFullName($bride) ?: 'BRIDE FULL NAME';
+            $city = $groom->residence_city ?: ($bride->residence_city ?: 'Abuyog');
+            $province = $groom->residence_province ?: ($bride->residence_province ?: 'Leyte');
+            $monthName = $getMonthName($groom->living_together_since_month ?: $bride->living_together_since_month);
+            $sinceYear = $groom->living_together_since_year ?: $bride->living_together_since_year ?: '';
+            $yearsTogether = $getYearsLivingTogether($groom, $bride);
+            $today = now();
+            $issuedDay = $today->day;
+            $issuedMonth = $today->format('F');
+            $issuedYear = $today->year;
+            $ordinalDay = $issuedDay . $ordinalSuffix($issuedDay);
+
+            $groomIdType = $groom->id_type ?? '';
+            $groomIssuedAt = $groom->issued_at ?? '';
+            $groomIssuedOn = $groom->issued_on ? Carbon::parse($groom->issued_on)->format('F d, Y') : '';
+            $brideIdType = $bride->id_type ?? '';
+            $brideIssuedAt = $bride->issued_at ?? '';
+            $brideIssuedOn = $bride->issued_on ? Carbon::parse($bride->issued_on)->format('F d, Y') : '';
+
+            return Pdf::loadView('pdf.cohabaffidavit', compact(
+                'groomName', 'brideName', 'city', 'province', 'monthName', 'sinceYear', 'yearsTogether',
+                'issuedDay', 'issuedMonth', 'issuedYear', 'ordinalDay', 'imageDataUrl',
+                'groomIdType', 'groomIssuedAt', 'groomIssuedOn', 'brideIdType', 'brideIssuedAt', 'brideIssuedOn'
+            ))
+            ->setPaper([0, 0, 612, 936], 'portrait')
+            ->stream('Joint_Affidavit_of_Cohabitation.pdf');
+        } catch (\Exception $e) {
+            abort(500, 'Server Error: ' . $e->getMessage());
+        }
+    }
 }

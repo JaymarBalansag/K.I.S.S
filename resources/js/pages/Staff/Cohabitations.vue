@@ -83,7 +83,7 @@
                                         <button class="btn btn-action-glass text-white" @click="openEdit(row)">
                                             <i class="bi bi-pencil-square me-1"></i> Edit
                                         </button>
-                                        <button class="btn btn-action-glass text-white" @click="showPrintComingSoon">
+                                        <button class="btn btn-action-glass text-white" @click="printAffidavit(row)">
                                             <i class="bi bi-printer me-1"></i> Print
                                         </button>
                                     </div>
@@ -111,7 +111,7 @@
                             <button class="btn btn-action-glass text-white flex-grow-1" @click="openEdit(row)">
                                 <i class="bi bi-pencil-square me-1"></i> Edit
                             </button>
-                            <button class="btn btn-action-glass text-warning" @click="showPrintComingSoon">
+                            <button class="btn btn-action-glass text-warning" @click="printAffidavit(row)">
                                 <i class="bi bi-printer-fill"></i>
                             </button>
                         </div>
@@ -292,6 +292,44 @@
                 </form>
             </div>
         </div>
+
+        <div v-if="showPrintModal" class="modal-overlay-custom" @click.self="closePrintModal">
+            <div class="modal-body-custom rounded-4 p-3 p-md-4" style="width:min(96vw,1100px); max-height:94vh;">
+                <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                    <div>
+                        <h4 class="text-white fw-bold mb-1">Cohabitation Affidavit Preview</h4>
+                        <div class="text-white-50">Preview the printable layout below.</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-action-glass text-white" @click="printIframe" :disabled="isPrinting || isPrintPreviewLoading">
+                            <span v-if="isPrinting">
+                                <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </span>
+                            <span v-else>
+                                <i class="bi bi-printer-fill me-1"></i> Print
+                            </span>
+                        </button>
+                        <button class="btn btn-action-glass text-white" @click="closePrintModal" :disabled="isPrinting">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div v-if="isPrintPreviewLoading" class="text-center text-white-50 py-5">
+                    <div class="spinner-border text-info" role="status"></div>
+                    <div class="mt-3">Loading preview…</div>
+                </div>
+
+                <iframe
+                    v-show="!isPrintPreviewLoading"
+                    ref="printPreviewFrame"
+                    :src="printPreviewSrc"
+                    @load="handlePrintPreviewLoaded"
+                    class="print-pdf-frame"
+                ></iframe>
+            </div>
+        </div>
     </main>
 </template>
 
@@ -321,6 +359,11 @@ export default {
             totalPages: 1,
             showViewModal: false,
             showEditModal: false,
+            showPrintModal: false,
+            printPreviewSrc: '',
+            previewCohabitationPdfUrl: '',
+            isPrintPreviewLoading: false,
+            isPrinting: false,
             selected: null,
             editPayload: emptyEditPayload(),
             searchTimeout: null,
@@ -466,15 +509,78 @@ export default {
                 this.isSaving = false;
             }
         },
-        async showPrintComingSoon() {
-            await Swal.fire({
-                title: 'Coming soon',
-                text: 'Printing is not implemented yet.',
-                icon: 'info',
-                background: '#1e293b',
-                color: '#fff',
-                confirmButtonColor: '#0dcaf0',
-            });
+
+        getMonthName(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                return months[date.getMonth()];
+            } catch {
+                return '';
+            }
+        },
+        getYearsLivingTogether(groom, bride, cohabitation) {
+            if (!cohabitation?.cohabitation_start_date) return '';
+            const startDate = new Date(cohabitation.cohabitation_start_date);
+            const currentYear = new Date().getFullYear();
+            const startYear = startDate.getFullYear();
+            if (startYear <= 0 || startYear > currentYear) return '';
+            return (currentYear - startYear).toString();
+        },
+        ordinalSuffix(day) {
+            const n = Number(day);
+            if (![1, 2, 3].includes(n % 10) || [11, 12, 13].includes(n % 100)) return 'th';
+            if (n % 10 === 1) return 'st';
+            if (n % 10 === 2) return 'nd';
+            return 'rd';
+        },
+        printAffidavit(row) {
+            this.openPrintModal(row);
+        },
+        openPrintModal(row) {
+            if (!row?.id) return;
+            this.previewCohabitationPdfUrl = `/api/cohabitation/${row.id}/affidavit`;
+            this.showPrintModal = true;
+            this.isPrintPreviewLoading = true;
+            this.isPrinting = false;
+            this.loadPrintPreview();
+        },
+        closePrintModal() {
+            this.showPrintModal = false;
+            this.isPrinting = false;
+            this.isPrintPreviewLoading = false;
+            this.printPreviewSrc = '';
+            this.previewCohabitationPdfUrl = '';
+        },
+        loadPrintPreview() {
+            this.isPrintPreviewLoading = true;
+            const baseUrl = this.previewCohabitationPdfUrl || `/api/cohabitation/${this.selected?.id}/affidavit`;
+            this.printPreviewSrc = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}_preview_ts=${Date.now()}#toolbar=0&navpanes=0&view=FitH`;
+        },
+        handlePrintPreviewLoaded() {
+            this.isPrintPreviewLoading = false;
+        },
+        printIframe() {
+            if (this.isPrinting || this.isPrintPreviewLoading) return;
+            this.isPrinting = true;
+            const frameWindow = this.$refs.printPreviewFrame?.contentWindow;
+            if (!frameWindow) {
+                this.isPrinting = false;
+                return;
+            }
+
+            let done = false;
+            const cleanup = () => {
+                if (done) return;
+                done = true;
+                this.isPrinting = false;
+            };
+
+            frameWindow.onafterprint = cleanup;
+            setTimeout(cleanup, 8000);
+            frameWindow.focus();
+            frameWindow.print();
         },
     },
     mounted() {
@@ -651,4 +757,14 @@ select.glass-input option {
     background: rgba(255, 255, 255, 0.2);
     color: white;
 }
+.print-pdf-frame {
+    width: 100%;
+    height: min(80vh, 780px);
+    border: none;
+    border-radius: 12px;
+    background: #fff;
+}
 </style>
+
+
+

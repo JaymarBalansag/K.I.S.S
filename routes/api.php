@@ -33,6 +33,7 @@ Route::get('/Appointments/availability', [App\Http\Controllers\AppointmentContro
 Route::apiResource('Appointments', App\Http\Controllers\AppointmentController::class)->only(['store']);
 Route::controller(App\Http\Controllers\CohabitationController::class)->group(function () {
     Route::post('/cohabitation', 'insertCohabitation');
+    Route::get('/cohabitation/{id}/affidavit', 'affidavit');
 });
 
 
@@ -40,6 +41,7 @@ Route::controller(App\Http\Controllers\CohabitationController::class)->group(fun
 Route::get('/applications/print/{id}/{control_number}', [MarriageApplicationController::class, 'printApplication']);
 Route::get('/pdf/8x13-preview', [MarriageApplicationController::class, 'preview8x13'])->name('pdf.8x13.preview');
 Route::get('/pdf/8x13-preview-pdf', [MarriageApplicationController::class, 'preview8x13Pdf'])->name('pdf.8x13.preview.pdf');
+Route::get('/pdf/cohabitation-affidavit/{application_id}/{control_number}', [MarriageApplicationController::class, 'cohabitationAffidavit']);
 Route::get('/manual-applications/preview-pdf', [ManualMarriageLicenseApplicationController::class, 'previewPdf']);
 
 // Endpoint for local system
