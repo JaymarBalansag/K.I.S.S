@@ -67,7 +67,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="app in applications" :key="app.id" class="glass-row transition">
+                                <tr v-for="app in applications" :key="app.id" class="glass-row transition"
+                                    :class="{ 'row-dropdown-open': openDropdownAppId === app.id }">
                                     <td class="px-4 fw-bold text-white border-0 rounded-start-4">
                                         <div class="d-flex align-items-center">
                                             <i class="bi bi-file-earmark-check text-danger me-2 small"></i>
@@ -85,7 +86,7 @@
                                         <span :class="getStatusClass(app.status)">{{ app.status }}</span>
                                     </td>
                                     <td class="text-center border-0 rounded-end-4 px-4">
-                                        <div class="d-flex justify-content-center gap-2">
+                                        <div class="d-flex justify-content-center gap-2 app-actions">
                                             <button @click="openViewApplicants(app)"
                                                 class="btn btn-action-glass text-white">
                                                 <i class="bi bi-eye-fill me-1"></i> View
@@ -96,27 +97,38 @@
                                                 <i class="bi bi-pencil-square me-1"></i> Edit
                                             </button>
 
-                                            <button v-if="app.status === 'pending'"
-                                                @click="validateApproval(app, 'approved')"
-                                                class="btn btn-action-glass text-success">
-                                                <i class="bi bi-check-circle-fill me-1"></i> Approve
-                                            </button>
-                                            <button v-if="app.status === 'pending'"
-                                                @click="validateApproval(app, 'rejected')"
-                                                class="btn btn-action-glass text-danger">
-                                                <i class="bi bi-x-circle-fill me-1"></i> Reject
-                                            </button>
-
-                                            <button v-if="app.status === 'approved'"
-                                                @click="validateApproval(app, 'issued')"
-                                                class="btn btn-action-glass text-info">
-                                                <i class="bi bi-patch-check-fill me-1"></i> Issue
-                                            </button>
-
-                                            <button v-if="app.status === 'issued'" @click="openPrintModal(app)"
-                                                class="btn btn-action-glass text-warning">
-                                                <i class="bi bi-printer-fill me-1"></i> Print 8.5x13
-                                            </button>
+                                            <div v-if="hasRowActions(app)" class="dropdown">
+                                                <button class="btn btn-action-glass text-white dropdown-toggle"
+                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                                    @click="setOpenDropdown(app.id)">
+                                                    <i class="bi bi-three-dots me-1"></i> Actions
+                                                </button>
+                                                <ul class="dropdown-menu glass-dropdown">
+                                                    <li v-if="app.status === 'pending'">
+                                                        <button class="dropdown-item text-white"
+                                                            @click="setOpenDropdown(null); validateApproval(app, 'approved')">
+                                                            <i class="bi bi-check-circle-fill me-2 text-success"></i>Approve
+                                                        </button>
+                                                    </li>
+                                                    <li v-if="app.status === 'pending'">
+                                                        <button class="dropdown-item text-white"
+                                                            @click="setOpenDropdown(null); validateApproval(app, 'rejected')">
+                                                            <i class="bi bi-x-circle-fill me-2 text-danger"></i>Reject
+                                                        </button>
+                                                    </li>
+                                                    <li v-if="app.status === 'approved'">
+                                                        <button class="dropdown-item text-white"
+                                                            @click="setOpenDropdown(null); validateApproval(app, 'issued')">
+                                                            <i class="bi bi-patch-check-fill me-2 text-info"></i>Issue
+                                                        </button>
+                                                    </li>
+                                                    <li v-if="app.status === 'issued'">
+                                                        <button class="dropdown-item text-white" @click="setOpenDropdown(null); openPrintModal(app)">
+                                                            <i class="bi bi-printer-fill me-2 text-warning"></i>Print 8.5x13
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
 
                                         </div>
                                     </td>
@@ -146,25 +158,38 @@
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
 
-                                <template v-if="app.status === 'pending'">
-                                    <button @click="validateApproval(app, 'approved')"
-                                        class="btn btn-action-glass text-success">
-                                        <i class="bi bi-check-circle-fill"></i>
+                                <div v-if="hasRowActions(app)" class="dropdown">
+                                    <button class="btn btn-action-glass text-white dropdown-toggle" type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false"
+                                        @click="setOpenDropdown(app.id)">
+                                        <i class="bi bi-three-dots"></i>
                                     </button>
-                                    <button @click="validateApproval(app, 'rejected')"
-                                        class="btn btn-action-glass text-danger">
-                                        <i class="bi bi-x-circle-fill"></i>
-                                    </button>
-                                </template>
-
-                                <button v-if="app.status === 'approved'" @click="validateApproval(app, 'issued')"
-                                    class="btn btn-action-glass text-warning flex-grow-1">
-                                    <i class="bi bi-patch-check-fill me-1"></i> Issue
-                                </button>
-                                <button v-if="app.status === 'issued'" @click="openPrintModal(app)"
-                                    class="btn btn-action-glass text-warning">
-                                    <i class="bi bi-printer-fill"></i> 8.5x13
-                                </button>
+                                    <ul class="dropdown-menu glass-dropdown">
+                                        <li v-if="app.status === 'pending'">
+                                            <button class="dropdown-item text-white"
+                                                @click="setOpenDropdown(null); validateApproval(app, 'approved')">
+                                                <i class="bi bi-check-circle-fill me-2 text-success"></i>Approve
+                                            </button>
+                                        </li>
+                                        <li v-if="app.status === 'pending'">
+                                            <button class="dropdown-item text-white"
+                                                @click="setOpenDropdown(null); validateApproval(app, 'rejected')">
+                                                <i class="bi bi-x-circle-fill me-2 text-danger"></i>Reject
+                                            </button>
+                                        </li>
+                                        <li v-if="app.status === 'approved'">
+                                            <button class="dropdown-item text-white"
+                                                @click="setOpenDropdown(null); validateApproval(app, 'issued')">
+                                                <i class="bi bi-patch-check-fill me-2 text-info"></i>Issue
+                                            </button>
+                                        </li>
+                                        <li v-if="app.status === 'issued'">
+                                            <button class="dropdown-item text-white" @click="setOpenDropdown(null); openPrintModal(app)">
+                                                <i class="bi bi-printer-fill me-2 text-warning"></i>Print 8.5x13
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
 
 
                             </div>
@@ -1058,6 +1083,7 @@ export default {
             isSavingEdit: false,
             editFocusSection: null,
             editActivePerson: 'groom',
+            openDropdownAppId: null,
             editForm: {
                 id: null,
                 control_number: '',
@@ -1184,6 +1210,13 @@ export default {
         },
     },
     methods: {
+        setOpenDropdown(appId) {
+            this.openDropdownAppId = appId ?? null;
+        },
+        hasRowActions(app) {
+            const status = (app?.status || '').toLowerCase();
+            return status === 'pending' || status === 'approved' || status === 'issued';
+        },
         canEditApplication(app) {
             const status = (app?.status || '').toLowerCase();
             return status === 'pending' || status === 'under_review';
@@ -2072,6 +2105,27 @@ export default {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(10px) saturate(160%);
+}
+
+.app-actions .btn {
+    white-space: nowrap;
+}
+
+.glass-row {
+    position: relative;
+    z-index: 1;
+}
+
+.glass-row:hover {
+    z-index: 5;
+}
+
+.row-dropdown-open {
+    z-index: 20000 !important;
+}
+
+.row-dropdown-open .glass-dropdown {
+    z-index: 20001 !important;
 }
 
 /* Muted Groom & Bride Cards */
