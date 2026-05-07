@@ -1257,6 +1257,12 @@ export default {
 
         async openEditModal(app) {
             try {
+                // Prevent stacked modals (Edit on top of View/Documents/Print)
+                this.showApplicantsModal = false;
+                this.showApplicantDocuments = false;
+                this.showDocument = false;
+                this.showPrintModal = false;
+
                 const response = await viewApplicants(app.id, app.control_number);
                 const applicants = Array.isArray(response?.data?.applicants) ? response.data.applicants : [];
                 const groom = applicants.find((person) => person.applicant_type === 'groom') || {};
@@ -1395,6 +1401,11 @@ export default {
 
                 const response = await api.patch(`/applications/${this.editForm.id}/staff-update`, payload);
 
+                // Close the edit modal immediately to avoid "stacked" overlays
+                this.showEditModal = false;
+                this.editFocusSection = null;
+                this.editActivePerson = 'groom';
+
                 await Swal.fire({
                     title: 'Updated',
                     text: response?.data?.message || 'Application updated successfully.',
@@ -1403,7 +1414,6 @@ export default {
                     color: '#fff'
                 });
 
-                this.showEditModal = false;
                 await this.fetchApplications();
             } catch (error) {
                 Swal.fire({
