@@ -97,6 +97,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/view/applicants/{application_id}/{control_number}', 'viewApplication');
             Route::get('/applications/{status}/{order}', 'getApplicationByStatus');
             Route::post('/applications/{action}', 'ApplicationAction');
+            Route::patch('/applications/{id}/staff-update', 'staffUpdate');
         });
     });
 });

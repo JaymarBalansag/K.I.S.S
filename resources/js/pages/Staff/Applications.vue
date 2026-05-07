@@ -91,6 +91,11 @@
                                                 <i class="bi bi-eye-fill me-1"></i> View
                                             </button>
 
+                                            <button @click="handleEditClick(app)" class="btn btn-action-glass text-warning"
+                                                :class="{ 'opacity-75': !canEditApplication(app) }">
+                                                <i class="bi bi-pencil-square me-1"></i> Edit
+                                            </button>
+
                                             <button v-if="app.status === 'pending'"
                                                 @click="validateApproval(app, 'approved')"
                                                 class="btn btn-action-glass text-success">
@@ -134,6 +139,11 @@
                                 <button @click="openViewApplicants(app)"
                                     class="btn btn-action-glass text-info flex-grow-1">
                                     <i class="bi bi-eye-fill me-1"></i> View
+                                </button>
+
+                                <button @click="handleEditClick(app)" class="btn btn-action-glass text-warning"
+                                    :class="{ 'opacity-75': !canEditApplication(app) }">
+                                    <i class="bi bi-pencil-square"></i>
                                 </button>
 
                                 <template v-if="app.status === 'pending'">
@@ -338,6 +348,14 @@
                     </p>
                 </div>
                 <div class="d-flex gap-2">
+                    <button class="btn btn-action-glass text-warning px-4" @click="handleEditClick(selectedApp, 'groom')"
+                        :disabled="!selectedApp">
+                        <i class="bi bi-person me-1"></i> Edit Groom
+                    </button>
+                    <button class="btn btn-action-glass text-warning px-4" @click="handleEditClick(selectedApp, 'bride')"
+                        :disabled="!selectedApp">
+                        <i class="bi bi-person-heart me-1"></i> Edit Bride
+                    </button>
                     <button class="btn btn-action-glass text-info px-4" @click="openDocumentModal">
                         <i class="bi bi-archive-fill me-1"></i> Check Documents
                     </button>
@@ -500,6 +518,485 @@
             </div>
         </div>
     </div>
+
+    <div v-if="showEditModal" class="modal-overlay-custom animate__animated animate__fadeIn">
+        <div class="modal-body-custom rounded-5 shadow-2xl p-0 border border-white border-opacity-20">
+            <div class="modal-glass-header p-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <span
+                        class="badge bg-info bg-opacity-10 text-info text-uppercase mb-2 x-small ls-1 px-3 border border-info border-opacity-20">
+                        Staff Update
+                    </span>
+                    <h4 class="fw-bold mb-0 text-white">Edit Application</h4>
+                    <p class="text-info small mb-0 opacity-75 fw-bold mt-1">
+                        <i class="bi bi-pencil-square me-1"></i> {{ editForm.control_number || 'Application Record' }}
+                    </p>
+                </div>
+                <button class="btn-close btn-close-white opacity-50 hover-opacity-100" @click="closeEditModal"></button>
+            </div>
+
+            <form class="p-4" @submit.prevent="saveApplicationEdit">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-white">Phone Number</label>
+                        <input v-model="editForm.phone_number" type="text" class="form-control glass-input"
+                            placeholder="09XXXXXXXXX">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label text-white">Foreigner Type</label>
+                        <select v-model="editForm.foreigner_type" class="form-select glass-input">
+                            <option value="">None</option>
+                            <option value="filipino">Filipino</option>
+                            <option value="groom">Groom</option>
+                            <option value="bride">Bride</option>
+                            <option value="both">Both</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="alert alert-info bg-info bg-opacity-10 border border-info border-opacity-25 text-white mb-0">
+                            Editable fields: all application details except status and uploaded documents/images.
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="edit-person-switch rounded-4 p-2 d-flex gap-2 justify-content-center">
+                            <button type="button" class="btn btn-sm px-4"
+                                :class="editActivePerson === 'groom' ? 'btn-info text-dark fw-bold' : 'btn-outline-light'"
+                                @click="setEditActivePerson('groom')">
+                                <i class="bi bi-person me-1"></i> Groom
+                            </button>
+                            <button type="button" class="btn btn-sm px-4"
+                                :class="editActivePerson === 'bride' ? 'btn-info text-dark fw-bold' : 'btn-outline-light'"
+                                @click="setEditActivePerson('bride')">
+                                <i class="bi bi-person-heart me-1"></i> Bride
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-12" v-show="editActivePerson === 'groom'">
+                        <div class="section-card" ref="editGroomSection">
+                            <h6 class="text-info fw-bold mb-3">Groom Details</h6>
+                            <div class="row g-2">
+                                <div class="col-md-3">
+                                    <label class="form-label text-white x-small">First Name</label>
+                                    <input v-model="editForm.groom.first_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-white x-small">Middle Name</label>
+                                    <input v-model="editForm.groom.middle_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-white x-small">Last Name</label>
+                                    <input v-model="editForm.groom.last_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-white x-small">Suffix</label>
+                                    <input v-model="editForm.groom.suffix" type="text" class="form-control glass-input" placeholder="Jr, Sr, III">
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Birth Day</label>
+                                    <input v-model="editForm.groom.day" type="text" class="form-control glass-input" placeholder="DD">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Birth Month</label>
+                                    <input v-model="editForm.groom.month" type="text" class="form-control glass-input" placeholder="MM">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Birth Year</label>
+                                    <input v-model="editForm.groom.year" type="text" class="form-control glass-input" placeholder="YYYY">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Age</label>
+                                    <input v-model.number="editForm.groom.age" type="number" class="form-control glass-input" min="0" max="150">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Sex</label>
+                                    <input v-model="editForm.groom.sex" type="text" class="form-control glass-input" placeholder="Male/Female">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Civil Status</label>
+                                    <input v-model="editForm.groom.civil_status" type="text" class="form-control glass-input">
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Birth City</label>
+                                    <input v-model="editForm.groom.birth_city" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Birth Province</label>
+                                    <input v-model="editForm.groom.birth_province" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Birth Country</label>
+                                    <input v-model="editForm.groom.birth_country" type="text" class="form-control glass-input">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Citizenship</label>
+                                    <input v-model="editForm.groom.citizenship" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Religion</label>
+                                    <input v-model="editForm.groom.religion" type="text" class="form-control glass-input">
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label text-white x-small">Residence Address</label>
+                                    <textarea v-model="editForm.groom.residence_address" class="form-control glass-input" rows="2"></textarea>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Relationship Degree</label>
+                                    <input v-model="editForm.groom.relationship_degree" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Parental Requirement</label>
+                                    <input v-model="editForm.groom.parental_requirement" type="text" class="form-control glass-input">
+                                </div>
+
+                                <div class="col-12 mt-2">
+                                    <h6 class="text-white opacity-75 mb-2">Previous Marriage / Dissolution (if applicable)</h6>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-white x-small">Dissolution Details</label>
+                                    <textarea v-model="editForm.groom.dissolution_details" class="form-control glass-input" rows="2"></textarea>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Dissolution Place</label>
+                                    <input v-model="editForm.groom.dissolution_place" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Day</label>
+                                    <input v-model="editForm.groom.dissolution_day" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-white x-small">Month</label>
+                                    <input v-model="editForm.groom.dissolution_month" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-white x-small">Year</label>
+                                    <input v-model="editForm.groom.dissolution_year" type="text" class="form-control glass-input">
+                                </div>
+
+                                <div class="col-12 mt-2">
+                                    <h6 class="text-white opacity-75 mb-2">Father</h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">First Name</label>
+                                    <input v-model="editForm.groom.father_first_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Middle Name</label>
+                                    <input v-model="editForm.groom.father_middle_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Last Name</label>
+                                    <input v-model="editForm.groom.father_last_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Citizenship</label>
+                                    <input v-model="editForm.groom.father_citizenship" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-white x-small">Residence</label>
+                                    <textarea v-model="editForm.groom.father_residence" class="form-control glass-input" rows="2"></textarea>
+                                </div>
+
+                                <div class="col-12 mt-2">
+                                    <h6 class="text-white opacity-75 mb-2">Mother</h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">First Name</label>
+                                    <input v-model="editForm.groom.mother_first_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Middle Name</label>
+                                    <input v-model="editForm.groom.mother_middle_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Last Name</label>
+                                    <input v-model="editForm.groom.mother_last_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Citizenship</label>
+                                    <input v-model="editForm.groom.mother_citizenship" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-white x-small">Residence</label>
+                                    <textarea v-model="editForm.groom.mother_residence" class="form-control glass-input" rows="2"></textarea>
+                                </div>
+
+                                <div class="col-12 mt-2">
+                                    <h6 class="text-white opacity-75 mb-2">Consent Source (if applicable)</h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Source First Name</label>
+                                    <input v-model="editForm.groom.source_first_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Source Middle Name</label>
+                                    <input v-model="editForm.groom.source_middle_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Source Last Name</label>
+                                    <input v-model="editForm.groom.source_last_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Source Citizenship</label>
+                                    <input v-model="editForm.groom.source_citizenship" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Source Relationship</label>
+                                    <input v-model="editForm.groom.source_relationship" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-white x-small">Source Residence</label>
+                                    <textarea v-model="editForm.groom.source_residence" class="form-control glass-input" rows="2"></textarea>
+                                </div>
+
+                                <div class="col-12 mt-2">
+                                    <h6 class="text-white opacity-75 mb-2">Government ID</h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">ID Type</label>
+                                    <input v-model="editForm.groom.government_id_type" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">ID Number</label>
+                                    <input v-model="editForm.groom.government_id_number" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Issued At</label>
+                                    <input v-model="editForm.groom.government_id_issued_at" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Issued On</label>
+                                    <input v-model="editForm.groom.government_id_issued_on" type="date" class="form-control glass-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12" v-show="editActivePerson === 'bride'">
+                        <div class="section-card" ref="editBrideSection">
+                            <h6 class="text-info fw-bold mb-3">Bride Details</h6>
+                            <div class="row g-2">
+                                <div class="col-md-3">
+                                    <label class="form-label text-white x-small">First Name</label>
+                                    <input v-model="editForm.bride.first_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-white x-small">Middle Name</label>
+                                    <input v-model="editForm.bride.middle_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-white x-small">Last Name</label>
+                                    <input v-model="editForm.bride.last_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-white x-small">Suffix</label>
+                                    <input v-model="editForm.bride.suffix" type="text" class="form-control glass-input" placeholder="Jr, Sr, III">
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Birth Day</label>
+                                    <input v-model="editForm.bride.day" type="text" class="form-control glass-input" placeholder="DD">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Birth Month</label>
+                                    <input v-model="editForm.bride.month" type="text" class="form-control glass-input" placeholder="MM">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Birth Year</label>
+                                    <input v-model="editForm.bride.year" type="text" class="form-control glass-input" placeholder="YYYY">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Age</label>
+                                    <input v-model.number="editForm.bride.age" type="number" class="form-control glass-input" min="0" max="150">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Sex</label>
+                                    <input v-model="editForm.bride.sex" type="text" class="form-control glass-input" placeholder="Male/Female">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Civil Status</label>
+                                    <input v-model="editForm.bride.civil_status" type="text" class="form-control glass-input">
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Birth City</label>
+                                    <input v-model="editForm.bride.birth_city" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Birth Province</label>
+                                    <input v-model="editForm.bride.birth_province" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Birth Country</label>
+                                    <input v-model="editForm.bride.birth_country" type="text" class="form-control glass-input">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Citizenship</label>
+                                    <input v-model="editForm.bride.citizenship" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Religion</label>
+                                    <input v-model="editForm.bride.religion" type="text" class="form-control glass-input">
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label text-white x-small">Residence Address</label>
+                                    <textarea v-model="editForm.bride.residence_address" class="form-control glass-input" rows="2"></textarea>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Relationship Degree</label>
+                                    <input v-model="editForm.bride.relationship_degree" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Parental Requirement</label>
+                                    <input v-model="editForm.bride.parental_requirement" type="text" class="form-control glass-input">
+                                </div>
+
+                                <div class="col-12 mt-2">
+                                    <h6 class="text-white opacity-75 mb-2">Previous Marriage / Dissolution (if applicable)</h6>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-white x-small">Dissolution Details</label>
+                                    <textarea v-model="editForm.bride.dissolution_details" class="form-control glass-input" rows="2"></textarea>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Dissolution Place</label>
+                                    <input v-model="editForm.bride.dissolution_place" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label text-white x-small">Day</label>
+                                    <input v-model="editForm.bride.dissolution_day" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-white x-small">Month</label>
+                                    <input v-model="editForm.bride.dissolution_month" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-white x-small">Year</label>
+                                    <input v-model="editForm.bride.dissolution_year" type="text" class="form-control glass-input">
+                                </div>
+
+                                <div class="col-12 mt-2">
+                                    <h6 class="text-white opacity-75 mb-2">Father</h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">First Name</label>
+                                    <input v-model="editForm.bride.father_first_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Middle Name</label>
+                                    <input v-model="editForm.bride.father_middle_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Last Name</label>
+                                    <input v-model="editForm.bride.father_last_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Citizenship</label>
+                                    <input v-model="editForm.bride.father_citizenship" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-white x-small">Residence</label>
+                                    <textarea v-model="editForm.bride.father_residence" class="form-control glass-input" rows="2"></textarea>
+                                </div>
+
+                                <div class="col-12 mt-2">
+                                    <h6 class="text-white opacity-75 mb-2">Mother</h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">First Name</label>
+                                    <input v-model="editForm.bride.mother_first_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Middle Name</label>
+                                    <input v-model="editForm.bride.mother_middle_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Last Name</label>
+                                    <input v-model="editForm.bride.mother_last_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Citizenship</label>
+                                    <input v-model="editForm.bride.mother_citizenship" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-white x-small">Residence</label>
+                                    <textarea v-model="editForm.bride.mother_residence" class="form-control glass-input" rows="2"></textarea>
+                                </div>
+
+                                <div class="col-12 mt-2">
+                                    <h6 class="text-white opacity-75 mb-2">Consent Source (if applicable)</h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Source First Name</label>
+                                    <input v-model="editForm.bride.source_first_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Source Middle Name</label>
+                                    <input v-model="editForm.bride.source_middle_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Source Last Name</label>
+                                    <input v-model="editForm.bride.source_last_name" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Source Citizenship</label>
+                                    <input v-model="editForm.bride.source_citizenship" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-white x-small">Source Relationship</label>
+                                    <input v-model="editForm.bride.source_relationship" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-white x-small">Source Residence</label>
+                                    <textarea v-model="editForm.bride.source_residence" class="form-control glass-input" rows="2"></textarea>
+                                </div>
+
+                                <div class="col-12 mt-2">
+                                    <h6 class="text-white opacity-75 mb-2">Government ID</h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">ID Type</label>
+                                    <input v-model="editForm.bride.government_id_type" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">ID Number</label>
+                                    <input v-model="editForm.bride.government_id_number" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Issued At</label>
+                                    <input v-model="editForm.bride.government_id_issued_at" type="text" class="form-control glass-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-white x-small">Issued On</label>
+                                    <input v-model="editForm.bride.government_id_issued_on" type="date" class="form-control glass-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-outline-light px-4" @click="closeEditModal"
+                        :disabled="isSavingEdit">Cancel</button>
+                    <button type="submit" class="btn btn-info px-4 text-dark fw-bold" :disabled="isSavingEdit">
+                        <span v-if="isSavingEdit">Saving...</span>
+                        <span v-else>Save Changes</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     <div v-if="showPrintModal" class="modal-overlay">
         <div class="print-modal-content">
             <div class="px-3 pb-2">
@@ -530,6 +1027,7 @@
 
 <script>
 import Swal from 'sweetalert2';
+import api from '../../controller/api';
 import { ApplicationAction, getApplicants, viewApplicants } from '../../controller/MarriageLicense';
 
 export default {
@@ -550,11 +1048,112 @@ export default {
             applicant: [],
             groomDocuments: [],
             brideDocuments: [],
+            selectedApp: null,
             showApplicantDocuments: false,
             activeTab: "groom",
             showDocument: false,
             currentFilePath: '',
             currentFileIsPDF: false,
+            showEditModal: false,
+            isSavingEdit: false,
+            editFocusSection: null,
+            editActivePerson: 'groom',
+            editForm: {
+                id: null,
+                control_number: '',
+                phone_number: '',
+                foreigner_type: '',
+                groom: {
+                    first_name: '',
+                    middle_name: '',
+                    last_name: '',
+                    suffix: '',
+                    day: '',
+                    month: '',
+                    year: '',
+                    birth_city: '',
+                    birth_province: '',
+                    birth_country: '',
+                    age: null,
+                    sex: '',
+                    citizenship: '',
+                    religion: '',
+                    civil_status: '',
+                    residence_address: '',
+                    dissolution_details: '',
+                    dissolution_place: '',
+                    dissolution_day: '',
+                    dissolution_month: '',
+                    dissolution_year: '',
+                    relationship_degree: '',
+                    father_first_name: '',
+                    father_middle_name: '',
+                    father_last_name: '',
+                    father_citizenship: '',
+                    father_residence: '',
+                    mother_first_name: '',
+                    mother_middle_name: '',
+                    mother_last_name: '',
+                    mother_citizenship: '',
+                    mother_residence: '',
+                    parental_requirement: '',
+                    source_first_name: '',
+                    source_middle_name: '',
+                    source_last_name: '',
+                    source_citizenship: '',
+                    source_relationship: '',
+                    source_residence: '',
+                    government_id_type: '',
+                    government_id_number: '',
+                    government_id_issued_at: '',
+                    government_id_issued_on: '',
+                },
+                bride: {
+                    first_name: '',
+                    middle_name: '',
+                    last_name: '',
+                    suffix: '',
+                    day: '',
+                    month: '',
+                    year: '',
+                    birth_city: '',
+                    birth_province: '',
+                    birth_country: '',
+                    age: null,
+                    sex: '',
+                    citizenship: '',
+                    religion: '',
+                    civil_status: '',
+                    residence_address: '',
+                    dissolution_details: '',
+                    dissolution_place: '',
+                    dissolution_day: '',
+                    dissolution_month: '',
+                    dissolution_year: '',
+                    relationship_degree: '',
+                    father_first_name: '',
+                    father_middle_name: '',
+                    father_last_name: '',
+                    father_citizenship: '',
+                    father_residence: '',
+                    mother_first_name: '',
+                    mother_middle_name: '',
+                    mother_last_name: '',
+                    mother_citizenship: '',
+                    mother_residence: '',
+                    parental_requirement: '',
+                    source_first_name: '',
+                    source_middle_name: '',
+                    source_last_name: '',
+                    source_citizenship: '',
+                    source_relationship: '',
+                    source_residence: '',
+                    government_id_type: '',
+                    government_id_number: '',
+                    government_id_issued_at: '',
+                    government_id_issued_on: '',
+                },
+            },
             showPrintModal: false,
             isPrinting: false,
             isPrintPreviewLoading: false,
@@ -585,6 +1184,35 @@ export default {
         },
     },
     methods: {
+        canEditApplication(app) {
+            const status = (app?.status || '').toLowerCase();
+            return status === 'pending' || status === 'under_review';
+        },
+        async handleEditClick(app, focusSection = null) {
+            if (!app) return;
+            if (!this.canEditApplication(app)) {
+                const status = (app?.status || '').toLowerCase();
+                await Swal.fire({
+                    title: 'Editing Locked',
+                    text: `This application cannot be edited because its status is "${status}". Only pending/under_review applications can be edited.`,
+                    icon: 'info',
+                    background: '#0f172a',
+                    color: '#fff',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+            this.editFocusSection = focusSection;
+            await this.openEditModal(app);
+        },
+        setEditActivePerson(person) {
+            const normalized = (person || '').toLowerCase();
+            if (normalized !== 'groom' && normalized !== 'bride') return;
+            this.editActivePerson = normalized;
+            this.$nextTick(() => {
+                this.scrollToEditFocus();
+            });
+        },
         async openViewApplicants(app) {
 
             const response = await viewApplicants(app.id, app.control_number)
@@ -594,6 +1222,7 @@ export default {
             this.control_number = response.data.applicants[0].control_number;
             this.groomDocuments = response.data.groomDocuments;
             this.brideDocuments = response.data.brideDocuments;
+            this.selectedApp = app;
 
             // console.log(response.data.applicants[0])
 
@@ -602,6 +1231,7 @@ export default {
         },
         closeViewApplicants() {
             this.showApplicantsModal = false;
+            this.selectedApp = null;
         },
 
         openDocumentModal() {
@@ -624,6 +1254,170 @@ export default {
             this.showDocument = false;
             this.currentFilePath = '';
         },
+
+        async openEditModal(app) {
+            try {
+                const response = await viewApplicants(app.id, app.control_number);
+                const applicants = Array.isArray(response?.data?.applicants) ? response.data.applicants : [];
+                const groom = applicants.find((person) => person.applicant_type === 'groom') || {};
+                const bride = applicants.find((person) => person.applicant_type === 'bride') || {};
+
+                this.editForm = {
+                    id: app.id,
+                    control_number: app.control_number,
+                    phone_number: app.phone_number || '',
+                    foreigner_type: app.foreigner_type || '',
+                    groom: {
+                        first_name: groom.first_name || '',
+                        middle_name: groom.middle_name || '',
+                        last_name: groom.last_name || '',
+                        suffix: groom.suffix || '',
+                        day: groom.day || '',
+                        month: groom.month || '',
+                        year: groom.year || '',
+                        birth_city: groom.birth_city || '',
+                        birth_province: groom.birth_province || '',
+                        birth_country: groom.birth_country || '',
+                        age: groom.age ?? null,
+                        sex: groom.sex || '',
+                        citizenship: groom.citizenship || '',
+                        religion: groom.religion || '',
+                        civil_status: groom.civil_status || '',
+                        residence_address: groom.residence_address || '',
+                        dissolution_details: groom.dissolution_details || '',
+                        dissolution_place: groom.dissolution_place || '',
+                        dissolution_day: groom.dissolution_day || '',
+                        dissolution_month: groom.dissolution_month || '',
+                        dissolution_year: groom.dissolution_year || '',
+                        relationship_degree: groom.relationship_degree || '',
+                        father_first_name: groom.father_first_name || '',
+                        father_middle_name: groom.father_middle_name || '',
+                        father_last_name: groom.father_last_name || '',
+                        father_citizenship: groom.father_citizenship || '',
+                        father_residence: groom.father_residence || '',
+                        mother_first_name: groom.mother_first_name || '',
+                        mother_middle_name: groom.mother_middle_name || '',
+                        mother_last_name: groom.mother_last_name || '',
+                        mother_citizenship: groom.mother_citizenship || '',
+                        mother_residence: groom.mother_residence || '',
+                        parental_requirement: groom.parental_requirement || '',
+                        source_first_name: groom.source_first_name || '',
+                        source_middle_name: groom.source_middle_name || '',
+                        source_last_name: groom.source_last_name || '',
+                        source_citizenship: groom.source_citizenship || '',
+                        source_relationship: groom.source_relationship || '',
+                        source_residence: groom.source_residence || '',
+                        government_id_type: groom.government_id_type || '',
+                        government_id_number: groom.government_id_number || '',
+                        government_id_issued_at: groom.government_id_issued_at || '',
+                        government_id_issued_on: groom.government_id_issued_on || '',
+                    },
+                    bride: {
+                        first_name: bride.first_name || '',
+                        middle_name: bride.middle_name || '',
+                        last_name: bride.last_name || '',
+                        suffix: bride.suffix || '',
+                        day: bride.day || '',
+                        month: bride.month || '',
+                        year: bride.year || '',
+                        birth_city: bride.birth_city || '',
+                        birth_province: bride.birth_province || '',
+                        birth_country: bride.birth_country || '',
+                        age: bride.age ?? null,
+                        sex: bride.sex || '',
+                        citizenship: bride.citizenship || '',
+                        religion: bride.religion || '',
+                        civil_status: bride.civil_status || '',
+                        residence_address: bride.residence_address || '',
+                        dissolution_details: bride.dissolution_details || '',
+                        dissolution_place: bride.dissolution_place || '',
+                        dissolution_day: bride.dissolution_day || '',
+                        dissolution_month: bride.dissolution_month || '',
+                        dissolution_year: bride.dissolution_year || '',
+                        relationship_degree: bride.relationship_degree || '',
+                        father_first_name: bride.father_first_name || '',
+                        father_middle_name: bride.father_middle_name || '',
+                        father_last_name: bride.father_last_name || '',
+                        father_citizenship: bride.father_citizenship || '',
+                        father_residence: bride.father_residence || '',
+                        mother_first_name: bride.mother_first_name || '',
+                        mother_middle_name: bride.mother_middle_name || '',
+                        mother_last_name: bride.mother_last_name || '',
+                        mother_citizenship: bride.mother_citizenship || '',
+                        mother_residence: bride.mother_residence || '',
+                        parental_requirement: bride.parental_requirement || '',
+                        source_first_name: bride.source_first_name || '',
+                        source_middle_name: bride.source_middle_name || '',
+                        source_last_name: bride.source_last_name || '',
+                        source_citizenship: bride.source_citizenship || '',
+                        source_relationship: bride.source_relationship || '',
+                        source_residence: bride.source_residence || '',
+                        government_id_type: bride.government_id_type || '',
+                        government_id_number: bride.government_id_number || '',
+                        government_id_issued_at: bride.government_id_issued_at || '',
+                        government_id_issued_on: bride.government_id_issued_on || '',
+                    },
+                };
+
+                this.showEditModal = true;
+                this.editActivePerson = (this.editFocusSection || 'groom').toLowerCase() === 'bride' ? 'bride' : 'groom';
+                this.$nextTick(() => {
+                    this.scrollToEditFocus();
+                });
+            } catch (error) {
+                Swal.fire('Error', 'Unable to load application for editing.', 'error');
+            }
+        },
+        scrollToEditFocus() {
+            const section = (this.editFocusSection || this.editActivePerson || '').toLowerCase();
+            if (section === 'groom' && this.$refs.editGroomSection) {
+                this.$refs.editGroomSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else if (section === 'bride' && this.$refs.editBrideSection) {
+                this.$refs.editBrideSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        },
+        closeEditModal() {
+            if (this.isSavingEdit) return;
+            this.showEditModal = false;
+            this.editFocusSection = null;
+            this.editActivePerson = 'groom';
+        },
+        async saveApplicationEdit() {
+            this.isSavingEdit = true;
+
+            try {
+                const payload = {
+                    phone_number: this.editForm.phone_number,
+                    foreigner_type: this.editForm.foreigner_type || null,
+                    groom: this.editForm.groom,
+                    bride: this.editForm.bride,
+                };
+
+                const response = await api.patch(`/applications/${this.editForm.id}/staff-update`, payload);
+
+                await Swal.fire({
+                    title: 'Updated',
+                    text: response?.data?.message || 'Application updated successfully.',
+                    icon: 'success',
+                    background: '#1e293b',
+                    color: '#fff'
+                });
+
+                this.showEditModal = false;
+                await this.fetchApplications();
+            } catch (error) {
+                Swal.fire({
+                    title: 'Update Failed',
+                    text: error.response?.data?.message || 'Unable to update application.',
+                    icon: 'error',
+                    background: '#1e293b',
+                    color: '#fff'
+                });
+            } finally {
+                this.isSavingEdit = false;
+            }
+        },
+
         isCohabitationDoc(doc) {
             const type = (doc?.doc_type || '').toLowerCase();
             return type.includes('cohabitation') || type.includes('joint affidavit');
@@ -788,7 +1582,9 @@ export default {
                     control_number: app.control_number,
                     status: app.status,
                     dateApplied: app.created_at,
-                    coupleNames: app.applicant_names
+                    coupleNames: app.applicant_names,
+                    phone_number: app.phone_number || '',
+                    foreigner_type: app.foreigner_type || ''
                 }));
 
                 // Update pagination metadata from Laravel
@@ -1253,6 +2049,19 @@ export default {
 
 .docviewer-footer {
     background: rgba(255, 255, 255, 0.06);
+}
+
+.section-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    padding: 1rem;
+}
+
+.edit-person-switch {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px) saturate(160%);
 }
 
 /* Muted Groom & Bride Cards */

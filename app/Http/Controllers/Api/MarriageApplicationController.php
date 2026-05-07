@@ -711,6 +711,233 @@ class MarriageApplicationController extends Controller
         ], 200);
     }
 
+    public function staffUpdate(Request $request, int $application_id)
+    {
+        $validated = $request->validate([
+            'phone_number' => 'nullable|string|max:30',
+            'foreigner_type' => 'nullable|in:filipino,groom,bride,both',
+            'groom.first_name' => 'required|string|max:255',
+            'groom.middle_name' => 'nullable|string|max:255',
+            'groom.last_name' => 'required|string|max:255',
+            'groom.suffix' => 'nullable|string|max:50',
+            'groom.day' => 'required|string|max:10',
+            'groom.month' => 'required|string|max:10',
+            'groom.year' => 'required|string|max:10',
+            'groom.birth_city' => 'required|string|max:255',
+            'groom.birth_province' => 'required|string|max:255',
+            'groom.birth_country' => 'required|string|max:255',
+            'groom.age' => 'required|integer|min:0|max:150',
+            'groom.sex' => 'required|string|max:20',
+            'groom.citizenship' => 'required|string|max:255',
+            'groom.religion' => 'required|string|max:255',
+            'groom.civil_status' => 'required|string|max:255',
+            'groom.residence_address' => 'required|string|max:2000',
+            'groom.dissolution_details' => 'nullable|string|max:5000',
+            'groom.dissolution_place' => 'nullable|string|max:255',
+            'groom.dissolution_day' => 'nullable|string|max:20',
+            'groom.dissolution_month' => 'nullable|string|max:20',
+            'groom.dissolution_year' => 'nullable|string|max:20',
+            'groom.relationship_degree' => 'nullable|string|max:255',
+            'groom.father_first_name' => 'required|string|max:255',
+            'groom.father_middle_name' => 'nullable|string|max:255',
+            'groom.father_last_name' => 'required|string|max:255',
+            'groom.father_citizenship' => 'required|string|max:255',
+            'groom.father_residence' => 'required|string|max:2000',
+            'groom.mother_first_name' => 'required|string|max:255',
+            'groom.mother_middle_name' => 'nullable|string|max:255',
+            'groom.mother_last_name' => 'required|string|max:255',
+            'groom.mother_citizenship' => 'required|string|max:255',
+            'groom.mother_residence' => 'required|string|max:2000',
+            'groom.parental_requirement' => 'nullable|string|max:255',
+            'groom.source_first_name' => 'nullable|string|max:255',
+            'groom.source_middle_name' => 'nullable|string|max:255',
+            'groom.source_last_name' => 'nullable|string|max:255',
+            'groom.source_citizenship' => 'nullable|string|max:255',
+            'groom.source_relationship' => 'nullable|string|max:255',
+            'groom.source_residence' => 'nullable|string|max:2000',
+            'groom.government_id_type' => 'nullable|string|max:255',
+            'groom.government_id_number' => 'nullable|string|max:255',
+            'groom.government_id_issued_at' => 'nullable|string|max:255',
+            'groom.government_id_issued_on' => 'nullable|date',
+
+            'bride.first_name' => 'required|string|max:255',
+            'bride.middle_name' => 'nullable|string|max:255',
+            'bride.last_name' => 'required|string|max:255',
+            'bride.suffix' => 'nullable|string|max:50',
+            'bride.day' => 'required|string|max:10',
+            'bride.month' => 'required|string|max:10',
+            'bride.year' => 'required|string|max:10',
+            'bride.birth_city' => 'required|string|max:255',
+            'bride.birth_province' => 'required|string|max:255',
+            'bride.birth_country' => 'required|string|max:255',
+            'bride.age' => 'required|integer|min:0|max:150',
+            'bride.sex' => 'required|string|max:20',
+            'bride.citizenship' => 'required|string|max:255',
+            'bride.religion' => 'required|string|max:255',
+            'bride.civil_status' => 'required|string|max:255',
+            'bride.residence_address' => 'required|string|max:2000',
+            'bride.dissolution_details' => 'nullable|string|max:5000',
+            'bride.dissolution_place' => 'nullable|string|max:255',
+            'bride.dissolution_day' => 'nullable|string|max:20',
+            'bride.dissolution_month' => 'nullable|string|max:20',
+            'bride.dissolution_year' => 'nullable|string|max:20',
+            'bride.relationship_degree' => 'nullable|string|max:255',
+            'bride.father_first_name' => 'required|string|max:255',
+            'bride.father_middle_name' => 'nullable|string|max:255',
+            'bride.father_last_name' => 'required|string|max:255',
+            'bride.father_citizenship' => 'required|string|max:255',
+            'bride.father_residence' => 'required|string|max:2000',
+            'bride.mother_first_name' => 'required|string|max:255',
+            'bride.mother_middle_name' => 'nullable|string|max:255',
+            'bride.mother_last_name' => 'required|string|max:255',
+            'bride.mother_citizenship' => 'required|string|max:255',
+            'bride.mother_residence' => 'required|string|max:2000',
+            'bride.parental_requirement' => 'nullable|string|max:255',
+            'bride.source_first_name' => 'nullable|string|max:255',
+            'bride.source_middle_name' => 'nullable|string|max:255',
+            'bride.source_last_name' => 'nullable|string|max:255',
+            'bride.source_citizenship' => 'nullable|string|max:255',
+            'bride.source_relationship' => 'nullable|string|max:255',
+            'bride.source_residence' => 'nullable|string|max:2000',
+            'bride.government_id_type' => 'nullable|string|max:255',
+            'bride.government_id_number' => 'nullable|string|max:255',
+            'bride.government_id_issued_at' => 'nullable|string|max:255',
+            'bride.government_id_issued_on' => 'nullable|date',
+        ]);
+
+        $application = DB::table("marriage_applications")
+            ->select("id", "status")
+            ->where("id", $application_id)
+            ->whereNull("deleted_at")
+            ->first();
+
+        if (!$application) {
+            return response()->json([
+                "message" => "Application not found."
+            ], 404);
+        }
+
+        if (!in_array($application->status, ["pending", "under_review"], true)) {
+            return response()->json([
+                "message" => "Editing is only allowed for pending/under_review applications."
+            ], 403);
+        }
+
+        DB::transaction(function () use ($application_id, $validated) {
+            DB::table("marriage_applications")
+                ->where("id", $application_id)
+                ->update([
+                    "phone_number" => $validated["phone_number"] ?? null,
+                    "foreigner_type" => $validated["foreigner_type"] ?? null,
+                    "updated_at" => now(),
+                ]);
+
+            DB::table("applicants")
+                ->where("application_id", $application_id)
+                ->where("applicant_type", "groom")
+                ->update([
+                    "first_name" => $validated["groom"]["first_name"],
+                    "middle_name" => $validated["groom"]["middle_name"] ?? null,
+                    "last_name" => $validated["groom"]["last_name"],
+                    "suffix" => $validated["groom"]["suffix"] ?? null,
+                    "day" => $validated["groom"]["day"],
+                    "month" => $validated["groom"]["month"],
+                    "year" => $validated["groom"]["year"],
+                    "birth_city" => $validated["groom"]["birth_city"],
+                    "birth_province" => $validated["groom"]["birth_province"],
+                    "birth_country" => $validated["groom"]["birth_country"],
+                    "age" => $validated["groom"]["age"],
+                    "sex" => $validated["groom"]["sex"],
+                    "citizenship" => $validated["groom"]["citizenship"],
+                    "religion" => $validated["groom"]["religion"],
+                    "civil_status" => $validated["groom"]["civil_status"],
+                    "residence_address" => $validated["groom"]["residence_address"],
+                    "dissolution_details" => $validated["groom"]["dissolution_details"] ?? null,
+                    "dissolution_place" => $validated["groom"]["dissolution_place"] ?? null,
+                    "dissolution_day" => $validated["groom"]["dissolution_day"] ?? null,
+                    "dissolution_month" => $validated["groom"]["dissolution_month"] ?? null,
+                    "dissolution_year" => $validated["groom"]["dissolution_year"] ?? null,
+                    "relationship_degree" => $validated["groom"]["relationship_degree"] ?? null,
+                    "father_first_name" => $validated["groom"]["father_first_name"],
+                    "father_middle_name" => $validated["groom"]["father_middle_name"] ?? null,
+                    "father_last_name" => $validated["groom"]["father_last_name"],
+                    "father_citizenship" => $validated["groom"]["father_citizenship"],
+                    "father_residence" => $validated["groom"]["father_residence"],
+                    "mother_first_name" => $validated["groom"]["mother_first_name"],
+                    "mother_middle_name" => $validated["groom"]["mother_middle_name"] ?? null,
+                    "mother_last_name" => $validated["groom"]["mother_last_name"],
+                    "mother_citizenship" => $validated["groom"]["mother_citizenship"],
+                    "mother_residence" => $validated["groom"]["mother_residence"],
+                    "parental_requirement" => $validated["groom"]["parental_requirement"] ?? null,
+                    "source_first_name" => $validated["groom"]["source_first_name"] ?? null,
+                    "source_middle_name" => $validated["groom"]["source_middle_name"] ?? null,
+                    "source_last_name" => $validated["groom"]["source_last_name"] ?? null,
+                    "source_citizenship" => $validated["groom"]["source_citizenship"] ?? null,
+                    "source_relationship" => $validated["groom"]["source_relationship"] ?? null,
+                    "source_residence" => $validated["groom"]["source_residence"] ?? null,
+                    "government_id_type" => $validated["groom"]["government_id_type"] ?? null,
+                    "government_id_number" => $validated["groom"]["government_id_number"] ?? null,
+                    "government_id_issued_at" => $validated["groom"]["government_id_issued_at"] ?? null,
+                    "government_id_issued_on" => $validated["groom"]["government_id_issued_on"] ?? null,
+                    "updated_at" => now(),
+                ]);
+
+            DB::table("applicants")
+                ->where("application_id", $application_id)
+                ->where("applicant_type", "bride")
+                ->update([
+                    "first_name" => $validated["bride"]["first_name"],
+                    "middle_name" => $validated["bride"]["middle_name"] ?? null,
+                    "last_name" => $validated["bride"]["last_name"],
+                    "suffix" => $validated["bride"]["suffix"] ?? null,
+                    "day" => $validated["bride"]["day"],
+                    "month" => $validated["bride"]["month"],
+                    "year" => $validated["bride"]["year"],
+                    "birth_city" => $validated["bride"]["birth_city"],
+                    "birth_province" => $validated["bride"]["birth_province"],
+                    "birth_country" => $validated["bride"]["birth_country"],
+                    "age" => $validated["bride"]["age"],
+                    "sex" => $validated["bride"]["sex"],
+                    "citizenship" => $validated["bride"]["citizenship"],
+                    "religion" => $validated["bride"]["religion"],
+                    "civil_status" => $validated["bride"]["civil_status"],
+                    "residence_address" => $validated["bride"]["residence_address"],
+                    "dissolution_details" => $validated["bride"]["dissolution_details"] ?? null,
+                    "dissolution_place" => $validated["bride"]["dissolution_place"] ?? null,
+                    "dissolution_day" => $validated["bride"]["dissolution_day"] ?? null,
+                    "dissolution_month" => $validated["bride"]["dissolution_month"] ?? null,
+                    "dissolution_year" => $validated["bride"]["dissolution_year"] ?? null,
+                    "relationship_degree" => $validated["bride"]["relationship_degree"] ?? null,
+                    "father_first_name" => $validated["bride"]["father_first_name"],
+                    "father_middle_name" => $validated["bride"]["father_middle_name"] ?? null,
+                    "father_last_name" => $validated["bride"]["father_last_name"],
+                    "father_citizenship" => $validated["bride"]["father_citizenship"],
+                    "father_residence" => $validated["bride"]["father_residence"],
+                    "mother_first_name" => $validated["bride"]["mother_first_name"],
+                    "mother_middle_name" => $validated["bride"]["mother_middle_name"] ?? null,
+                    "mother_last_name" => $validated["bride"]["mother_last_name"],
+                    "mother_citizenship" => $validated["bride"]["mother_citizenship"],
+                    "mother_residence" => $validated["bride"]["mother_residence"],
+                    "parental_requirement" => $validated["bride"]["parental_requirement"] ?? null,
+                    "source_first_name" => $validated["bride"]["source_first_name"] ?? null,
+                    "source_middle_name" => $validated["bride"]["source_middle_name"] ?? null,
+                    "source_last_name" => $validated["bride"]["source_last_name"] ?? null,
+                    "source_citizenship" => $validated["bride"]["source_citizenship"] ?? null,
+                    "source_relationship" => $validated["bride"]["source_relationship"] ?? null,
+                    "source_residence" => $validated["bride"]["source_residence"] ?? null,
+                    "government_id_type" => $validated["bride"]["government_id_type"] ?? null,
+                    "government_id_number" => $validated["bride"]["government_id_number"] ?? null,
+                    "government_id_issued_at" => $validated["bride"]["government_id_issued_at"] ?? null,
+                    "government_id_issued_on" => $validated["bride"]["government_id_issued_on"] ?? null,
+                    "updated_at" => now(),
+                ]);
+        });
+
+        return response()->json([
+            "message" => "Application updated successfully."
+        ], 200);
+    }
+
     public function forceDestroy(int $application_id)
     {
         $exists = DB::table("marriage_applications")
