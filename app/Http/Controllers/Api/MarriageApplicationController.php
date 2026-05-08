@@ -1342,7 +1342,7 @@ class MarriageApplicationController extends Controller
             'year_today' => $currentDate->format('Y'),
             'place' => 'Abuyog, Leyte',
             'id' => $resolveId($groom),
-            'issued_on' => $currentDate->format('F d, Y'),
+            'issued_on' => $submittedDate->format('F d, Y'),
             'issued_at' => 'Abuyog, Leyte',
             'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
         ];
@@ -1386,7 +1386,7 @@ class MarriageApplicationController extends Controller
             'year_today' => $currentDate->format('Y'),
             'place' => 'Abuyog, Leyte',
             'id' => $resolveId($bride),
-            'issued_on' => $currentDate->format('F d, Y'),
+            'issued_on' => $submittedDate->format('F d, Y'),
             'issued_at' => 'Abuyog, Leyte',
             'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
         ];
