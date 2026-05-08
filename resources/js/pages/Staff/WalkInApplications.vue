@@ -209,6 +209,14 @@
                                                 <textarea v-if="field.type === 'textarea'" v-model="form[activePerson][field.key]"
                                                     class="form-control glass-input" rows="3"
                                                     :placeholder="field.placeholder || field.label"></textarea>
+                                                <input
+                                                    v-else-if="field.key === 'id_type'"
+                                                    v-model="form[activePerson][field.key]"
+                                                    :type="field.type"
+                                                    class="form-control glass-input"
+                                                    :placeholder="field.placeholder || field.label"
+                                                    list="id-type-suggestions"
+                                                >
                                                 <input v-else v-model="form[activePerson][field.key]" :type="field.type"
                                                     class="form-control glass-input" :placeholder="field.placeholder || field.label">
                                             </div>
@@ -261,6 +269,10 @@
                     </div>
                 </div>
             </form>
+
+            <datalist id="id-type-suggestions">
+                <option v-for="option in idTypeSuggestions" :key="option" :value="option"></option>
+            </datalist>
 
             <section class="glass-panel rounded-5 p-4 p-lg-5">
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
@@ -422,6 +434,25 @@ export default {
                 groom: createPerson('Male'),
                 bride: createPerson('Female'),
             },
+            idTypeSuggestions: [
+                'PhilSys ID',
+                "Driver's License",
+                'Passport',
+                'UMID',
+                'SSS ID',
+                'GSIS ID',
+                'PRC ID',
+                'Postal ID',
+                "Voter's ID",
+                'TIN ID',
+                'Senior Citizen ID',
+                'PWD ID',
+                'School ID',
+                'Company ID',
+                'Barangay ID',
+                'NBI Clearance',
+                'Police Clearance',
+            ],
             activePerson: 'groom',
             activeSection: 'identity',
             personOrder: ['groom', 'bride'],
