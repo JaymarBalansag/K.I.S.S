@@ -325,6 +325,14 @@
                                     <label class="x-small text-white opacity-40 d-block">Current Residence</label>
                                     <span class="small opacity-80">{{ person.residence_address }}</span>
                                 </div>
+                                <div class="col-6">
+                                    <label class="x-small text-white opacity-40 d-block">ID Type</label>
+                                    <span class="small">{{ person.government_id_type || person.id_type || '—' }}</span>
+                                </div>
+                                <div class="col-6">
+                                    <label class="x-small text-white opacity-40 d-block">ID Number</label>
+                                    <span class="small">{{ person.government_id_number || person.id_number || '—' }}</span>
+                                </div>
                             </div>
 
                             <div
