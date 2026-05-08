@@ -155,7 +155,8 @@ class ManualMarriageLicenseApplicationController extends Controller
     private function buildFormData(ManualMarriageLicenseApplication $record): array
     {
         $submittedDate = $record->created_at ? Carbon::parse($record->created_at) : now();
-        $ordinalDay = $this->toOrdinalDay((int) $submittedDate->day);
+        $currentDate = now();
+        $ordinalDay = $this->toOrdinalDay((int) $currentDate->day);
 
         return [
             'meta' => [
@@ -164,12 +165,12 @@ class ManualMarriageLicenseApplicationController extends Controller
                 'received_by' => 'MUNICIPAL CIVIL REGISTRAR',
                 'date' => $submittedDate->format('M d, Y'),
             ],
-            'groom' => $this->buildApplicantData($record, 'groom', $submittedDate, $ordinalDay),
-            'bride' => $this->buildApplicantData($record, 'bride', $submittedDate, $ordinalDay),
+            'groom' => $this->buildApplicantData($record, 'groom', $currentDate, $ordinalDay),
+            'bride' => $this->buildApplicantData($record, 'bride', $currentDate, $ordinalDay),
         ];
     }
 
-    private function buildApplicantData(ManualMarriageLicenseApplication $record, string $prefix, Carbon $submittedDate, string $ordinalDay): array
+    private function buildApplicantData(ManualMarriageLicenseApplication $record, string $prefix, Carbon $currentDate, string $ordinalDay): array
     {
         $birthDate = data_get($record, "{$prefix}_birth_date");
         $dissolutionDate = data_get($record, "{$prefix}_dissolution_date");
@@ -218,26 +219,26 @@ class ManualMarriageLicenseApplicationController extends Controller
             'give_consent_residence' => data_get($record, "{$prefix}_consent_residence") ?: 'NOT APPLICABLE',
             'fullname_signature' => $this->formatName($firstName, $middleName, $lastName),
             'day_today' => $ordinalDay,
-            'month_today' => strtoupper($submittedDate->format('F')),
-            'year_today' => $submittedDate->format('Y'),
+            'month_today' => strtoupper($currentDate->format('F')),
+            'year_today' => $currentDate->format('Y'),
             'place' => 'Abuyog, Leyte',
             'id' => $this->formatId(
                 data_get($record, "{$prefix}_id_type"),
                 data_get($record, "{$prefix}_id_number")
             ),
-            'issued_on' => $this->formatIssuedOn(data_get($record, "{$prefix}_id_issued_on"), $submittedDate),
-            'issued_at' => data_get($record, "{$prefix}_id_issued_at") ?: 'Abuyog, Leyte',
+            'issued_on' => $this->formatIssuedOn(data_get($record, "{$prefix}_id_issued_on")),
+            'issued_at' => data_get($record, "{$prefix}_id_issued_at") ?: '',
             'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
         ];
     }
 
-    private function formatIssuedOn($issuedOn, Carbon $fallback): string
+    private function formatIssuedOn($issuedOn): string
     {
         if (filled($issuedOn)) {
             return Carbon::parse($issuedOn)->format('F d, Y');
         }
 
-        return $fallback->format('F d, Y');
+        return '';
     }
 
     private function formatName(?string $first, ?string $middle, ?string $last): string
