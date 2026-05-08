@@ -78,7 +78,7 @@
                                     <p class="text-white-50 mb-0">Optional, but helpful when the couple wants updates later.</p>
                                 </div>
                                 <div class="contact-input-wrap">
-                                    <input v-model="form.phone_number" type="text" class="form-control glass-input"
+                                    <input v-model.trim="form.phone_number" type="text" class="form-control glass-input"
                                         placeholder="09XXXXXXXXX">
                                 </div>
                             </div>
@@ -440,7 +440,7 @@
                 <div class="detail-card rounded-4 p-4 mb-4">
                     <h6 class="text-white opacity-75 fw-bold mb-3">Shared Details</h6>
                     <label class="form-label text-white fw-semibold">Contact Number</label>
-                    <input v-model="editForm.phone_number" type="text" class="form-control glass-input" placeholder="09XXXXXXXXX">
+                    <input v-model.trim="editForm.phone_number" type="text" class="form-control glass-input" placeholder="09XXXXXXXXX">
                 </div>
 
                 <div class="person-toggle mb-3">

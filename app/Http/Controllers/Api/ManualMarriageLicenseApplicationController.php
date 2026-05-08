@@ -44,7 +44,7 @@ class ManualMarriageLicenseApplicationController extends Controller
         $record = ManualMarriageLicenseApplication::create([
             'control_number' => $this->generateControlNumber(),
             'staff_id' => $request->user()?->id,
-            'phone_number' => $validated['phone_number'] ?? null,
+            'phone_number' => isset($validated['phone_number']) ? trim((string) $validated['phone_number']) : null,
             ...$this->flattenPersonData('groom', $validated['groom']),
             ...$this->flattenPersonData('bride', $validated['bride']),
         ]);
@@ -67,7 +67,7 @@ class ManualMarriageLicenseApplicationController extends Controller
         $validated = $request->validated();
 
         $manualMarriageLicenseApplication->update([
-            'phone_number' => $validated['phone_number'] ?? null,
+            'phone_number' => isset($validated['phone_number']) ? trim((string) $validated['phone_number']) : null,
             ...$this->flattenPersonData('groom', $validated['groom']),
             ...$this->flattenPersonData('bride', $validated['bride']),
         ]);
