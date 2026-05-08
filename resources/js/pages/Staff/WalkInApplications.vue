@@ -305,16 +305,33 @@
                                 <td class="text-white border-0">{{ record.couple_names }}</td>
                                 <td class="text-white-50 border-0">{{ formatDate(record.created_at) }}</td>
                                 <td class="border-0 text-center">
-                                    <div class="d-flex justify-content-center gap-2 flex-wrap">
-                                        <button class="btn btn-action-glass text-info" @click="viewRecord(record.id)">
-                                            <i class="bi bi-eye-fill me-1"></i> View
+                                    <div class="dropdown">
+                                        <button
+                                            class="btn btn-action-glass text-white dropdown-toggle"
+                                            type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                        >
+                                            Actions
                                         </button>
-                                        <button class="btn btn-action-glass text-white" @click="openEdit(record.id)">
-                                            <i class="bi bi-pencil-square me-1"></i> Edit
-                                        </button>
-                                        <button class="btn btn-action-glass text-warning" @click="openPrintModal(record)">
-                                            <i class="bi bi-printer-fill me-1"></i> Print
-                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-dark">
+                                            <li>
+                                                <button class="dropdown-item" type="button" @click="viewRecord(record.id)">
+                                                    <i class="bi bi-eye-fill me-2"></i> View
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item" type="button" @click="openEdit(record.id)">
+                                                    <i class="bi bi-pencil-square me-2"></i> Edit
+                                                </button>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <button class="dropdown-item" type="button" @click="openPrintModal(record)">
+                                                    <i class="bi bi-printer-fill me-2"></i> Print
+                                                </button>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </td>
                             </tr>
