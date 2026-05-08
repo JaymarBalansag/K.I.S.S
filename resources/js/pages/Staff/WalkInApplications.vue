@@ -289,7 +289,7 @@
                     </div>
                 </div>
 
-                <div v-if="records.length" class="table-responsive">
+                <div v-if="records.length" class="table-responsive walkin-table-responsive">
                     <table class="table glass-table align-middle mb-0">
                         <thead>
                             <tr class="text-uppercase small opacity-75 ls-1">
@@ -314,7 +314,7 @@
                                         >
                                             Actions
                                         </button>
-                                        <ul class="dropdown-menu dropdown-menu-dark">
+                                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                                             <li>
                                                 <button class="dropdown-item" type="button" @click="viewRecord(record.id)">
                                                     <i class="bi bi-eye-fill me-2"></i> View
@@ -1548,6 +1548,12 @@ export default {
 .glass-table {
     --bs-table-bg: transparent;
     --bs-table-color: #fff;
+}
+
+.walkin-table-responsive {
+    overflow-x: auto;
+    overflow-y: visible;
+    padding-bottom: 6rem;
 }
 
 .glass-row {

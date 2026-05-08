@@ -1296,6 +1296,16 @@ class MarriageApplicationController extends Controller
         $metaDate = $applicants->first()->submitted_at ?: Carbon::now();
         $submittedDate = Carbon::parse($metaDate);
         $currentDate = Carbon::now();
+        $formatGovernmentIssuedOn = function ($value) {
+            if ($value === null || trim((string) $value) === '') {
+                return null;
+            }
+            try {
+                return Carbon::parse($value)->format('F d, Y');
+            } catch (\Exception $e) {
+                return (string) $value;
+            }
+        };
         $meta = [
             'province' => 'LEYTE',
             'municipality' => 'ABUYOG',
@@ -1342,8 +1352,14 @@ class MarriageApplicationController extends Controller
             'year_today' => $currentDate->format('Y'),
             'place' => 'Abuyog, Leyte',
             'id' => $resolveId($groom),
-            'issued_on' => $submittedDate->format('F d, Y'),
-            'issued_at' => 'Abuyog, Leyte',
+            'issued_on' => $firstNonEmpty(
+                $formatGovernmentIssuedOn(data_get($groom, 'government_id_issued_on')),
+                $formatGovernmentIssuedOn(data_get($groom, 'issued_on'))
+            ),
+            'issued_at' => $firstNonEmpty(
+                data_get($groom, 'government_id_issued_at'),
+                data_get($groom, 'issued_at')
+            ),
             'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
         ];
 
@@ -1386,8 +1402,14 @@ class MarriageApplicationController extends Controller
             'year_today' => $currentDate->format('Y'),
             'place' => 'Abuyog, Leyte',
             'id' => $resolveId($bride),
-            'issued_on' => $submittedDate->format('F d, Y'),
-            'issued_at' => 'Abuyog, Leyte',
+            'issued_on' => $firstNonEmpty(
+                $formatGovernmentIssuedOn(data_get($bride, 'government_id_issued_on')),
+                $formatGovernmentIssuedOn(data_get($bride, 'issued_on'))
+            ),
+            'issued_at' => $firstNonEmpty(
+                data_get($bride, 'government_id_issued_at'),
+                data_get($bride, 'issued_at')
+            ),
             'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
         ];
 
