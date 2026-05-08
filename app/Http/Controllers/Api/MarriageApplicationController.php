@@ -988,6 +988,7 @@ class MarriageApplicationController extends Controller
 
         $metaDate = $applicants->first()->submitted_at ?: Carbon::now();
         $submittedDate = Carbon::parse($metaDate);
+        $currentDate = Carbon::now();
         $meta = [
             'province' => 'LEYTE',
             'municipality' => 'ABUYOG',
@@ -1029,12 +1030,12 @@ class MarriageApplicationController extends Controller
             'give_consent_citizenship' => $consentValue($groom, $groom->source_citizenship ?? null),
             'give_consent_residence' => $consentValue($groom, $groom->source_residence ?? null),
             'fullname_signature' => $formatName($groom->first_name, $groom->middle_name, $groom->last_name),
-            'day_today' => $toOrdinalDay($submittedDate->day),
-            'month_today' => strtoupper($submittedDate->format('F')),
-            'year_today' => $submittedDate->format('Y'),
+            'day_today' => $toOrdinalDay($currentDate->day),
+            'month_today' => strtoupper($currentDate->format('F')),
+            'year_today' => $currentDate->format('Y'),
             'place' => 'Abuyog, Leyte',
             'id' => $resolveId($groom),
-            'issued_on' => $submittedDate->format('F d, Y'),
+            'issued_on' => $currentDate->format('F d, Y'),
             'issued_at' => 'Abuyog, Leyte',
             'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
         ];
@@ -1073,12 +1074,12 @@ class MarriageApplicationController extends Controller
             'give_consent_citizenship' => $consentValue($bride, $bride->source_citizenship ?? null),
             'give_consent_residence' => $consentValue($bride, $bride->source_residence ?? null),
             'fullname_signature' => $formatName($bride->first_name, $bride->middle_name, $bride->last_name),
-            'day_today' => $toOrdinalDay($submittedDate->day),
-            'month_today' => strtoupper($submittedDate->format('F')),
-            'year_today' => $submittedDate->format('Y'),
+            'day_today' => $toOrdinalDay($currentDate->day),
+            'month_today' => strtoupper($currentDate->format('F')),
+            'year_today' => $currentDate->format('Y'),
             'place' => 'Abuyog, Leyte',
             'id' => $resolveId($bride),
-            'issued_on' => $submittedDate->format('F d, Y'),
+            'issued_on' => $currentDate->format('F d, Y'),
             'issued_at' => 'Abuyog, Leyte',
             'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
         ];
