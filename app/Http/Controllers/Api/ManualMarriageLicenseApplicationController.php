@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreManualMarriageLicenseApplicationRequest;
+use App\Http\Requests\UpdateManualMarriageLicenseApplicationRequest;
 use App\Http\Resources\ManualMarriageLicenseApplicationResource;
 use App\Models\ManualMarriageLicenseApplication;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -59,6 +60,22 @@ class ManualMarriageLicenseApplicationController extends Controller
     public function show(ManualMarriageLicenseApplication $manualMarriageLicenseApplication)
     {
         return new ManualMarriageLicenseApplicationResource($manualMarriageLicenseApplication);
+    }
+
+    public function update(UpdateManualMarriageLicenseApplicationRequest $request, ManualMarriageLicenseApplication $manualMarriageLicenseApplication)
+    {
+        $validated = $request->validated();
+
+        $manualMarriageLicenseApplication->update([
+            'phone_number' => $validated['phone_number'] ?? null,
+            ...$this->flattenPersonData('groom', $validated['groom']),
+            ...$this->flattenPersonData('bride', $validated['bride']),
+        ]);
+
+        return (new ManualMarriageLicenseApplicationResource($manualMarriageLicenseApplication->fresh()))
+            ->additional([
+                'message' => 'Manual marriage license application updated successfully.',
+            ]);
     }
 
     public function previewPdf(Request $request)
