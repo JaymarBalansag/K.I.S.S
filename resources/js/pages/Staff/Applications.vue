@@ -63,6 +63,7 @@
                                     <th class="py-3 text-white border-0">Couple Name</th>
                                     <th class="py-3 text-white border-0">Application Date</th>
                                     <th class="py-3 text-white border-0">Status</th>
+                                    <th class="py-3 text-white border-0">Processed By</th>
                                     <th class="py-3 text-center text-white border-0">Actions</th>
                                 </tr>
                             </thead>
@@ -84,6 +85,9 @@
                                     <td class="text-white opacity-75 border-0">{{ app.dateApplied }}</td>
                                     <td class="border-0">
                                         <span :class="getStatusClass(app.status)">{{ app.status }}</span>
+                                    </td>
+                                    <td class="text-white opacity-75 border-0">
+                                        <span class="fw-semibold">{{ app.processedBy || '—' }}</span>
                                     </td>
                                     <td class="text-center border-0 rounded-end-4 px-4">
                                         <div class="d-flex justify-content-center gap-2 app-actions">
@@ -146,6 +150,7 @@
                             </div>
                             <p class="small text-white opacity-50 mb-1">Applied: {{ app.dateApplied }}</p>
                             <p class="small text-white opacity-50 mb-4">Ref: {{ app.control_number }}</p>
+                            <p class="small text-white opacity-50 mb-4">Processed By: <span class="text-white opacity-75">{{ app.processedBy || '—' }}</span></p>
 
                             <div class="d-flex gap-2">
                                 <button @click="openViewApplicants(app)"
@@ -255,6 +260,31 @@
             </div>
 
             <div class="p-4 pt-2">
+                <div v-if="selectedApp" class="mb-4">
+                    <div class="detail-card rounded-4 p-3 p-md-4">
+                        <h6 class="x-small text-white opacity-30 text-uppercase fw-bold mb-3 ls-1">Audit</h6>
+                        <div class="row g-3">
+                            <div v-if="selectedApp.approvedByName" class="col-md-4">
+                                <div class="x-small text-white opacity-40 text-uppercase ls-1">Approved By</div>
+                                <div class="small fw-semibold text-white">{{ selectedApp.approvedByName }}</div>
+                                <div v-if="selectedApp.approved_at" class="x-small text-white opacity-50">{{ formatDateTime(selectedApp.approved_at) }}</div>
+                            </div>
+                            <div v-if="selectedApp.rejectedByName" class="col-md-4">
+                                <div class="x-small text-white opacity-40 text-uppercase ls-1">Rejected By</div>
+                                <div class="small fw-semibold text-white">{{ selectedApp.rejectedByName }}</div>
+                                <div v-if="selectedApp.rejected_at" class="x-small text-white opacity-50">{{ formatDateTime(selectedApp.rejected_at) }}</div>
+                            </div>
+                            <div v-if="selectedApp.issuedByName" class="col-md-4">
+                                <div class="x-small text-white opacity-40 text-uppercase ls-1">Issued By</div>
+                                <div class="small fw-semibold text-white">{{ selectedApp.issuedByName }}</div>
+                                <div v-if="selectedApp.issued_at" class="x-small text-white opacity-50">{{ formatDateTime(selectedApp.issued_at) }}</div>
+                            </div>
+                            <div v-if="!selectedApp.approvedByName && !selectedApp.rejectedByName && !selectedApp.issuedByName" class="col-12">
+                                <div class="small text-white opacity-50">No action has been recorded yet.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row g-4" v-if="applicant">
                     <div v-for="person in applicant" :key="person.id" class="col-md-6">
                         <div class="applicant-glass-card h-100 p-4 rounded-4"
@@ -1627,7 +1657,14 @@ export default {
                     dateApplied: app.created_at,
                     coupleNames: app.applicant_names,
                     phone_number: app.phone_number || '',
-                    foreigner_type: app.foreigner_type || ''
+                    foreigner_type: app.foreigner_type || '',
+                    approved_at: app.approved_at || null,
+                    rejected_at: app.rejected_at || null,
+                    issued_at: app.issued_at || null,
+                    approvedByName: this.formatActorName(app.approved_by_first_name, app.approved_by_last_name),
+                    rejectedByName: this.formatActorName(app.rejected_by_first_name, app.rejected_by_last_name),
+                    issuedByName: this.formatActorName(app.issued_by_first_name, app.issued_by_last_name),
+                    processedBy: this.processedByLabel(app),
                 }));
 
                 // Update pagination metadata from Laravel
@@ -1653,6 +1690,32 @@ export default {
                 this.page = newPage;
                 this.fetchApplications();
             }
+        },
+
+        formatActorName(firstName, lastName) {
+            const full = `${firstName || ''} ${lastName || ''}`.trim();
+            return full || '';
+        },
+
+        processedByLabel(app) {
+            const status = String(app?.status || '').toLowerCase();
+            if (status === 'approved') {
+                return this.formatActorName(app.approved_by_first_name, app.approved_by_last_name);
+            }
+            if (status === 'rejected') {
+                return this.formatActorName(app.rejected_by_first_name, app.rejected_by_last_name);
+            }
+            if (status === 'issued') {
+                return this.formatActorName(app.issued_by_first_name, app.issued_by_last_name);
+            }
+            return '';
+        },
+
+        formatDateTime(value) {
+            if (!value) return '';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return String(value);
+            return date.toLocaleString();
         },
 
         getStatusClass(status) {

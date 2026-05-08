@@ -53,6 +53,7 @@
                                     <th class="py-3 text-white border-0">Type</th>
                                     <th class="py-3 text-white border-0">Requested Date</th>
                                     <th class="py-3 text-white border-0">Status</th>
+                                    <th class="py-3 text-white border-0">Attended By</th>
                                     <th class="py-3 text-center text-white border-0">Actions</th>
                                 </tr>
                             </thead>
@@ -75,6 +76,9 @@
                                         <span :class="getStatusClass(apt.status)">
                                             {{ getStatusLabel(apt.status) }}
                                         </span>
+                                    </td>
+                                    <td class="text-white opacity-75 border-0">
+                                        <span class="fw-semibold">{{ attendedByLabel(apt) || '—' }}</span>
                                     </td>
                                     <td class="text-center border-0 rounded-end-4 px-4">
                                         <div class="d-flex justify-content-center gap-2">
@@ -104,6 +108,7 @@
                                 <span :class="getStatusClass(apt.status)">{{ getStatusLabel(apt.status) }}</span>
                             </div>
                             <p class="small text-info mt-1 mb-3">{{ apt.control_number }}</p>
+                            <p class="small text-white opacity-50 mb-3">Attended By: <span class="text-white opacity-75">{{ attendedByLabel(apt) || '—' }}</span></p>
                             <div class="d-flex gap-2">
                                 <button @click="viewDetails(apt)"
                                     class="btn btn-action-glass text-white flex-grow-1">
@@ -229,6 +234,18 @@ export default {
             if (status === 'cancelled') return 'Rejected';
             return status || 'pending';
         },
+        attendedByLabel(apt) {
+            const status = apt?.status;
+            if (status === 'confirmed') return String(apt?.confirmed_by_name || '').trim();
+            if (status === 'cancelled') return String(apt?.cancelled_by_name || '').trim();
+            return '';
+        },
+        formatDateTime(value) {
+            if (!value) return '';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return String(value);
+            return date.toLocaleString();
+        },
         async approveAppointment(id) {
             const result = await Swal.fire({
                 title: 'Confirm Approval',
@@ -249,6 +266,7 @@ export default {
                     if (index !== -1) {
                         this.appointments[index].status = 'confirmed';
                     }
+                    await this.fetchAppointments();
 
                     Swal.fire({
                         icon: 'success',
@@ -283,6 +301,7 @@ export default {
                     if (index !== -1) {
                         this.appointments[index].status = 'cancelled';
                     }
+                    await this.fetchAppointments();
 
                     Swal.fire({
                         icon: 'success',
@@ -320,6 +339,18 @@ export default {
                             <div class="col-6">
                                 <div class="opacity-50">Date</div>
                                 <strong>${this.formatDate(apt.requested_date)}</strong>
+                            </div>
+                            <div class="col-6">
+                                <div class="opacity-50">Status</div>
+                                <strong>${this.getStatusLabel(apt.status)}</strong>
+                            </div>
+                            <div class="col-6">
+                                <div class="opacity-50">Attended By</div>
+                                <strong>${this.attendedByLabel(apt) || '—'}</strong>
+                            </div>
+                            <div class="col-6">
+                                <div class="opacity-50">Attended At</div>
+                                <strong>${this.formatDateTime(apt.status === 'confirmed' ? apt.confirmed_at : apt.status === 'cancelled' ? apt.cancelled_at : '') || '—'}</strong>
                             </div>
                         </div>
                     </div>`,

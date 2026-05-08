@@ -317,10 +317,19 @@ class MarriageApplicationController extends Controller
 
             $applications = DB::table("marriage_applications")
                 ->join("applicants", "marriage_applications.id", "=", "applicants.application_id")
+                ->leftJoin("users as approved_by", "marriage_applications.approved_by_id", "=", "approved_by.id")
+                ->leftJoin("users as rejected_by", "marriage_applications.rejected_by_id", "=", "rejected_by.id")
+                ->leftJoin("users as issued_by", "marriage_applications.issued_by_id", "=", "issued_by.id")
                 ->select(
                     "marriage_applications.*",
                     "applicants.first_name",
-                    "applicants.last_name"
+                    "applicants.last_name",
+                    "approved_by.first_name as approved_by_first_name",
+                    "approved_by.last_name as approved_by_last_name",
+                    "rejected_by.first_name as rejected_by_first_name",
+                    "rejected_by.last_name as rejected_by_last_name",
+                    "issued_by.first_name as issued_by_first_name",
+                    "issued_by.last_name as issued_by_last_name"
                 )
                 ->whereNull("marriage_applications.deleted_at")
                 ->paginate(10);
@@ -477,11 +486,26 @@ class MarriageApplicationController extends Controller
         try {
             $query = DB::table("marriage_applications")
                 ->join("applicants", "marriage_applications.id", "=", "applicants.application_id")
+                ->leftJoin("users as approved_by", "marriage_applications.approved_by_id", "=", "approved_by.id")
+                ->leftJoin("users as rejected_by", "marriage_applications.rejected_by_id", "=", "rejected_by.id")
+                ->leftJoin("users as issued_by", "marriage_applications.issued_by_id", "=", "issued_by.id")
                 ->select(
                     "marriage_applications.id",
                     "marriage_applications.control_number",
                     "marriage_applications.status",
                     "marriage_applications.created_at",
+                    "marriage_applications.approved_by_id",
+                    "marriage_applications.approved_at",
+                    "marriage_applications.rejected_by_id",
+                    "marriage_applications.rejected_at",
+                    "marriage_applications.issued_by_id",
+                    "marriage_applications.issued_at",
+                    "approved_by.first_name as approved_by_first_name",
+                    "approved_by.last_name as approved_by_last_name",
+                    "rejected_by.first_name as rejected_by_first_name",
+                    "rejected_by.last_name as rejected_by_last_name",
+                    "issued_by.first_name as issued_by_first_name",
+                    "issued_by.last_name as issued_by_last_name",
                     // Combine the names here
                     DB::raw("GROUP_CONCAT(CONCAT(applicants.first_name, ' ', applicants.last_name) SEPARATOR ' & ') as applicant_names")
                 )
@@ -508,7 +532,19 @@ class MarriageApplicationController extends Controller
                 'marriage_applications.id',
                 'marriage_applications.control_number',
                 'marriage_applications.status',
-                'marriage_applications.created_at'
+                'marriage_applications.created_at',
+                'marriage_applications.approved_by_id',
+                'marriage_applications.approved_at',
+                'marriage_applications.rejected_by_id',
+                'marriage_applications.rejected_at',
+                'marriage_applications.issued_by_id',
+                'marriage_applications.issued_at',
+                'approved_by.first_name',
+                'approved_by.last_name',
+                'rejected_by.first_name',
+                'rejected_by.last_name',
+                'issued_by.first_name',
+                'issued_by.last_name'
             )
                 ->orderBy('marriage_applications.created_at', $statOrder)
                 ->paginate(5);
@@ -530,6 +566,28 @@ class MarriageApplicationController extends Controller
         try {
             $control_number = $request->input("control_number");
             $applicationId = $request->input("application_id");
+            $actorId = optional($request->user())->id;
+
+            $now = now();
+            $auditUpdates = [];
+            if ($actorId) {
+                if ($action === 'approved') {
+                    $auditUpdates = [
+                        'approved_by_id' => $actorId,
+                        'approved_at' => $now,
+                    ];
+                } elseif ($action === 'rejected') {
+                    $auditUpdates = [
+                        'rejected_by_id' => $actorId,
+                        'rejected_at' => $now,
+                    ];
+                } elseif ($action === 'issued') {
+                    $auditUpdates = [
+                        'issued_by_id' => $actorId,
+                        'issued_at' => $now,
+                    ];
+                }
+            }
 
             // Perform the update directly on the Query Builder
             $affected = DB::table("marriage_applications")
@@ -538,7 +596,8 @@ class MarriageApplicationController extends Controller
                 ->whereNull("deleted_at")
                 ->update([
                     "status" => $action,
-                    "updated_at" => now() // Manually update timestamp for Query Builder
+                    "updated_at" => $now, // Manually update timestamp for Query Builder
+                    ...$auditUpdates,
                 ]);
 
             // If $affected is 0, it means either the record doesn't exist
@@ -675,14 +734,35 @@ class MarriageApplicationController extends Controller
             ], 404);
         }
 
-        DB::transaction(function () use ($application_id, $validated) {
+        $current = DB::table("marriage_applications")
+            ->select("status", "approved_by_id", "rejected_by_id", "issued_by_id")
+            ->where("id", $application_id)
+            ->first();
+
+        $actorId = optional($request->user())->id;
+        $now = now();
+
+        $status = $validated["status"];
+        $auditUpdates = [];
+        if ($actorId && $current && $current->status !== $status) {
+            if ($status === 'approved' && empty($current->approved_by_id)) {
+                $auditUpdates = ['approved_by_id' => $actorId, 'approved_at' => $now];
+            } elseif ($status === 'rejected' && empty($current->rejected_by_id)) {
+                $auditUpdates = ['rejected_by_id' => $actorId, 'rejected_at' => $now];
+            } elseif ($status === 'issued' && empty($current->issued_by_id)) {
+                $auditUpdates = ['issued_by_id' => $actorId, 'issued_at' => $now];
+            }
+        }
+
+        DB::transaction(function () use ($application_id, $validated, $auditUpdates, $now) {
             DB::table("marriage_applications")
                 ->where("id", $application_id)
                 ->update([
                     "status" => $validated["status"],
                     "phone_number" => $validated["phone_number"] ?? null,
                     "foreigner_type" => $validated["foreigner_type"] ?? null,
-                    "updated_at" => now(),
+                    "updated_at" => $now,
+                    ...$auditUpdates,
                 ]);
 
             DB::table("applicants")
@@ -692,7 +772,7 @@ class MarriageApplicationController extends Controller
                     "first_name" => $validated["groom"]["first_name"],
                     "middle_name" => $validated["groom"]["middle_name"] ?? null,
                     "last_name" => $validated["groom"]["last_name"],
-                    "updated_at" => now(),
+                    "updated_at" => $now,
                 ]);
 
             DB::table("applicants")
@@ -702,7 +782,7 @@ class MarriageApplicationController extends Controller
                     "first_name" => $validated["bride"]["first_name"],
                     "middle_name" => $validated["bride"]["middle_name"] ?? null,
                     "last_name" => $validated["bride"]["last_name"],
-                    "updated_at" => now(),
+                    "updated_at" => $now,
                 ]);
         });
 
