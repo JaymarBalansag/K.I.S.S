@@ -119,15 +119,17 @@ class ManualMarriageLicenseApplicationController extends Controller
             "{$prefix}_consent_relationship" => $person['consent_relationship'] ?? null,
             "{$prefix}_consent_citizenship" => $person['consent_citizenship'] ?? null,
             "{$prefix}_consent_residence" => $person['consent_residence'] ?? null,
-            "{$prefix}_id_type" => $person['id_type'] ?? null,
-            "{$prefix}_id_number" => $person['id_number'] ?? null,
+            "{$prefix}_id_type" => $person['id_type'],
+            "{$prefix}_id_number" => $person['id_number'],
+            "{$prefix}_id_issued_at" => $person['id_issued_at'],
+            "{$prefix}_id_issued_on" => $person['id_issued_on'],
         ];
     }
 
     private function generateControlNumber(): string
     {
         do {
-            $controlNumber = 'MAN-' . now()->format('Ymd') . '-' . Str::upper(Str::random(5));
+            $controlNumber = Str::upper(Str::random(5));
         } while (ManualMarriageLicenseApplication::query()->where('control_number', $controlNumber)->exists());
 
         return $controlNumber;
@@ -206,10 +208,19 @@ class ManualMarriageLicenseApplicationController extends Controller
                 data_get($record, "{$prefix}_id_type"),
                 data_get($record, "{$prefix}_id_number")
             ),
-            'issued_on' => $submittedDate->format('F d, Y'),
-            'issued_at' => 'Abuyog, Leyte',
+            'issued_on' => $this->formatIssuedOn(data_get($record, "{$prefix}_id_issued_on"), $submittedDate),
+            'issued_at' => data_get($record, "{$prefix}_id_issued_at") ?: 'Abuyog, Leyte',
             'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
         ];
+    }
+
+    private function formatIssuedOn($issuedOn, Carbon $fallback): string
+    {
+        if (filled($issuedOn)) {
+            return Carbon::parse($issuedOn)->format('F d, Y');
+        }
+
+        return $fallback->format('F d, Y');
     }
 
     private function formatName(?string $first, ?string $middle, ?string $last): string

@@ -45,8 +45,10 @@ class StoreManualMarriageLicenseApplicationRequest extends FormRequest
             'consent_relationship' => 'nullable|string|max:255',
             'consent_citizenship' => 'nullable|string|max:255',
             'consent_residence' => 'nullable|string|max:1000',
-            'id_type' => 'nullable|string|max:255',
-            'id_number' => 'nullable|string|max:255',
+            'id_type' => 'required|string|max:255',
+            'id_number' => 'required|string|max:255',
+            'id_issued_at' => 'required|string|max:255',
+            'id_issued_on' => 'required|date|before_or_equal:today',
         ];
 
         return [

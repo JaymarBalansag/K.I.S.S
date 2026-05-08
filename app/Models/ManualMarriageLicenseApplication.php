@@ -43,6 +43,8 @@ class ManualMarriageLicenseApplication extends Model
         'groom_consent_residence',
         'groom_id_type',
         'groom_id_number',
+        'groom_id_issued_at',
+        'groom_id_issued_on',
         'bride_first_name',
         'bride_middle_name',
         'bride_last_name',
@@ -76,12 +78,16 @@ class ManualMarriageLicenseApplication extends Model
         'bride_consent_residence',
         'bride_id_type',
         'bride_id_number',
+        'bride_id_issued_at',
+        'bride_id_issued_on',
     ];
 
     protected $casts = [
         'groom_birth_date' => 'date',
         'groom_dissolution_date' => 'date',
+        'groom_id_issued_on' => 'date',
         'bride_birth_date' => 'date',
         'bride_dissolution_date' => 'date',
+        'bride_id_issued_on' => 'date',
     ];
 }
