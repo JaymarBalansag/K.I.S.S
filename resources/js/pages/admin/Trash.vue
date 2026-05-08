@@ -4,7 +4,7 @@
             <div class="text-white">
                 <span class="badge glass-pill text-warning rounded-pill px-4 py-2 mb-3 fw-bold">TRASH BIN</span>
                 <h2 class="fw-bold mb-1">Admin Trash</h2>
-                <p class="opacity-75 mb-0">Restore or permanently delete applications and appointments.</p>
+                <p class="opacity-75 mb-0">Restore or permanently delete applications, appointments, and cohabitations.</p>
             </div>
             <button class="btn btn-outline-light rounded-pill px-4" @click="refreshAll" :disabled="loading">
                 <i class="bi bi-arrow-clockwise me-2"></i> Refresh
@@ -22,6 +22,11 @@
                     :class="activeTab === 'appointments' ? 'btn-info text-dark' : 'btn-outline-light text-white'"
                     @click="activeTab = 'appointments'">
                     <i class="bi bi-calendar-check me-2"></i> Appointments
+                </button>
+                <button class="btn rounded-pill px-4 fw-bold"
+                    :class="activeTab === 'cohabitations' ? 'btn-info text-dark' : 'btn-outline-light text-white'"
+                    @click="activeTab = 'cohabitations'">
+                    <i class="bi bi-people-fill me-2"></i> Cohabitations
                 </button>
             </div>
         </div>
@@ -69,7 +74,7 @@
                     </div>
                 </div>
 
-                <div v-else>
+                <div v-else-if="activeTab === 'appointments'">
                     <div v-if="appointments.length" class="table-responsive">
                         <table class="table align-middle trash-table mb-0">
                             <thead>
@@ -106,6 +111,42 @@
                         <p class="mb-0">No trashed appointments.</p>
                     </div>
                 </div>
+
+                <div v-else>
+                    <div v-if="cohabitations.length" class="table-responsive">
+                        <table class="table align-middle trash-table mb-0">
+                            <thead>
+                                <tr class="text-uppercase small opacity-75 ls-1">
+                                    <th class="text-white border-0">Control No.</th>
+                                    <th class="text-white border-0">Couple Name</th>
+                                    <th class="text-white border-0">Deleted</th>
+                                    <th class="text-white border-0 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in cohabitations" :key="item.id" class="glass-row">
+                                    <td class="text-white fw-semibold border-0">{{ item.control_number }}</td>
+                                    <td class="text-white border-0">{{ item.coupleNames }}</td>
+                                    <td class="text-white opacity-75 border-0">{{ formatDate(item.deleted_at) }}</td>
+                                    <td class="border-0 text-center">
+                                        <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                            <button class="btn btn-action-glass text-success" @click="restoreCohabitation(item)">
+                                                <i class="bi bi-arrow-counterclockwise me-1"></i> Restore
+                                            </button>
+                                            <button class="btn btn-action-glass text-danger" @click="eraseCohabitation(item)">
+                                                <i class="bi bi-trash3 me-1"></i> Erase
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div v-else class="text-center text-white opacity-75 py-5">
+                        <i class="bi bi-trash display-4 d-block mb-2"></i>
+                        <p class="mb-0">No trashed cohabitations.</p>
+                    </div>
+                </div>
             </template>
         </div>
     </div>
@@ -122,6 +163,7 @@ export default {
             activeTab: 'applications',
             applications: [],
             appointments: [],
+            cohabitations: [],
             loading: false,
         };
     },
@@ -132,9 +174,10 @@ export default {
         async refreshAll() {
             this.loading = true;
             try {
-                const [appRes, aptRes] = await Promise.all([
+                const [appRes, aptRes, cohabRes] = await Promise.all([
                     api.get('/applications/trash'),
-                    api.get('/Appointments/trash')
+                    api.get('/Appointments/trash'),
+                    api.get('/cohabitations/trash', { params: { per_page: 100, order: 'desc' } }),
                 ]);
 
                 const appPayload = appRes?.data?.data?.data || [];
@@ -149,9 +192,21 @@ export default {
 
                 const aptPayload = Array.isArray(aptRes?.data) ? aptRes.data : (aptRes?.data?.data || []);
                 this.appointments = Array.isArray(aptPayload) ? aptPayload : [];
+
+                const cohabPaginated = cohabRes?.data?.data;
+                const cohabPayload = cohabPaginated?.data || [];
+                this.cohabitations = Array.isArray(cohabPayload)
+                    ? cohabPayload.map((row) => ({
+                        id: row.id,
+                        control_number: row.control_number,
+                        coupleNames: `${row.groom_name || '—'} & ${row.bride_name || '—'}`,
+                        deleted_at: row.deleted_at,
+                    }))
+                    : [];
             } catch (error) {
                 this.applications = [];
                 this.appointments = [];
+                this.cohabitations = [];
                 Swal.fire('Error', 'Unable to load trash items.', 'error');
             } finally {
                 this.loading = false;
@@ -211,6 +266,28 @@ export default {
                 action: async () => {
                     await api.delete(`/Appointments/${apt.id}/force`);
                     this.appointments = this.appointments.filter(item => item.id !== apt.id);
+                }
+            });
+        },
+        async restoreCohabitation(item) {
+            await this.confirmAndRun({
+                title: 'Restore cohabitation?',
+                text: `Restore ${item.control_number} back to active list?`,
+                confirmColor: '#16a34a',
+                action: async () => {
+                    await api.patch(`/cohabitations/${item.id}/restore`);
+                    this.cohabitations = this.cohabitations.filter(row => row.id !== item.id);
+                }
+            });
+        },
+        async eraseCohabitation(item) {
+            await this.confirmAndRun({
+                title: 'Erase cohabitation?',
+                text: `Permanently delete ${item.control_number}?`,
+                confirmColor: '#ef4444',
+                action: async () => {
+                    await api.delete(`/cohabitations/${item.id}/force`);
+                    this.cohabitations = this.cohabitations.filter(row => row.id !== item.id);
                 }
             });
         },
