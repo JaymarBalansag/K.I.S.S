@@ -62,6 +62,8 @@ class ManualMarriageLicenseApplicationResource extends JsonResource
                 'consent_residence' => $this->groom_consent_residence,
                 'id_type' => $this->groom_id_type,
                 'id_number' => $this->groom_id_number,
+                'id_issued_at' => $this->groom_id_issued_at,
+                'id_issued_on' => optional($this->groom_id_issued_on)?->toDateString(),
             ],
             'bride' => [
                 'first_name' => $this->bride_first_name,
@@ -97,6 +99,8 @@ class ManualMarriageLicenseApplicationResource extends JsonResource
                 'consent_residence' => $this->bride_consent_residence,
                 'id_type' => $this->bride_id_type,
                 'id_number' => $this->bride_id_number,
+                'id_issued_at' => $this->bride_id_issued_at,
+                'id_issued_on' => optional($this->bride_id_issued_on)?->toDateString(),
             ],
             'created_at' => optional($this->created_at)?->toIso8601String(),
             'updated_at' => optional($this->updated_at)?->toIso8601String(),

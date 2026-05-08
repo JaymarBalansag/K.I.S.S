@@ -423,6 +423,8 @@ const createPerson = (sex = '') => ({
     consent_residence: '',
     id_type: '',
     id_number: '',
+    id_issued_at: '',
+    id_issued_on: '',
 });
 
 export default {
@@ -469,6 +471,8 @@ export default {
                 { key: 'civil_status', label: 'Civil Status', type: 'select', col: 'col-md-4', required: true, options: ['Single', 'Widowed', 'Divorced', 'Annulled'] },
                 { key: 'id_type', label: 'ID Type', type: 'text', col: 'col-md-4', required: true, placeholder: 'e.g. PhilSys ID' },
                 { key: 'id_number', label: 'ID Number', type: 'text', col: 'col-md-4', required: true },
+                { key: 'id_issued_at', label: 'Issued At', type: 'text', col: 'col-md-4', required: true, placeholder: 'e.g. LCR / DFA / LTO' },
+                { key: 'id_issued_on', label: 'Issued On', type: 'date', col: 'col-md-4', required: true },
             ],
             locationFields: [
                 { key: 'birth_city', label: 'Birth City/Municipality', col: 'col-md-4', required: true },
