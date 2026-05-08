@@ -91,8 +91,16 @@ class AppointmentController extends Controller
     public function index()
     {
         try {
-            // Retrieve appointments, latest first
-            $appointments = Appointment::orderBy('requested_date', 'desc')->get();
+            $appointments = DB::table('appointments')
+                ->leftJoin('users as confirmed_by', 'appointments.confirmed_by_id', '=', 'confirmed_by.id')
+                ->leftJoin('users as cancelled_by', 'appointments.cancelled_by_id', '=', 'cancelled_by.id')
+                ->select(
+                    'appointments.*',
+                    DB::raw("TRIM(CONCAT(COALESCE(confirmed_by.first_name,''),' ',COALESCE(confirmed_by.last_name,''))) as confirmed_by_name"),
+                    DB::raw("TRIM(CONCAT(COALESCE(cancelled_by.first_name,''),' ',COALESCE(cancelled_by.last_name,''))) as cancelled_by_name")
+                )
+                ->orderBy('appointments.requested_date', 'desc')
+                ->get();
 
             // Return as a clean JSON array
             return response()->json($appointments, 200);
@@ -115,9 +123,23 @@ class AppointmentController extends Controller
                 'status' => 'required|string|in:pending,confirmed,cancelled'
             ]);
 
-            $appointment->update([
-                'status' => $validated['status']
-            ]);
+            $now = now();
+            $actorId = optional($request->user())->id;
+            $updates = [
+                'status' => $validated['status'],
+            ];
+
+            if ($actorId) {
+                if ($validated['status'] === 'confirmed') {
+                    $updates['confirmed_by_id'] = $actorId;
+                    $updates['confirmed_at'] = $now;
+                } elseif ($validated['status'] === 'cancelled') {
+                    $updates['cancelled_by_id'] = $actorId;
+                    $updates['cancelled_at'] = $now;
+                }
+            }
+
+            $appointment->update($updates);
 
             return response()->json([
                 'success' => true,
