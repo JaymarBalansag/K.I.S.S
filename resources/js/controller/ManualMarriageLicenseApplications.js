@@ -17,3 +17,8 @@ export async function viewManualMarriageLicenseApplication(id) {
     const response = await api.get(`/manual-applications/${id}`);
     return response;
 }
+
+export async function updateManualMarriageLicenseApplication(id, payload) {
+    const response = await api.patch(`/manual-applications/${id}`, payload);
+    return response;
+}

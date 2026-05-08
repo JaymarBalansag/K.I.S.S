@@ -78,7 +78,7 @@
                                     <p class="text-white-50 mb-0">Optional, but helpful when the couple wants updates later.</p>
                                 </div>
                                 <div class="contact-input-wrap">
-                                    <input v-model="form.phone_number" type="text" class="form-control glass-input"
+                                    <input v-model.trim="form.phone_number" type="text" class="form-control glass-input"
                                         placeholder="09XXXXXXXXX">
                                 </div>
                             </div>
@@ -305,13 +305,33 @@
                                 <td class="text-white border-0">{{ record.couple_names }}</td>
                                 <td class="text-white-50 border-0">{{ formatDate(record.created_at) }}</td>
                                 <td class="border-0 text-center">
-                                    <div class="d-flex justify-content-center gap-2 flex-wrap">
-                                        <button class="btn btn-action-glass text-info" @click="viewRecord(record.id)">
-                                            <i class="bi bi-eye-fill me-1"></i> View
+                                    <div class="dropdown">
+                                        <button
+                                            class="btn btn-action-glass text-white dropdown-toggle"
+                                            type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                        >
+                                            Actions
                                         </button>
-                                        <button class="btn btn-action-glass text-warning" @click="openPrintModal(record)">
-                                            <i class="bi bi-printer-fill me-1"></i> Print
-                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-dark">
+                                            <li>
+                                                <button class="dropdown-item" type="button" @click="viewRecord(record.id)">
+                                                    <i class="bi bi-eye-fill me-2"></i> View
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item" type="button" @click="openEdit(record.id)">
+                                                    <i class="bi bi-pencil-square me-2"></i> Edit
+                                                </button>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <button class="dropdown-item" type="button" @click="openPrintModal(record)">
+                                                    <i class="bi bi-printer-fill me-2"></i> Print
+                                                </button>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </td>
                             </tr>
@@ -404,6 +424,193 @@
         </div>
     </div>
 
+    <div v-if="showEditModal" class="modal-overlay-custom">
+        <div class="modal-body-custom rounded-5 shadow-2xl p-0 border border-white border-opacity-20">
+            <div class="modal-glass-header p-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="badge bg-primary bg-opacity-10 text-primary text-uppercase mb-2 x-small ls-1 px-3 border border-primary border-opacity-20">
+                        Edit Walk-In Record
+                    </span>
+                    <h4 class="fw-bold mb-0 text-white">{{ editRecordControlNumber || 'Manual Application' }}</h4>
+                </div>
+                <button class="btn-close btn-close-white opacity-50" @click="closeEditModal" :disabled="isUpdating"></button>
+            </div>
+
+            <div class="p-4">
+                <div class="detail-card rounded-4 p-4 mb-4">
+                    <h6 class="text-white opacity-75 fw-bold mb-3">Shared Details</h6>
+                    <label class="form-label text-white fw-semibold">Contact Number</label>
+                    <input v-model.trim="editForm.phone_number" type="text" class="form-control glass-input" placeholder="09XXXXXXXXX">
+                </div>
+
+                <div class="person-toggle mb-3">
+                    <button
+                        v-for="personKey in personOrder"
+                        :key="`edit-person-${personKey}`"
+                        type="button"
+                        class="person-tab person-tab-lg"
+                        :class="{ active: editActivePerson === personKey }"
+                        @click="editActivePerson = personKey"
+                    >
+                        <span>{{ personLabels[personKey] }}</span>
+                    </button>
+                </div>
+
+                <div class="section-switch mb-3">
+                    <button type="button" class="section-switch-btn"
+                        :class="{ active: editActiveSection === 'identity' }"
+                        @click="editActiveSection = 'identity'">
+                        <div>
+                            <strong>Identity</strong>
+                            <small>Required details.</small>
+                        </div>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button type="button" class="section-switch-btn"
+                        :class="{ active: editActiveSection === 'address' }"
+                        @click="editActiveSection = 'address'">
+                        <div>
+                            <strong>Birthplace & Address</strong>
+                            <small>Birthplace and residence.</small>
+                        </div>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button type="button" class="section-switch-btn"
+                        :class="{ active: editActiveSection === 'parents' }"
+                        @click="editActiveSection = 'parents'">
+                        <div>
+                            <strong>Parents</strong>
+                            <small>Father and mother details.</small>
+                        </div>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button type="button" class="section-switch-btn"
+                        :class="{ active: editActiveSection === 'optional' }"
+                        @click="editActiveSection = 'optional'">
+                        <div>
+                            <strong>Optional</strong>
+                            <small>Printable optional fields.</small>
+                        </div>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button type="button" class="section-switch-btn"
+                        :class="{ active: editActiveSection === 'consent' }"
+                        @click="editActiveSection = 'consent'">
+                        <div>
+                            <strong>Consent</strong>
+                            <small>Optional consent fields.</small>
+                        </div>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="detail-card rounded-4 p-4">
+                    <div class="row g-3" v-if="editActiveSection === 'identity'">
+                        <div v-for="field in primaryFields" :key="`edit-${editActivePerson}-${field.key}`" :class="field.col">
+                            <label class="form-label text-white fw-semibold">
+                                {{ field.label }}<span v-if="field.required" class="text-danger ms-1">*</span>
+                            </label>
+                            <select v-if="field.type === 'select'" v-model="editForm[editActivePerson][field.key]" class="form-select glass-input">
+                                <option value="" disabled>Select {{ field.label }}</option>
+                                <option v-for="option in field.options" :key="option" :value="option">{{ option }}</option>
+                            </select>
+                            <input
+                                v-else-if="field.key === 'id_type'"
+                                v-model="editForm[editActivePerson][field.key]"
+                                :type="field.type"
+                                class="form-control glass-input"
+                                :placeholder="field.placeholder || field.label"
+                                list="id-type-suggestions"
+                            >
+                            <input v-else v-model="editForm[editActivePerson][field.key]"
+                                :type="field.type" class="form-control glass-input"
+                                :placeholder="field.placeholder || field.label"
+                                @input="field.key === 'birth_date' ? syncEditAge(editActivePerson) : null">
+                        </div>
+                    </div>
+
+                    <div class="row g-3" v-else-if="editActiveSection === 'address'">
+                        <div v-for="field in locationFields" :key="`edit-${editActivePerson}-${field.key}`" :class="field.col">
+                            <label class="form-label text-white fw-semibold">
+                                {{ field.label }}<span v-if="field.required" class="text-danger ms-1">*</span>
+                            </label>
+                            <textarea v-if="field.type === 'textarea'" v-model="editForm[editActivePerson][field.key]"
+                                class="form-control glass-input" rows="3"
+                                :placeholder="field.placeholder || field.label"></textarea>
+                            <input v-else v-model="editForm[editActivePerson][field.key]" type="text" class="form-control glass-input"
+                                :placeholder="field.placeholder || field.label">
+                        </div>
+                    </div>
+
+                    <div class="row g-3" v-else-if="editActiveSection === 'parents'">
+                        <div v-for="field in parentFields" :key="`edit-${editActivePerson}-${field.key}`" :class="field.col">
+                            <label class="form-label text-white fw-semibold">
+                                {{ field.label }}<span v-if="field.required" class="text-danger ms-1">*</span>
+                            </label>
+                            <textarea v-if="field.type === 'textarea'" v-model="editForm[editActivePerson][field.key]"
+                                class="form-control glass-input" rows="3"
+                                :placeholder="field.placeholder || field.label"></textarea>
+                            <input v-else v-model="editForm[editActivePerson][field.key]" type="text" class="form-control glass-input"
+                                :placeholder="field.placeholder || field.label">
+                        </div>
+                    </div>
+
+                    <div class="row g-3" v-else-if="editActiveSection === 'optional'">
+                        <div v-for="field in optionalFields" :key="`edit-${editActivePerson}-${field.key}`" :class="field.col">
+                            <label class="form-label text-white fw-semibold">{{ field.label }}</label>
+                            <textarea v-if="field.type === 'textarea'" v-model="editForm[editActivePerson][field.key]"
+                                class="form-control glass-input" rows="3"
+                                :placeholder="field.placeholder || field.label"></textarea>
+                            <input v-else v-model="editForm[editActivePerson][field.key]" :type="field.type"
+                                class="form-control glass-input" :placeholder="field.placeholder || field.label">
+                        </div>
+                    </div>
+
+                    <div class="row g-3" v-else>
+                        <div v-for="field in consentFields" :key="`edit-${editActivePerson}-${field.key}`" :class="field.col">
+                            <label class="form-label text-white fw-semibold">{{ field.label }}</label>
+                            <textarea v-if="field.type === 'textarea'" v-model="editForm[editActivePerson][field.key]"
+                                class="form-control glass-input" rows="3"
+                                :placeholder="field.placeholder || field.label"></textarea>
+                            <input v-else v-model="editForm[editActivePerson][field.key]" :type="field.type"
+                                class="form-control glass-input" :placeholder="field.placeholder || field.label">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-outline-light fw-bold px-4" @click="closeEditModal" :disabled="isUpdating">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary fw-bold px-4" @click="submitEdit" :disabled="isUpdating || showEditConfirm">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+
+            <div v-if="showEditConfirm" class="confirm-overlay" @click.self="cancelEditConfirm">
+                <div class="confirm-modal rounded-4 p-4">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+                        <div class="text-white">
+                            <div class="fw-bold fs-5">Are you sure?</div>
+                            <div class="small opacity-75">Save changes to {{ editRecordControlNumber }}.</div>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white opacity-50" @click="cancelEditConfirm" :disabled="isUpdating"></button>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 mt-4 flex-wrap">
+                        <button type="button" class="btn btn-outline-light fw-bold px-4" @click="cancelEditConfirm" :disabled="isUpdating">
+                            Not sure
+                        </button>
+                        <button type="button" class="btn btn-primary fw-bold px-4" @click="confirmEditUpdate" :disabled="isUpdating">
+                            <span v-if="isUpdating" class="spinner-border spinner-border-sm me-2"></span>
+                            Yes, I'm sure
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div v-if="showPrintModal" class="modal-overlay">
         <div class="print-modal-content">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -431,6 +638,7 @@ import Swal from 'sweetalert2';
 import {
     getManualMarriageLicenseApplications,
     storeManualMarriageLicenseApplication,
+    updateManualMarriageLicenseApplication,
     viewManualMarriageLicenseApplication
 } from '../../controller/ManualMarriageLicenseApplications';
 
@@ -552,6 +760,18 @@ export default {
             records: [],
             selectedRecord: null,
             showDetailsModal: false,
+            showEditModal: false,
+            editRecordId: null,
+            editRecordControlNumber: '',
+            editForm: {
+                phone_number: '',
+                groom: createPerson('Male'),
+                bride: createPerson('Female'),
+            },
+            editActivePerson: 'groom',
+            editActiveSection: 'identity',
+            isUpdating: false,
+            showEditConfirm: false,
             showPrintModal: false,
             isPrintPreviewLoading: false,
             isPrinting: false,
@@ -748,6 +968,115 @@ export default {
         formatDetailValue(value) {
             if (!this.hasValue(value)) return 'N/A';
             return String(value);
+        },
+        syncEditAge(personKey) {
+            const birthDate = this.editForm[personKey].birth_date;
+            if (!birthDate) return;
+
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age -= 1;
+            }
+
+            this.editForm[personKey].age = age > 0 ? age : '';
+        },
+        normalizeEditPerson(personKey, data = {}) {
+            const base = createPerson(personKey === 'groom' ? 'Male' : 'Female');
+            return {
+                ...base,
+                ...data,
+            };
+        },
+        async openEdit(id) {
+            try {
+                const response = await viewManualMarriageLicenseApplication(id);
+                const record = response.data?.data || null;
+                if (!record) return;
+
+                this.editRecordId = record.id;
+                this.editRecordControlNumber = record.control_number;
+                this.editForm = {
+                    phone_number: record.phone_number || '',
+                    groom: this.normalizeEditPerson('groom', record.groom || {}),
+                    bride: this.normalizeEditPerson('bride', record.bride || {}),
+                };
+                this.editActivePerson = 'groom';
+                this.editActiveSection = 'identity';
+                this.showEditConfirm = false;
+                this.showEditModal = true;
+            } catch (error) {
+                const message = error.response?.data?.message || 'Unable to load the manual application for editing.';
+                await Swal.fire({
+                    title: 'Load failed',
+                    text: message,
+                    icon: 'error',
+                    background: '#0f172a',
+                    color: '#fff',
+                });
+            }
+        },
+        closeEditModal(force = false) {
+            if (this.isUpdating && !force) return;
+            this.showEditModal = false;
+            this.editRecordId = null;
+            this.editRecordControlNumber = '';
+            this.editForm = {
+                phone_number: '',
+                groom: createPerson('Male'),
+                bride: createPerson('Female'),
+            };
+            this.editActivePerson = 'groom';
+            this.editActiveSection = 'identity';
+            this.showEditConfirm = false;
+        },
+        async submitEdit() {
+            if (!this.editRecordId) return;
+            this.showEditConfirm = true;
+        },
+        cancelEditConfirm() {
+            if (this.isUpdating) return;
+            this.showEditConfirm = false;
+        },
+        async confirmEditUpdate() {
+            if (!this.editRecordId) return;
+            const recordId = this.editRecordId;
+            this.isUpdating = true;
+            try {
+                await updateManualMarriageLicenseApplication(recordId, this.editForm);
+                this.showEditConfirm = false;
+                this.closeEditModal(true);
+                await Swal.fire({
+                    title: 'Updated',
+                    text: 'Manual application updated successfully.',
+                    icon: 'success',
+                    background: '#0f172a',
+                    color: '#fff',
+                });
+                await this.fetchRecords();
+
+                if (this.showDetailsModal && this.selectedRecord?.id === recordId) {
+                    const refreshed = await viewManualMarriageLicenseApplication(recordId);
+                    this.selectedRecord = refreshed.data?.data || this.selectedRecord;
+                }
+            } catch (error) {
+                const message = error.response?.data?.message || 'Unable to update the manual application.';
+                const validationErrors = error.response?.data?.errors;
+                const validationText = validationErrors ? Object.values(validationErrors).flat().join('\n') : message;
+                await Swal.fire({
+                    title: 'Update failed',
+                    text: validationText,
+                    icon: 'error',
+                    background: '#0f172a',
+                    color: '#fff',
+                });
+            } finally {
+                this.isUpdating = false;
+                this.showEditConfirm = false;
+            }
         }
     },
     mounted() {
@@ -1320,6 +1649,30 @@ export default {
 .detail-grid :deep(input),
 .detail-grid :deep(select) {
     width: 100%;
+}
+
+.edit-confirm {
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1300;
+    background: rgba(2, 6, 23, 0.72);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.confirm-modal {
+    width: min(520px, 100%);
+    background: rgba(15, 23, 42, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
 }
 
 .print-modal-content {
