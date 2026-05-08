@@ -129,7 +129,7 @@ class ManualMarriageLicenseApplicationController extends Controller
     private function generateControlNumber(): string
     {
         do {
-            $controlNumber = 'MAN-' . now()->format('Ymd') . '-' . Str::upper(Str::random(5));
+            $controlNumber = Str::upper(Str::random(5));
         } while (ManualMarriageLicenseApplication::query()->where('control_number', $controlNumber)->exists());
 
         return $controlNumber;
