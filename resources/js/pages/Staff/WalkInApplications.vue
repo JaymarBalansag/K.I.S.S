@@ -143,22 +143,30 @@
                                             <h6>Identity</h6>
                                             <p>Name, birthday, age, and civil profile.</p>
                                         </div>
-                                        <div class="row g-3">
-                                            <div v-for="field in primaryFields" :key="`${activePerson}-${field.key}`" :class="field.col">
-                                                <label class="form-label text-white fw-semibold">
-                                                    {{ field.label }}<span v-if="field.required" class="text-danger ms-1">*</span>
-                                                </label>
-                                                <input v-if="field.type !== 'select'" v-model="form[activePerson][field.key]"
-                                                    :type="field.type" class="form-control glass-input"
-                                                    :placeholder="field.placeholder || field.label"
-                                                    @input="field.key === 'birth_date' ? syncAge(activePerson) : null">
-                                                <select v-else v-model="form[activePerson][field.key]" class="form-select glass-input">
-                                                    <option value="" disabled>Select {{ field.label }}</option>
-                                                    <option v-for="option in field.options" :key="option" :value="option">{{ option }}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
+                                         <div class="row g-3">
+                                             <div v-for="field in primaryFields" :key="`${activePerson}-${field.key}`" :class="field.col">
+                                                 <label class="form-label text-white fw-semibold">
+                                                     {{ field.label }}<span v-if="field.required" class="text-danger ms-1">*</span>
+                                                 </label>
+                                                 <select v-if="field.type === 'select'" v-model="form[activePerson][field.key]" class="form-select glass-input">
+                                                     <option value="" disabled>Select {{ field.label }}</option>
+                                                     <option v-for="option in field.options" :key="option" :value="option">{{ option }}</option>
+                                                 </select>
+                                                 <input
+                                                     v-else-if="field.key === 'id_type'"
+                                                     v-model="form[activePerson][field.key]"
+                                                     :type="field.type"
+                                                     class="form-control glass-input"
+                                                     :placeholder="field.placeholder || field.label"
+                                                     list="id-type-suggestions"
+                                                 >
+                                                 <input v-else v-model="form[activePerson][field.key]"
+                                                     :type="field.type" class="form-control glass-input"
+                                                     :placeholder="field.placeholder || field.label"
+                                                     @input="field.key === 'birth_date' ? syncAge(activePerson) : null">
+                                             </div>
+                                         </div>
+                                     </div>
 
                                     <div class="section-card" v-show="activeSection === 'address'">
                                         <div class="section-header">
@@ -203,24 +211,16 @@
                                             <h6>Optional Printable Details</h6>
                                             <p>Fill these only if applicable. Leave blank if not needed.</p>
                                         </div>
-                                        <div class="row g-3">
-                                            <div v-for="field in optionalFields" :key="`${activePerson}-${field.key}`" :class="field.col">
-                                                <label class="form-label text-white fw-semibold">{{ field.label }}</label>
-                                                <textarea v-if="field.type === 'textarea'" v-model="form[activePerson][field.key]"
-                                                    class="form-control glass-input" rows="3"
-                                                    :placeholder="field.placeholder || field.label"></textarea>
-                                                <input
-                                                    v-else-if="field.key === 'id_type'"
-                                                    v-model="form[activePerson][field.key]"
-                                                    :type="field.type"
-                                                    class="form-control glass-input"
-                                                    :placeholder="field.placeholder || field.label"
-                                                    list="id-type-suggestions"
-                                                >
-                                                <input v-else v-model="form[activePerson][field.key]" :type="field.type"
-                                                    class="form-control glass-input" :placeholder="field.placeholder || field.label">
-                                            </div>
-                                        </div>
+                                         <div class="row g-3">
+                                             <div v-for="field in optionalFields" :key="`${activePerson}-${field.key}`" :class="field.col">
+                                                 <label class="form-label text-white fw-semibold">{{ field.label }}</label>
+                                                 <textarea v-if="field.type === 'textarea'" v-model="form[activePerson][field.key]"
+                                                     class="form-control glass-input" rows="3"
+                                                     :placeholder="field.placeholder || field.label"></textarea>
+                                                 <input v-else v-model="form[activePerson][field.key]" :type="field.type"
+                                                     class="form-control glass-input" :placeholder="field.placeholder || field.label">
+                                             </div>
+                                         </div>
 
                                         <div class="optional-subtitle">Person Giving Consent (Optional)</div>
                                         <div class="row g-3">
@@ -467,6 +467,8 @@ export default {
                 { key: 'citizenship', label: 'Citizenship', type: 'text', col: 'col-md-3', required: true },
                 { key: 'religion', label: 'Religion', type: 'text', col: 'col-md-4', required: true },
                 { key: 'civil_status', label: 'Civil Status', type: 'select', col: 'col-md-4', required: true, options: ['Single', 'Widowed', 'Divorced', 'Annulled'] },
+                { key: 'id_type', label: 'ID Type', type: 'text', col: 'col-md-4', required: true, placeholder: 'e.g. PhilSys ID' },
+                { key: 'id_number', label: 'ID Number', type: 'text', col: 'col-md-4', required: true },
             ],
             locationFields: [
                 { key: 'birth_city', label: 'Birth City/Municipality', col: 'col-md-4', required: true },
@@ -491,8 +493,6 @@ export default {
                 { key: 'dissolution_place', label: 'Place Dissolved', type: 'text', col: 'col-md-3' },
                 { key: 'dissolution_date', label: 'Date Dissolved', type: 'date', col: 'col-md-3' },
                 { key: 'relationship_degree', label: 'Relationship Degree', type: 'text', col: 'col-md-4', placeholder: 'Leave blank if none' },
-                { key: 'id_type', label: 'ID Type', type: 'text', col: 'col-md-4', placeholder: 'e.g. PhilSys ID' },
-                { key: 'id_number', label: 'ID Number', type: 'text', col: 'col-md-4' },
             ],
             consentFields: [
                 { key: 'consent_name', label: 'Person Giving Consent', type: 'text', col: 'col-md-6', placeholder: 'Full name of parent or guardian' },
