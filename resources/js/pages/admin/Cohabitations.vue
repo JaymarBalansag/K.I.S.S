@@ -8,22 +8,7 @@
                         Cohabitation Requests
                     </span>
                     <h2 class="text-white fw-bold text-shadow-heavy mb-0">Admin Cohabitation Registry</h2>
-                    <div class="text-white-50 mt-2">View, edit, trash, restore, or erase cohabitation records.</div>
-                </div>
-            </div>
-
-            <div class="glass-card p-3 p-md-4 mb-4">
-                <div class="d-flex flex-wrap gap-2">
-                    <button class="btn rounded-pill px-4 fw-bold"
-                        :class="activeTab === 'active' ? 'btn-info text-dark' : 'btn-outline-light text-white'"
-                        @click="setTab('active')">
-                        <i class="bi bi-list-ul me-2"></i> Active
-                    </button>
-                    <button class="btn rounded-pill px-4 fw-bold"
-                        :class="activeTab === 'trash' ? 'btn-warning text-dark' : 'btn-outline-light text-white'"
-                        @click="setTab('trash')">
-                        <i class="bi bi-trash3 me-2"></i> Trash
-                    </button>
+                    <div class="text-white-50 mt-2">View, edit, and trash cohabitation records. Restore/erase from Admin Trash.</div>
                 </div>
             </div>
 
@@ -71,8 +56,7 @@
                                 <th class="px-4 py-3 text-white border-0">Control Number</th>
                                 <th class="py-3 text-white border-0">Couple</th>
                                 <th class="py-3 text-white border-0">Cohab Start</th>
-                                <th v-if="activeTab === 'active'" class="py-3 text-white border-0">Submitted</th>
-                                <th v-else class="py-3 text-white border-0">Deleted</th>
+                                <th class="py-3 text-white border-0">Submitted</th>
                                 <th class="py-3 text-center text-white border-0">Actions</th>
                             </tr>
                         </thead>
@@ -91,24 +75,17 @@
                                     </div>
                                 </td>
                                 <td class="text-white opacity-75 border-0">{{ formatDate(row.cohabitation_start_date) }}</td>
-                                <td v-if="activeTab === 'active'" class="text-white opacity-75 border-0">{{ formatDateTime(row.created_at) }}</td>
-                                <td v-else class="text-white opacity-75 border-0">{{ formatDateTime(row.deleted_at) }}</td>
+                                <td class="text-white opacity-75 border-0">{{ formatDateTime(row.created_at) }}</td>
                                 <td class="text-center border-0 rounded-end-4 px-4">
                                     <div class="d-flex justify-content-center gap-2 flex-wrap">
                                         <button class="btn btn-action-glass text-white" @click="openView(row)">
                                             <i class="bi bi-eye me-1"></i> View
                                         </button>
-                                        <button v-if="activeTab === 'active'" class="btn btn-action-glass text-white" @click="openEdit(row)">
+                                        <button class="btn btn-action-glass text-white" @click="openEdit(row)">
                                             <i class="bi bi-pencil-square me-1"></i> Edit
                                         </button>
-                                        <button v-if="activeTab === 'active'" class="btn btn-action-glass text-warning" @click="trashRow(row)">
+                                        <button class="btn btn-action-glass text-warning" @click="trashRow(row)">
                                             <i class="bi bi-trash3 me-1"></i> Trash
-                                        </button>
-                                        <button v-if="activeTab === 'trash'" class="btn btn-action-glass text-success" @click="restoreRow(row)">
-                                            <i class="bi bi-arrow-counterclockwise me-1"></i> Restore
-                                        </button>
-                                        <button v-if="activeTab === 'trash'" class="btn btn-action-glass text-danger" @click="eraseRow(row)">
-                                            <i class="bi bi-x-octagon me-1"></i> Erase
                                         </button>
                                     </div>
                                 </td>
@@ -125,8 +102,7 @@
                         </div>
 
                         <p class="small text-white opacity-50 mb-1">Start: {{ formatDate(row.cohabitation_start_date) }}</p>
-                        <p v-if="activeTab === 'active'" class="small text-white opacity-50 mb-1">Submitted: {{ formatDateTime(row.created_at) }}</p>
-                        <p v-else class="small text-white opacity-50 mb-1">Deleted: {{ formatDateTime(row.deleted_at) }}</p>
+                        <p class="small text-white opacity-50 mb-1">Submitted: {{ formatDateTime(row.created_at) }}</p>
                         <p class="small text-white opacity-50 mb-4">Ref: {{ row.control_number }}</p>
 
                         <div class="d-flex gap-2 flex-wrap">
@@ -134,18 +110,11 @@
                                 <i class="bi bi-eye-fill me-1"></i> View
                             </button>
 
-                            <button v-if="activeTab === 'active'" class="btn btn-action-glass text-white flex-grow-1" @click="openEdit(row)">
+                            <button class="btn btn-action-glass text-white flex-grow-1" @click="openEdit(row)">
                                 <i class="bi bi-pencil-square me-1"></i> Edit
                             </button>
-                            <button v-if="activeTab === 'active'" class="btn btn-action-glass text-warning" @click="trashRow(row)">
+                            <button class="btn btn-action-glass text-warning" @click="trashRow(row)">
                                 <i class="bi bi-trash3-fill"></i>
-                            </button>
-
-                            <button v-if="activeTab === 'trash'" class="btn btn-action-glass text-success flex-grow-1" @click="restoreRow(row)">
-                                <i class="bi bi-arrow-counterclockwise me-1"></i> Restore
-                            </button>
-                            <button v-if="activeTab === 'trash'" class="btn btn-action-glass text-danger" @click="eraseRow(row)">
-                                <i class="bi bi-x-octagon-fill"></i>
                             </button>
                         </div>
                     </div>
@@ -335,11 +304,8 @@
 import Swal from 'sweetalert2';
 import {
     deleteCohabitation,
-    forceDeleteCohabitation,
     getCohabitation,
     listCohabitations,
-    restoreCohabitation,
-    trashCohabitations,
     updateCohabitation,
 } from '../../controller/CohabitationManagement';
 
@@ -356,7 +322,6 @@ export default {
     name: 'AdminCohabitations',
     data() {
         return {
-            activeTab: 'active',
             isLoading: false,
             isModalLoading: false,
             isSaving: false,
@@ -381,12 +346,6 @@ export default {
         }
     },
     methods: {
-        setTab(tab) {
-            if (this.activeTab === tab) return;
-            this.activeTab = tab;
-            this.page = 1;
-            this.fetchList();
-        },
         formatDate(value) {
             if (!value) return '—';
             try {
@@ -410,8 +369,7 @@ export default {
         async fetchList() {
             this.isLoading = true;
             try {
-                const apiFn = this.activeTab === 'trash' ? trashCohabitations : listCohabitations;
-                const res = await apiFn({
+                const res = await listCohabitations({
                     search: this.search || undefined,
                     order: this.order,
                     page: this.page,
@@ -548,72 +506,6 @@ export default {
                 await Swal.fire({
                     title: 'Error',
                     text: 'Failed to trash record.',
-                    icon: 'error',
-                    background: '#1e293b',
-                    color: '#fff',
-                });
-            }
-        },
-        async restoreRow(row) {
-            const result = await Swal.fire({
-                title: 'Restore record?',
-                text: `Restore ${row.control_number} back to active list?`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#16a34a',
-                cancelButtonColor: '#64748b',
-                background: '#1e293b',
-                color: '#fff',
-            });
-            if (!result.isConfirmed) return;
-
-            try {
-                await restoreCohabitation(row.id);
-                await Swal.fire({
-                    title: 'Restored',
-                    text: 'Record restored successfully.',
-                    icon: 'success',
-                    background: '#1e293b',
-                    color: '#fff',
-                });
-                await this.fetchList();
-            } catch (e) {
-                await Swal.fire({
-                    title: 'Error',
-                    text: 'Failed to restore record.',
-                    icon: 'error',
-                    background: '#1e293b',
-                    color: '#fff',
-                });
-            }
-        },
-        async eraseRow(row) {
-            const result = await Swal.fire({
-                title: 'Erase permanently?',
-                text: `This will permanently delete ${row.control_number}. This cannot be undone.`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ef4444',
-                cancelButtonColor: '#64748b',
-                background: '#1e293b',
-                color: '#fff',
-            });
-            if (!result.isConfirmed) return;
-
-            try {
-                await forceDeleteCohabitation(row.id);
-                await Swal.fire({
-                    title: 'Deleted',
-                    text: 'Record permanently deleted.',
-                    icon: 'success',
-                    background: '#1e293b',
-                    color: '#fff',
-                });
-                await this.fetchList();
-            } catch (e) {
-                await Swal.fire({
-                    title: 'Error',
-                    text: 'Failed to erase record.',
                     icon: 'error',
                     background: '#1e293b',
                     color: '#fff',
