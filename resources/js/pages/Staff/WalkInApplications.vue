@@ -341,17 +341,62 @@
             </div>
 
             <div class="p-4">
+                <div class="detail-card rounded-4 p-4 mb-4">
+                    <h6 class="text-white opacity-75 fw-bold mb-3">Shared Details</h6>
+                    <div class="detail-line mb-0">
+                        <span>Contact Number</span>{{ selectedRecord.phone_number || 'N/A' }}
+                    </div>
+                </div>
+
                 <div class="row g-4">
                     <div v-for="personKey in personOrder" :key="`details-${personKey}`" class="col-md-6">
                         <div class="detail-card rounded-4 p-4 h-100">
                             <h5 class="text-white fw-bold mb-3">{{ personLabels[personKey] }}</h5>
-                            <div class="detail-line"><span>Name</span>{{ fullName(selectedRecord[personKey]) }}</div>
-                            <div class="detail-line"><span>Birth Date</span>{{ selectedRecord[personKey].birth_date || 'N/A' }}</div>
-                            <div class="detail-line"><span>Age</span>{{ selectedRecord[personKey].age }}</div>
-                            <div class="detail-line"><span>Citizenship</span>{{ selectedRecord[personKey].citizenship }}</div>
-                            <div class="detail-line"><span>Civil Status</span>{{ selectedRecord[personKey].civil_status }}</div>
-                            <div class="detail-line"><span>Residence</span>{{ selectedRecord[personKey].residence_address }}</div>
-                            <div class="detail-line"><span>Consent By</span>{{ selectedRecord[personKey].consent_name || 'NOT APPLICABLE' }}</div>
+
+                            <details class="detail-section" open>
+                                <summary>Identity</summary>
+                                <div class="detail-grid">
+                                    <div v-for="field in primaryFields" :key="`view-${personKey}-${field.key}`" class="detail-line">
+                                        <span>{{ field.label }}</span>{{ formatDetailValue(selectedRecord[personKey][field.key]) }}
+                                    </div>
+                                </div>
+                            </details>
+
+                            <details class="detail-section">
+                                <summary>Birthplace & Address</summary>
+                                <div class="detail-grid">
+                                    <div v-for="field in locationFields" :key="`view-${personKey}-${field.key}`" class="detail-line">
+                                        <span>{{ field.label }}</span>{{ formatDetailValue(selectedRecord[personKey][field.key]) }}
+                                    </div>
+                                </div>
+                            </details>
+
+                            <details class="detail-section">
+                                <summary>Parents</summary>
+                                <div class="detail-grid">
+                                    <div v-for="field in parentFields" :key="`view-${personKey}-${field.key}`" class="detail-line">
+                                        <span>{{ field.label }}</span>{{ formatDetailValue(selectedRecord[personKey][field.key]) }}
+                                    </div>
+                                </div>
+                            </details>
+
+                            <details class="detail-section">
+                                <summary>Optional Printable Details</summary>
+                                <div class="detail-grid">
+                                    <div v-for="field in optionalFields" :key="`view-${personKey}-${field.key}`" class="detail-line">
+                                        <span>{{ field.label }}</span>{{ formatDetailValue(selectedRecord[personKey][field.key]) }}
+                                    </div>
+                                </div>
+                            </details>
+
+                            <details class="detail-section">
+                                <summary>Consent (Optional)</summary>
+                                <div class="detail-grid">
+                                    <div v-for="field in consentFields" :key="`view-${personKey}-${field.key}`" class="detail-line">
+                                        <span>{{ field.label }}</span>{{ formatDetailValue(selectedRecord[personKey][field.key]) }}
+                                    </div>
+                                </div>
+                            </details>
                         </div>
                     </div>
                 </div>
@@ -699,6 +744,10 @@ export default {
             if (value === null || value === undefined) return false;
             if (typeof value === 'number') return Number.isFinite(value);
             return String(value).trim() !== '';
+        },
+        formatDetailValue(value) {
+            if (!this.hasValue(value)) return 'N/A';
+            return String(value);
         }
     },
     mounted() {
@@ -1229,6 +1278,48 @@ export default {
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: rgba(255, 255, 255, 0.5);
+}
+
+.detail-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.detail-section summary {
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 700;
+    list-style: none;
+}
+
+.detail-section summary::-webkit-details-marker {
+    display: none;
+}
+
+.detail-grid {
+    margin-top: 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem 1rem;
+}
+
+.detail-grid .detail-line {
+    margin-bottom: 0;
+}
+
+.detail-grid .detail-line span {
+    margin-bottom: 0.15rem;
+}
+
+.detail-grid .detail-line:last-child {
+    margin-bottom: 0;
+}
+
+.detail-grid :deep(textarea),
+.detail-grid :deep(input),
+.detail-grid :deep(select) {
+    width: 100%;
 }
 
 .print-modal-content {
