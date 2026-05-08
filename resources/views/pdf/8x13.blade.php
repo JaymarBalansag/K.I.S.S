@@ -284,6 +284,8 @@
         .g-civil-registrar,
         .b-civil-registrar {
             top: 1180px;
+            font-weight: bold;
+            text-transform: uppercase;
         }
 
         /* ---------------- LEFT OFFSETS (COLUMN ALIGNMENT) ---------------- */
@@ -739,6 +741,10 @@
         [$bFatherFirst, $bFatherMiddle, $bFatherLast] = $splitWords($bride['father_name'] ?? '', 3);
         [$gMotherFirst, $gMotherMiddle, $gMotherLast] = $splitWords($groom['mother_name'] ?? '', 3);
         [$bMotherFirst, $bMotherMiddle, $bMotherLast] = $splitWords($bride['mother_name'] ?? '', 3);
+        $gDissolvedRaw = trim((string) ($groom['date_dissolved'] ?? ''));
+        $bDissolvedRaw = trim((string) ($bride['date_dissolved'] ?? ''));
+        $gDissolvedIsNA = strcasecmp(preg_replace('/\s+/', ' ', $gDissolvedRaw), 'NOT APPLICABLE') === 0;
+        $bDissolvedIsNA = strcasecmp(preg_replace('/\s+/', ' ', $bDissolvedRaw), 'NOT APPLICABLE') === 0;
         @endphp
 
         <div class="data province">{{ $meta['province'] ?? '' }}</div>
@@ -766,9 +772,15 @@
         <div class="data g-place-dissolved g-place-municipality">{{ $gDissolveMunicipality ?? '' }}</div>
         <div class="data g-place-dissolved g-place-province">{{ $gDissolveProvince ?? '' }}</div>
         <div class="data g-place-dissolved g-place-country">{{ $gDissolveCountry ?? '' }}</div>
+        @if($gDissolvedIsNA)
+        <div class="data g-date-dissolved g-disolve-day">NOT APPLICABLE</div>
+        <div class="data g-date-dissolved g-disolve-month"></div>
+        <div class="data g-date-dissolved g-disolve-year"></div>
+        @else
         <div class="data g-date-dissolved g-disolve-day">{{ $gDissolveDay ?? '' }}</div>
         <div class="data g-date-dissolved g-disolve-month">{{ $gDissolveMonth ?? '' }}</div>
         <div class="data g-date-dissolved g-disolve-year">{{ $gDissolveYear ?? '' }}</div>
+        @endif
         <div class="data g-relationship">{{ $groom['relationship'] ?? '' }}</div>
         <div class="data g-fathername g-f-fname">{{ $gFatherFirst ?? '' }}</div>
         <div class="data g-fathername g-f-mname">{{ $gFatherMiddle ?? '' }}</div>
@@ -816,9 +828,15 @@
         <div class="data b-place-dissolved b-disolve-municipality">{{ $bDissolveMunicipality ?? '' }}</div>
         <div class="data b-place-dissolved b-disolve-province">{{ $bDissolveProvince ?? '' }}</div>
         <div class="data b-place-dissolved b-disolve-country">{{ $bDissolveCountry ?? '' }}</div>
+        @if($bDissolvedIsNA)
+        <div class="data b-date-dissolved b-date-dissolved-day">NOT APPLICABLE</div>
+        <div class="data b-date-dissolved b-date-dissolved-month"></div>
+        <div class="data b-date-dissolved b-date-dissolved-year"></div>
+        @else
         <div class="data b-date-dissolved b-date-dissolved-day">{{ $bDissolveDay ?? '' }}</div>
         <div class="data b-date-dissolved b-date-dissolved-month">{{ $bDissolveMonth ?? '' }}</div>
         <div class="data b-date-dissolved b-date-dissolved-year">{{ $bDissolveYear ?? '' }}</div>
+        @endif
         <div class="data b-relationship">{{ $bride['relationship'] ?? '' }}</div>
         <div class="data b-fathername b-father-first">{{ $bFatherFirst ?? '' }}</div>
         <div class="data b-fathername b-father-middle">{{ $bFatherMiddle ?? '' }}</div>
