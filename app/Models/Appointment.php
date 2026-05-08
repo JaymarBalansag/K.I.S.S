@@ -19,6 +19,10 @@ class Appointment extends Model
         'phone_number',
         'control_number', // Add this!
         'requested_date',
-        'status'
+        'status',
+        'confirmed_by_id',
+        'confirmed_at',
+        'cancelled_by_id',
+        'cancelled_at',
     ];
 }
