@@ -45,20 +45,11 @@ class MarriageApplicationController extends Controller
             'bride' => array_keys($request->file('documents_bride', [])),
         ];
         $requiredDocKeys = [
-            'groom' => ['cenomar', 'psa', 'govtIssuedId', 'pmocCertificate'],
-            'bride' => ['cenomar', 'psa', 'govtIssuedId', 'pmocCertificate'],
+            // PMOC certificate and parental documents are issued/handled in person,
+            // so they are not collected as part of the online application uploads.
+            'groom' => ['cenomar', 'psa', 'govtIssuedId'],
+            'bride' => ['cenomar', 'psa', 'govtIssuedId'],
         ];
-
-        if ($groomRequirement === 'parental-consent') {
-            $requiredDocKeys['groom'][] = 'parentalConsent';
-        } elseif ($groomRequirement === 'parental-advise') {
-            $requiredDocKeys['groom'][] = 'parentalAdvise';
-        }
-        if ($brideRequirement === 'parental-consent') {
-            $requiredDocKeys['bride'][] = 'parentalConsent';
-        } elseif ($brideRequirement === 'parental-advise') {
-            $requiredDocKeys['bride'][] = 'parentalAdvise';
-        }
 
         if (in_array($type, ['groom', 'both'], true)) {
             $requiredDocKeys['groom'] = array_merge($requiredDocKeys['groom'], ['legalCapacity', 'validPassport']);
