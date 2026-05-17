@@ -57,8 +57,30 @@
                                                     class="form-label fw-bold small text-uppercase text-info tracking-wider">
                                                     {{ doc === 'govtIssuedId' ? 'Government Issued ID' : doc ===
                                                         'pmocCertificate' ? 'PMOC Certificate' : doc.toUpperCase() }}
-                                                    <span class="text-danger">*</span>
+                                                    <span v-if="doc !== 'pmocCertificate' || pmocCertificateStatus === 'yes'"
+                                                        class="text-danger">*</span>
                                                 </label>
+                                            </div>
+
+                                            <div v-if="doc === 'pmocCertificate'" class="col-12">
+                                                <p class="mb-2 smallest text-white-50 text-uppercase letter-spaced">
+                                                    Do you have a PMOC Certificate?
+                                                </p>
+                                                <div class="btn-group" role="group" aria-label="PMOC Certificate availability">
+                                                    <button type="button" class="btn btn-sm"
+                                                        :class="pmocCertificateStatus === 'yes' ? 'btn-success' : 'btn-outline-light'"
+                                                        @click="setPmocCertificateStatus('yes')">
+                                                        Yes
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm"
+                                                        :class="pmocCertificateStatus === 'no' ? 'btn-danger' : 'btn-outline-light'"
+                                                        @click="setPmocCertificateStatus('no')">
+                                                        No
+                                                    </button>
+                                                </div>
+                                                <div v-if="pmocCertificateStatus === 'no'" class="smallest text-white-50 mt-2">
+                                                    You can proceed without uploading a PMOC Certificate.
+                                                </div>
                                             </div>
 
                                             <div class="col-md-6 border-md-end border-white-10">
@@ -124,7 +146,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div v-if="doc !== 'govtIssuedId' || isGovtIdDetailsComplete('groom')"
+                                                <div v-if="(doc !== 'govtIssuedId' || isGovtIdDetailsComplete('groom')) && (doc !== 'pmocCertificate' || pmocCertificateStatus === 'yes')"
                                                     class="glass-upload-container position-relative"
                                                     :class="{ 'mt-3': doc === 'govtIssuedId' }">
                                                     <input type="file" class="file-input-overlay"
@@ -226,7 +248,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div v-if="doc !== 'govtIssuedId' || isGovtIdDetailsComplete('bride')"
+                                                <div v-if="(doc !== 'govtIssuedId' || isGovtIdDetailsComplete('bride')) && (doc !== 'pmocCertificate' || pmocCertificateStatus === 'yes')"
                                                     class="glass-upload-container position-relative"
                                                     :class="{ 'mt-3': doc === 'govtIssuedId' }">
                                                     <input type="file" class="file-input-overlay"
@@ -1545,6 +1567,7 @@ export default {
                 url: '',
                 title: ''
             },
+            pmocCertificateStatus: '',
             form: {
                 contact_number: '',
                 groom: {
@@ -1767,6 +1790,26 @@ export default {
             } else {
                 this.brideAgeError = message;
             }
+        },
+        setPmocCertificateStatus(value) {
+            const normalized = value === 'yes' ? 'yes' : value === 'no' ? 'no' : '';
+            if (!normalized || this.pmocCertificateStatus === normalized) return;
+
+            if (normalized === 'no') {
+                this.revokePreviewUrlIfBlob('groom', 'pmocCertificate');
+                this.revokePreviewUrlIfBlob('bride', 'pmocCertificate');
+
+                if (this.form?.groom?.documents) delete this.form.groom.documents.pmocCertificate;
+                if (this.form?.bride?.documents) delete this.form.bride.documents.pmocCertificate;
+
+                if (this.previews?.groom) this.previews.groom.pmocCertificate = null;
+                if (this.previews?.bride) this.previews.bride.pmocCertificate = null;
+
+                if (this.fileTypes?.groom) this.fileTypes.groom.pmocCertificate = '';
+                if (this.fileTypes?.bride) this.fileTypes.bride.pmocCertificate = '';
+            }
+
+            this.pmocCertificateStatus = normalized;
         },
         handleFileUpload(event, person, docType) {
             const file = event.target.files[0];
@@ -2362,9 +2405,18 @@ export default {
 
             // Current form flow is 4 steps only:
             // 1 = Documents, 2 = Groom, 3 = Bride, 4 = Review/Submit
-            if (this.totalSteps === 4) {
-                if (this.step === 1) {
-                    const baseDocs = ['cenomar', 'psa', 'govtIssuedId', 'pmocCertificate'];
+                if (this.totalSteps === 4) {
+                    if (this.step === 1) {
+                    if (this.pmocCertificateStatus !== 'yes' && this.pmocCertificateStatus !== 'no') {
+                        this.message.push("Please select Yes/No for PMOC Certificate.");
+                        this.scrollToError();
+                        return;
+                    }
+
+                    const baseDocs = ['cenomar', 'psa', 'govtIssuedId'];
+                    if (this.pmocCertificateStatus === 'yes') {
+                        baseDocs.push('pmocCertificate');
+                    }
                     const missingGroomBase = baseDocs.some((doc) => !this.form.groom.documents[doc]);
                     const missingBrideBase = baseDocs.some((doc) => !this.form.bride.documents[doc]);
 
@@ -2716,7 +2768,7 @@ export default {
                         currentRequiredDocs = ['pmocCertificate'];
                         isGroomMissing = currentRequiredDocs.some(doc => !this.form.groom.documents[doc]);
                         isBrideMissing = currentRequiredDocs.some(doc => !this.form.bride.documents[doc]);
-                        if (isGroomMissing || isBrideMissing) {
+                        if (this.pmocCertificateStatus === 'yes' && (isGroomMissing || isBrideMissing)) {
                             this.message.push("Please upload the PMOC Certificate.");
                         }
                         break;
