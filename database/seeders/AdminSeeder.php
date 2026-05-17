@@ -16,7 +16,7 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         DB::table('users')->updateOrInsert(
-            ['email' => 'admin@gmail.com'], // prevent duplicates
+            ['email' => 'madilyn@gmail.com'], // prevent duplicates
             [
                 'first_name' => 'Madilyn',
                 'last_name'  => 'Merano',
