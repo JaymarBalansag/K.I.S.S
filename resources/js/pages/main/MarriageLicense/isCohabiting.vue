@@ -92,9 +92,9 @@ export default {
       }
 
       return [
-        { key: 'age-18-21', title: '18 to less than 21 years old', icon: '18', description: 'Needs parental consent.', gradient: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', value: 'parental-consent' },
-        { key: 'age-21-25', title: '21 to less than 25 years old', icon: '21', description: 'Needs parental advice.', gradient: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', value: 'parental-advise' },
-        { key: 'age-25-up', title: '25 years old or over', icon: '25+', description: 'No parental advice / consent required.', gradient: 'linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)', value: 'no-need' }
+        { key: 'age-18-21', title: '18 to less than 21 years old', icon: '18', description: '', gradient: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', value: 'parental-consent' },
+        { key: 'age-21-25', title: '21 to less than 25 years old', icon: '21', description: '', gradient: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', value: 'parental-advise' },
+        { key: 'age-25-up', title: '25 years old or over', icon: '25+', description: '', gradient: 'linear-gradient(135deg, #ff6a00 0%, #ee0979 100%)', value: 'no-need' }
       ];
     }
   },

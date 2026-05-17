@@ -50,13 +50,12 @@
                                                     Files</span></div>
                                         </div>
 
-                                        <div v-for="doc in ['cenomar', 'psa', 'govtIssuedId', 'pmocCertificate']"
+                                        <div v-for="doc in ['cenomar', 'psa', 'govtIssuedId']"
                                             :key="doc" class="row g-4 mb-5 border-bottom border-white-10 pb-4">
                                             <div class="col-12">
                                                 <label
                                                     class="form-label fw-bold small text-uppercase text-info tracking-wider">
-                                                    {{ doc === 'govtIssuedId' ? 'Government Issued ID' : doc ===
-                                                        'pmocCertificate' ? 'PMOC Certificate' : doc.toUpperCase() }}
+                                                    {{ doc === 'govtIssuedId' ? 'Government Issued ID' : doc.toUpperCase() }}
                                                     <span class="text-danger">*</span>
                                                 </label>
                                             </div>
@@ -92,7 +91,16 @@
                                                             <option value="Voter's ID">Voter's ID</option>
                                                             <option value="PRC ID">PRC ID</option>
                                                             <option value="Senior Citizen ID">Senior Citizen ID</option>
+                                                            <option value="Other">Other</option>
                                                         </select>
+                                                    </div>
+                                                    <div v-if="form.groom.govtIssuedIdType === 'Other'" class="mb-2">
+                                                        <label class="form-label fw-bold small text-info text-uppercase">
+                                                            Other ID Type <span class="text-danger">*</span>
+                                                        </label>
+                                                        <input class="form-control"
+                                                            v-model="form.groom.govtIssuedIdTypeOther"
+                                                            placeholder="Enter ID type">
                                                     </div>
                                                     <div class="mb-2">
                                                         <label class="form-label fw-bold small text-info text-uppercase">
@@ -194,7 +202,16 @@
                                                             <option value="Voter's ID">Voter's ID</option>
                                                             <option value="PRC ID">PRC ID</option>
                                                             <option value="Senior Citizen ID">Senior Citizen ID</option>
+                                                            <option value="Other">Other</option>
                                                         </select>
+                                                    </div>
+                                                    <div v-if="form.bride.govtIssuedIdType === 'Other'" class="mb-2">
+                                                        <label class="form-label fw-bold small text-info text-uppercase">
+                                                            Other ID Type <span class="text-danger">*</span>
+                                                        </label>
+                                                        <input class="form-control"
+                                                            v-model="form.bride.govtIssuedIdTypeOther"
+                                                            placeholder="Enter ID type">
                                                     </div>
                                                     <div class="mb-2">
                                                         <label class="form-label fw-bold small text-info text-uppercase">
@@ -264,162 +281,6 @@
                                                     <i class="bi bi-lock me-1"></i> Step 2 of 2 will unlock after
                                                     completing all ID details.
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                        <div v-if="!(brideRequirement == 'no-need' && groomRequirement == 'no-need')"
-                                            class="mt-5 animate-fade-in">
-                                            <h5 class="text-info small fw-bold text-uppercase mb-4"><i
-                                                    class="bi bi-people me-2"></i> Parental Requirements (By Age)</h5>
-                                            <div class="row g-4 border-bottom border-white-10 pb-4">
-
-                                                <div
-                                                    :class="brideRequirement === 'no-need' ? 'col-12' : 'col-md-6 border-md-end border-white-10'">
-
-                                                    <div v-if="groomRequirement == 'parental-consent'" class="mb-3">
-                                                        <label
-                                                            class="form-label fw-bold small text-info text-uppercase">Parental
-                                                            Consent (Groom)</label>
-                                                        <div class="glass-upload-container position-relative">
-                                                            <input type="file" class="file-input-overlay"
-                                                                @change="handleFileUpload($event, 'groom', 'parentalConsent')"
-                                                                accept=".pdf,application/pdf" />
-                                                            <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
-                                                                :class="{ 'has-file': previews.groom.parentalConsent }">
-                                                                <div v-if="!previews.groom.parentalConsent">
-                                                                    <i
-                                                                        class="bi bi-file-earmark-arrow-up text-white-50"></i>
-                                                                    <p class="smallest text-white-50">Upload Consent</p>
-                                                                </div>
-                                                                <div v-else class="animate-fade-in">
-                                                                    <button
-                                                                        v-if="isPdf('groom', 'parentalConsent')"
-                                                                        type="button" class="btn btn-sm btn-outline-info preview-trigger-btn"
-                                                                        @click.stop="openPreviewModal(previews.groom.parentalConsent, 'Groom Parental Consent')">
-                                                                        Preview
-                                                                    </button>
-                                                                    <button v-if="previews.groom.parentalConsent"
-                                                                        type="button"
-                                                                        class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
-                                                                        @click.stop="triggerReplaceFromButton($event)">
-                                                                        Replace
-                                                                    </button>
-                                                                    <div v-else class="text-info small">Consent Loaded</div>
-                                                                    <div class="glass-badge-sm">Selected</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div v-if="groomRequirement == 'parental-advise'" class="mb-3">
-                                                        <label
-                                                            class="form-label fw-bold small text-info text-uppercase">Parental
-                                                            Advice (Groom)</label>
-                                                        <div class="glass-upload-container position-relative">
-                                                            <input type="file" class="file-input-overlay"
-                                                                @change="handleFileUpload($event, 'groom', 'parentalAdvise')"
-                                                                accept=".pdf,application/pdf" />
-                                                            <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
-                                                                :class="{ 'has-file': previews.groom.parentalAdvise }">
-                                                                <div v-if="!previews.groom.parentalAdvise">
-                                                                    <i
-                                                                        class="bi bi-file-earmark-arrow-up text-white-50"></i>
-                                                                    <p class="smallest text-white-50">Upload Advice</p>
-                                                                </div>
-                                                                <div v-else class="animate-fade-in">
-                                                                    <button
-                                                                        v-if="isPdf('groom', 'parentalAdvise')"
-                                                                        type="button" class="btn btn-sm btn-outline-info preview-trigger-btn"
-                                                                        @click.stop="openPreviewModal(previews.groom.parentalAdvise, 'Groom Parental Advice')">
-                                                                        Preview
-                                                                    </button>
-                                                                    <button v-if="previews.groom.parentalAdvise"
-                                                                        type="button"
-                                                                        class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
-                                                                        @click.stop="triggerReplaceFromButton($event)">
-                                                                        Replace
-                                                                    </button>
-                                                                    <div v-else class="text-info small">Advice Loaded</div>
-                                                                    <div class="glass-badge-sm">Selected</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div :class="groomRequirement === 'no-need' ? 'col-12' : 'col-md-6'">
-
-                                                    <div v-if="brideRequirement == 'parental-consent'" class="mb-3">
-                                                        <label
-                                                            class="form-label fw-bold small text-info text-uppercase">Parental
-                                                            Consent (Bride)</label>
-                                                        <div class="glass-upload-container position-relative">
-                                                            <input type="file" class="file-input-overlay"
-                                                                @change="handleFileUpload($event, 'bride', 'parentalConsent')"
-                                                                accept=".pdf,application/pdf" />
-                                                            <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
-                                                                :class="{ 'has-file': previews.bride.parentalConsent }">
-                                                                <div v-if="!previews.bride.parentalConsent">
-                                                                    <i
-                                                                        class="bi bi-file-earmark-arrow-up text-white-50"></i>
-                                                                    <p class="smallest text-white-50">Upload Consent</p>
-                                                                </div>
-                                                                <div v-else class="animate-fade-in">
-                                                                    <button
-                                                                        v-if="isPdf('bride', 'parentalConsent')"
-                                                                        type="button" class="btn btn-sm btn-outline-info preview-trigger-btn"
-                                                                        @click.stop="openPreviewModal(previews.bride.parentalConsent, 'Bride Parental Consent')">
-                                                                        Preview
-                                                                    </button>
-                                                                    <button v-if="previews.bride.parentalConsent"
-                                                                        type="button"
-                                                                        class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
-                                                                        @click.stop="triggerReplaceFromButton($event)">
-                                                                        Replace
-                                                                    </button>
-                                                                    <div v-else class="text-info small">Consent Loaded</div>
-                                                                    <div class="glass-badge-sm">Selected</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div v-if="brideRequirement == 'parental-advise'" class="mb-3">
-                                                        <label
-                                                            class="form-label fw-bold small text-info text-uppercase">Parental
-                                                            Advice (Bride)</label>
-                                                        <div class="glass-upload-container position-relative">
-                                                            <input type="file" class="file-input-overlay"
-                                                                @change="handleFileUpload($event, 'bride', 'parentalAdvise')"
-                                                                accept=".pdf,application/pdf" />
-                                                            <div class="glass-placeholder border-glass rounded-3 p-3 text-center"
-                                                                :class="{ 'has-file': previews.bride.parentalAdvise }">
-                                                                <div v-if="!previews.bride.parentalAdvise">
-                                                                    <i
-                                                                        class="bi bi-file-earmark-arrow-up text-white-50"></i>
-                                                                    <p class="smallest text-white-50">Upload Advice</p>
-                                                                </div>
-                                                                <div v-else class="animate-fade-in">
-                                                                    <button
-                                                                        v-if="isPdf('bride', 'parentalAdvise')"
-                                                                        type="button" class="btn btn-sm btn-outline-info preview-trigger-btn"
-                                                                        @click.stop="openPreviewModal(previews.bride.parentalAdvise, 'Bride Parental Advice')">
-                                                                        Preview
-                                                                    </button>
-                                                                    <button v-if="previews.bride.parentalAdvise"
-                                                                        type="button"
-                                                                        class="btn btn-sm btn-outline-light preview-trigger-btn ms-2"
-                                                                        @click.stop="triggerReplaceFromButton($event)">
-                                                                        Replace
-                                                                    </button>
-                                                                    <div v-else class="text-info small">Advice Loaded</div>
-                                                                    <div class="glass-badge-sm">Selected</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
                                             </div>
                                         </div>
 
@@ -1551,6 +1412,7 @@ export default {
                     documents: {},
                     sex: "Male",
                     govtIssuedIdType: '',
+                    govtIssuedIdTypeOther: '',
                     govtIssuedIdNumber: '',
                     govtIssuedIdIssuedAt: '',
                     govtIssuedIdIssuedOn: ''
@@ -1559,6 +1421,7 @@ export default {
                     documents: {},
                     sex: "Female",
                     govtIssuedIdType: '',
+                    govtIssuedIdTypeOther: '',
                     govtIssuedIdNumber: '',
                     govtIssuedIdIssuedAt: '',
                     govtIssuedIdIssuedOn: ''
@@ -1801,7 +1664,6 @@ export default {
         },
         getDocumentDisplayLabel(docType) {
             if (docType === 'govtIssuedId') return 'Government Issued ID';
-            if (docType === 'pmocCertificate') return 'PMOC Certificate';
             return String(docType || '').toUpperCase();
         },
         openPreviewModal(url, title = 'Document Preview') {
@@ -1832,10 +1694,18 @@ export default {
                 URL.revokeObjectURL(preview);
             }
         },
+        getEffectiveGovtIssuedIdType(person) {
+            const profile = this.form?.[person] || {};
+            const selected = String(profile.govtIssuedIdType || '').trim();
+            if (selected === 'Other') {
+                return String(profile.govtIssuedIdTypeOther || '').trim();
+            }
+            return selected;
+        },
         isGovtIdDetailsComplete(person) {
             const profile = this.form[person] || {};
             return !!(
-                profile.govtIssuedIdType &&
+                this.getEffectiveGovtIssuedIdType(person) &&
                 profile.govtIssuedIdNumber &&
                 profile.govtIssuedIdIssuedAt &&
                 profile.govtIssuedIdIssuedOn
@@ -1844,7 +1714,7 @@ export default {
         getGovtIdProgress(person) {
             const profile = this.form[person] || {};
             const fields = [
-                profile.govtIssuedIdType,
+                this.getEffectiveGovtIssuedIdType(person),
                 profile.govtIssuedIdNumber,
                 profile.govtIssuedIdIssuedAt,
                 profile.govtIssuedIdIssuedOn
@@ -2362,9 +2232,9 @@ export default {
 
             // Current form flow is 4 steps only:
             // 1 = Documents, 2 = Groom, 3 = Bride, 4 = Review/Submit
-            if (this.totalSteps === 4) {
-                if (this.step === 1) {
-                    const baseDocs = ['cenomar', 'psa', 'govtIssuedId', 'pmocCertificate'];
+                if (this.totalSteps === 4) {
+                    if (this.step === 1) {
+                    const baseDocs = ['cenomar', 'psa', 'govtIssuedId'];
                     const missingGroomBase = baseDocs.some((doc) => !this.form.groom.documents[doc]);
                     const missingBrideBase = baseDocs.some((doc) => !this.form.bride.documents[doc]);
 
@@ -2373,11 +2243,11 @@ export default {
                         this.scrollToError();
                         return;
                     }
-                    const missingGroomGovtIdDetails = !this.form.groom.govtIssuedIdType
+                    const missingGroomGovtIdDetails = !this.getEffectiveGovtIssuedIdType('groom')
                         || !this.form.groom.govtIssuedIdNumber
                         || !this.form.groom.govtIssuedIdIssuedAt
                         || !this.form.groom.govtIssuedIdIssuedOn;
-                    const missingBrideGovtIdDetails = !this.form.bride.govtIssuedIdType
+                    const missingBrideGovtIdDetails = !this.getEffectiveGovtIssuedIdType('bride')
                         || !this.form.bride.govtIssuedIdNumber
                         || !this.form.bride.govtIssuedIdIssuedAt
                         || !this.form.bride.govtIssuedIdIssuedOn;
@@ -2423,26 +2293,6 @@ export default {
                         }
                     }
 
-                    if (this.groomRequirement === "parental-consent" && !this.form.groom.documents.parentalConsent) {
-                        this.message.push("Please upload Groom parental consent document.");
-                        this.scrollToError();
-                        return;
-                    }
-                    if (this.groomRequirement === "parental-advise" && !this.form.groom.documents.parentalAdvise) {
-                        this.message.push("Please upload Groom parental advice document.");
-                        this.scrollToError();
-                        return;
-                    }
-                    if (this.brideRequirement === "parental-consent" && !this.form.bride.documents.parentalConsent) {
-                        this.message.push("Please upload Bride parental consent document.");
-                        this.scrollToError();
-                        return;
-                    }
-                    if (this.brideRequirement === "parental-advise" && !this.form.bride.documents.parentalAdvise) {
-                        this.message.push("Please upload Bride parental advice document.");
-                        this.scrollToError();
-                        return;
-                    }
                 }
 
                 if (this.step === 2) {
@@ -2693,11 +2543,11 @@ export default {
                         if (isGroomMissing || isBrideMissing) {
                             this.message.push("Please upload a Valid ID for both parties.");
                         } else {
-                            const missingGroomGovtIdDetails = !this.form.groom.govtIssuedIdType
+                            const missingGroomGovtIdDetails = !this.getEffectiveGovtIssuedIdType('groom')
                                 || !this.form.groom.govtIssuedIdNumber
                                 || !this.form.groom.govtIssuedIdIssuedAt
                                 || !this.form.groom.govtIssuedIdIssuedOn;
-                            const missingBrideGovtIdDetails = !this.form.bride.govtIssuedIdType
+                            const missingBrideGovtIdDetails = !this.getEffectiveGovtIssuedIdType('bride')
                                 || !this.form.bride.govtIssuedIdNumber
                                 || !this.form.bride.govtIssuedIdIssuedAt
                                 || !this.form.bride.govtIssuedIdIssuedOn;
@@ -2709,15 +2559,6 @@ export default {
                                 if (groomIssuedOnError) this.message.push(groomIssuedOnError);
                                 if (brideIssuedOnError) this.message.push(brideIssuedOnError);
                             }
-                        }
-                        break;
-
-                    case 4: // PMOC
-                        currentRequiredDocs = ['pmocCertificate'];
-                        isGroomMissing = currentRequiredDocs.some(doc => !this.form.groom.documents[doc]);
-                        isBrideMissing = currentRequiredDocs.some(doc => !this.form.bride.documents[doc]);
-                        if (isGroomMissing || isBrideMissing) {
-                            this.message.push("Please upload the PMOC Certificate.");
                         }
                         break;
 
@@ -2744,31 +2585,6 @@ export default {
 
                         if (missingGroomForeign || missingBrideForeign) {
                             this.message.push("Foreigner documents (Legal Capacity, Passport, Decree) are required.");
-                            this.scrollToError();
-                            return;
-                        }
-                        break;
-
-                    case 6: // Age-Based Documents (Consent/Advice)
-                        let missingGroomAge = false;
-                        let missingBrideAge = false;
-
-                        // Validation for Groom based on his specific age selection
-                        if (this.groomRequirement === "parental-consent") {
-                            if (!this.form.groom.documents.parentalConsent) missingGroomAge = true;
-                        } else if (this.groomRequirement === "parental-advise") {
-                            if (!this.form.groom.documents.parentalAdvise) missingGroomAge = true;
-                        }
-
-                        // Validation for Bride based on her specific age selection
-                        if (this.brideRequirement === "parental-consent") {
-                            if (!this.form.bride.documents.parentalConsent) missingBrideAge = true;
-                        } else if (this.brideRequirement === "parental-advise") {
-                            if (!this.form.bride.documents.parentalAdvise) missingBrideAge = true;
-                        }
-
-                        if (missingGroomAge || missingBrideAge) {
-                            this.message.push("Please upload the required Parental Consent or Advise documents.");
                             this.scrollToError();
                             return;
                         }
@@ -3275,8 +3091,20 @@ export default {
                 formData.append('type', this.type);
                 formData.append('groomRequirement', this.groomRequirement);
                 formData.append('brideRequirement', this.brideRequirement);
-                formData.append('groom', JSON.stringify(this.form.groom));
-                formData.append('bride', JSON.stringify(this.form.bride));
+                const groomPayload = { ...this.form.groom };
+                if (String(groomPayload.govtIssuedIdType || '').trim() === 'Other') {
+                    groomPayload.govtIssuedIdType = String(groomPayload.govtIssuedIdTypeOther || '').trim();
+                }
+                delete groomPayload.govtIssuedIdTypeOther;
+
+                const bridePayload = { ...this.form.bride };
+                if (String(bridePayload.govtIssuedIdType || '').trim() === 'Other') {
+                    bridePayload.govtIssuedIdType = String(bridePayload.govtIssuedIdTypeOther || '').trim();
+                }
+                delete bridePayload.govtIssuedIdTypeOther;
+
+                formData.append('groom', JSON.stringify(groomPayload));
+                formData.append('bride', JSON.stringify(bridePayload));
                 formData.append('consentSource', JSON.stringify(this.form.consentSource));
                 formData.append('contact_number', contactNumberForApi);
                 // Append all documents from the "Bucket" logic we built earlier
