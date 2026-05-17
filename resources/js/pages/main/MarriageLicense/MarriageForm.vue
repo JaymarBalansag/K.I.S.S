@@ -91,7 +91,16 @@
                                                             <option value="Voter's ID">Voter's ID</option>
                                                             <option value="PRC ID">PRC ID</option>
                                                             <option value="Senior Citizen ID">Senior Citizen ID</option>
+                                                            <option value="Other">Other</option>
                                                         </select>
+                                                    </div>
+                                                    <div v-if="form.groom.govtIssuedIdType === 'Other'" class="mb-2">
+                                                        <label class="form-label fw-bold small text-info text-uppercase">
+                                                            Other ID Type <span class="text-danger">*</span>
+                                                        </label>
+                                                        <input class="form-control"
+                                                            v-model="form.groom.govtIssuedIdTypeOther"
+                                                            placeholder="Enter ID type">
                                                     </div>
                                                     <div class="mb-2">
                                                         <label class="form-label fw-bold small text-info text-uppercase">
@@ -193,7 +202,16 @@
                                                             <option value="Voter's ID">Voter's ID</option>
                                                             <option value="PRC ID">PRC ID</option>
                                                             <option value="Senior Citizen ID">Senior Citizen ID</option>
+                                                            <option value="Other">Other</option>
                                                         </select>
+                                                    </div>
+                                                    <div v-if="form.bride.govtIssuedIdType === 'Other'" class="mb-2">
+                                                        <label class="form-label fw-bold small text-info text-uppercase">
+                                                            Other ID Type <span class="text-danger">*</span>
+                                                        </label>
+                                                        <input class="form-control"
+                                                            v-model="form.bride.govtIssuedIdTypeOther"
+                                                            placeholder="Enter ID type">
                                                     </div>
                                                     <div class="mb-2">
                                                         <label class="form-label fw-bold small text-info text-uppercase">
@@ -1394,6 +1412,7 @@ export default {
                     documents: {},
                     sex: "Male",
                     govtIssuedIdType: '',
+                    govtIssuedIdTypeOther: '',
                     govtIssuedIdNumber: '',
                     govtIssuedIdIssuedAt: '',
                     govtIssuedIdIssuedOn: ''
@@ -1402,6 +1421,7 @@ export default {
                     documents: {},
                     sex: "Female",
                     govtIssuedIdType: '',
+                    govtIssuedIdTypeOther: '',
                     govtIssuedIdNumber: '',
                     govtIssuedIdIssuedAt: '',
                     govtIssuedIdIssuedOn: ''
@@ -1674,10 +1694,18 @@ export default {
                 URL.revokeObjectURL(preview);
             }
         },
+        getEffectiveGovtIssuedIdType(person) {
+            const profile = this.form?.[person] || {};
+            const selected = String(profile.govtIssuedIdType || '').trim();
+            if (selected === 'Other') {
+                return String(profile.govtIssuedIdTypeOther || '').trim();
+            }
+            return selected;
+        },
         isGovtIdDetailsComplete(person) {
             const profile = this.form[person] || {};
             return !!(
-                profile.govtIssuedIdType &&
+                this.getEffectiveGovtIssuedIdType(person) &&
                 profile.govtIssuedIdNumber &&
                 profile.govtIssuedIdIssuedAt &&
                 profile.govtIssuedIdIssuedOn
@@ -1686,7 +1714,7 @@ export default {
         getGovtIdProgress(person) {
             const profile = this.form[person] || {};
             const fields = [
-                profile.govtIssuedIdType,
+                this.getEffectiveGovtIssuedIdType(person),
                 profile.govtIssuedIdNumber,
                 profile.govtIssuedIdIssuedAt,
                 profile.govtIssuedIdIssuedOn
@@ -2215,11 +2243,11 @@ export default {
                         this.scrollToError();
                         return;
                     }
-                    const missingGroomGovtIdDetails = !this.form.groom.govtIssuedIdType
+                    const missingGroomGovtIdDetails = !this.getEffectiveGovtIssuedIdType('groom')
                         || !this.form.groom.govtIssuedIdNumber
                         || !this.form.groom.govtIssuedIdIssuedAt
                         || !this.form.groom.govtIssuedIdIssuedOn;
-                    const missingBrideGovtIdDetails = !this.form.bride.govtIssuedIdType
+                    const missingBrideGovtIdDetails = !this.getEffectiveGovtIssuedIdType('bride')
                         || !this.form.bride.govtIssuedIdNumber
                         || !this.form.bride.govtIssuedIdIssuedAt
                         || !this.form.bride.govtIssuedIdIssuedOn;
@@ -2515,11 +2543,11 @@ export default {
                         if (isGroomMissing || isBrideMissing) {
                             this.message.push("Please upload a Valid ID for both parties.");
                         } else {
-                            const missingGroomGovtIdDetails = !this.form.groom.govtIssuedIdType
+                            const missingGroomGovtIdDetails = !this.getEffectiveGovtIssuedIdType('groom')
                                 || !this.form.groom.govtIssuedIdNumber
                                 || !this.form.groom.govtIssuedIdIssuedAt
                                 || !this.form.groom.govtIssuedIdIssuedOn;
-                            const missingBrideGovtIdDetails = !this.form.bride.govtIssuedIdType
+                            const missingBrideGovtIdDetails = !this.getEffectiveGovtIssuedIdType('bride')
                                 || !this.form.bride.govtIssuedIdNumber
                                 || !this.form.bride.govtIssuedIdIssuedAt
                                 || !this.form.bride.govtIssuedIdIssuedOn;
@@ -3063,8 +3091,20 @@ export default {
                 formData.append('type', this.type);
                 formData.append('groomRequirement', this.groomRequirement);
                 formData.append('brideRequirement', this.brideRequirement);
-                formData.append('groom', JSON.stringify(this.form.groom));
-                formData.append('bride', JSON.stringify(this.form.bride));
+                const groomPayload = { ...this.form.groom };
+                if (String(groomPayload.govtIssuedIdType || '').trim() === 'Other') {
+                    groomPayload.govtIssuedIdType = String(groomPayload.govtIssuedIdTypeOther || '').trim();
+                }
+                delete groomPayload.govtIssuedIdTypeOther;
+
+                const bridePayload = { ...this.form.bride };
+                if (String(bridePayload.govtIssuedIdType || '').trim() === 'Other') {
+                    bridePayload.govtIssuedIdType = String(bridePayload.govtIssuedIdTypeOther || '').trim();
+                }
+                delete bridePayload.govtIssuedIdTypeOther;
+
+                formData.append('groom', JSON.stringify(groomPayload));
+                formData.append('bride', JSON.stringify(bridePayload));
                 formData.append('consentSource', JSON.stringify(this.form.consentSource));
                 formData.append('contact_number', contactNumberForApi);
                 // Append all documents from the "Bucket" logic we built earlier
