@@ -279,22 +279,6 @@
                             <button class="btn btn-info text-dark fw-bold px-4 ux-action-btn" @click="openDocumentModal">
                                 <i class="bi bi-archive-fill me-2"></i>Documents
                             </button>
-                            <div class="ux-person-toggle btn-group" role="group" aria-label="Select person to view">
-                                <button type="button"
-                                    class="btn ux-toggle-btn"
-                                    :class="viewActivePerson === 'groom' ? 'btn-info text-dark fw-bold' : 'btn-outline-light text-white'"
-                                    :disabled="!hasGroomApplicant"
-                                    @click="setViewActivePerson('groom')">
-                                    Groom
-                                </button>
-                                <button type="button"
-                                    class="btn ux-toggle-btn"
-                                    :class="viewActivePerson === 'bride' ? 'btn-info text-dark fw-bold' : 'btn-outline-light text-white'"
-                                    :disabled="!hasBrideApplicant"
-                                    @click="setViewActivePerson('bride')">
-                                    Bride
-                                </button>
-                            </div>
                         </div>
                     </div>
                     <div v-if="selectedApp.coupleNames" class="mt-3">
@@ -330,6 +314,33 @@
                         </div>
                     </div>
                 </div>
+
+                <div v-if="selectedApp" class="ux-person-strip rounded-4 p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                        <div>
+                            <div class="x-small text-white opacity-50 text-uppercase ls-1">Person to View</div>
+                            <div class="text-white fw-bold ux-viewing-label">
+                                Viewing: {{ viewActivePerson === 'groom' ? 'Groom' : 'Bride' }}
+                            </div>
+                        </div>
+                        <div class="btn-group" role="group" aria-label="Select person to view">
+                            <button type="button"
+                                class="btn ux-toggle-btn"
+                                :class="viewActivePerson === 'groom' ? 'btn-info text-dark fw-bold' : 'btn-outline-light text-white'"
+                                :disabled="!hasGroomApplicant"
+                                @click="setViewActivePerson('groom')">
+                                Groom
+                            </button>
+                            <button type="button"
+                                class="btn ux-toggle-btn"
+                                :class="viewActivePerson === 'bride' ? 'btn-info text-dark fw-bold' : 'btn-outline-light text-white'"
+                                :disabled="!hasBrideApplicant"
+                                @click="setViewActivePerson('bride')">
+                                Bride
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <div class="row g-4" v-if="applicant" ref="activeApplicantCard">
                     <div v-for="person in (activeApplicant ? [activeApplicant] : [])" :key="person.id" class="col-12">
                         <div class="applicant-glass-card h-100 p-4 rounded-4"
@@ -345,82 +356,79 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="x-small text-white opacity-40 text-uppercase ls-1 d-block mb-1">Legal Full
-                                    Name</label>
+                                <label class="small text-white opacity-70 text-uppercase ls-1 d-block mb-1">Full Name</label>
                                 <h5 class="fw-bold mb-0">{{ person.first_name }} {{ person.middle_name }} {{
                                     person.last_name }}</h5>
                             </div>
 
                             <div class="row g-3 mb-4">
                                 <div class="col-6">
-                                    <label class="x-small text-white opacity-40 d-block">Birth Date</label>
-                                    <span class="small">{{ person.month }}/{{ person.day }}/{{ person.year }} (Age: {{
-                                        person.age }})</span>
+                                    <label class="small text-white opacity-70 d-block">Birth Date</label>
+                                    <span class="small">{{ formatBirthDate(person) }} <span class="text-white-50">(Age: {{ person.age }})</span></span>
                                 </div>
                                 <div class="col-6">
-                                    <label class="x-small text-white opacity-40 d-block">Citizenship/Religion</label>
+                                    <label class="small text-white opacity-70 d-block">Citizenship / Religion</label>
                                     <span class="small">{{ person.citizenship }} | {{ person.religion }}</span>
                                 </div>
                                 <div class="col-12">
-                                    <label class="x-small text-white opacity-40 d-block">Birthplace</label>
+                                    <label class="small text-white opacity-70 d-block">Place of Birth</label>
                                     <span class="small">{{ person.birth_city }}, {{ person.birth_province }}, {{
                                         person.birth_country }}</span>
                                 </div>
                                 <div class="col-12">
-                                    <label class="x-small text-white opacity-40 d-block">Current Residence</label>
+                                    <label class="small text-white opacity-70 d-block">Current Address</label>
                                     <span class="small opacity-80">{{ person.residence_address }}</span>
                                 </div>
                                 <div class="col-6">
-                                    <label class="x-small text-white opacity-40 d-block">ID Type</label>
+                                    <label class="small text-white opacity-70 d-block">Government ID Type</label>
                                     <span class="small">{{ person.government_id_type || person.id_type || '—' }}</span>
                                 </div>
                                 <div class="col-6">
-                                    <label class="x-small text-white opacity-40 d-block">ID Number</label>
+                                    <label class="small text-white opacity-70 d-block">Government ID No.</label>
                                     <span class="small">{{ person.government_id_number || person.id_number || '—' }}</span>
                                 </div>
                             </div>
 
                             <div
                                 class="p-3 rounded-4 bg-secondary bg-opacity-5 border border-white border-opacity-5 mb-3">
-                                <h6 class="x-small text-white opacity-30 text-uppercase fw-bold mb-3 ls-1">Parental
-                                    Information</h6>
+                                <h6 class="small text-white opacity-70 text-uppercase fw-bold mb-3 ls-1">Parents</h6>
                                 <div class="mb-3">
-                                    <label class="x-small text-white opacity-40 d-block">Father</label>
+                                    <label class="small text-white opacity-70 d-block">Father (Full Name)</label>
                                     <span class="small d-block fw-semibold">{{ person.father_first_name }} {{
                                         person.father_middle_name }} {{ person.father_last_name }}</span>
-                                    <span class="x-small opacity-50">{{ person.father_citizenship }} — {{
+                                    <span class="small text-white-50 d-block">{{ person.father_citizenship }} — {{
                                         person.father_residence }}</span>
                                 </div>
                                 <div class="mb-0">
-                                    <label class="x-small text-white opacity-40 d-block">Mother</label>
+                                    <label class="small text-white opacity-70 d-block">Mother (Full Name)</label>
                                     <span class="small d-block fw-semibold">{{ person.mother_first_name }} {{
                                         person.mother_middle_name }} {{ person.mother_last_name }}</span>
-                                    <span class="x-small opacity-50">{{ person.mother_citizenship }} — {{
+                                    <span class="small text-white-50 d-block">{{ person.mother_citizenship }} — {{
                                         person.mother_residence }}</span>
                                 </div>
                             </div>
 
                             <div v-if="person.parental_requirement && person.parental_requirement !== 'no-need'"
                                 class="p-3 rounded-4 bg-secondary bg-opacity-5 border border-white border-opacity-5 mb-3">
-                                <h6 class="x-small text-white opacity-30 text-uppercase fw-bold mb-3 ls-1">
+                                <h6 class="small text-white opacity-70 text-uppercase fw-bold mb-3 ls-1">
                                     Consent/Advice
                                     Source</h6>
                                 <div class="mb-2">
-                                    <label class="x-small text-white opacity-40 d-block">Requirement</label>
+                                    <label class="small text-white opacity-70 d-block">Requirement</label>
                                     <span class="small fw-semibold text-capitalize">
                                         {{ person.parental_requirement === 'parental-consent' ? 'Parental Consent' :
                                         'Parental Advice' }}
                                     </span>
                                 </div>
                                 <div class="mb-2">
-                                    <label class="x-small text-white opacity-40 d-block">Name</label>
+                                    <label class="small text-white opacity-70 d-block">Name</label>
                                     <span class="small d-block fw-semibold">
                                         {{ person.source_first_name || 'N/A' }} {{ person.source_middle_name || '' }} {{
                                         person.source_last_name || '' }}
                                     </span>
                                 </div>
                                 <div class="mb-2">
-                                    <label class="x-small text-white opacity-40 d-block">Citizenship /
+                                    <label class="small text-white opacity-70 d-block">Citizenship /
                                         Relationship</label>
                                     <span class="small d-block">
                                         {{ person.source_citizenship || 'N/A' }} | {{ person.source_relationship ||
@@ -428,8 +436,8 @@
                                     </span>
                                 </div>
                                 <div class="mb-0">
-                                    <label class="x-small text-white opacity-40 d-block">Residence</label>
-                                    <span class="x-small opacity-75">{{ person.source_residence || 'N/A' }}</span>
+                                    <label class="small text-white opacity-70 d-block">Residence</label>
+                                    <span class="small text-white-50 d-block">{{ person.source_residence || 'N/A' }}</span>
                                 </div>
                             </div>
 
@@ -1578,6 +1586,25 @@ export default {
                 (person?.applicant_type || '').toLowerCase() === type
             ) || null;
         },
+        normalizeMonthLabel(value) {
+            if (value === null || value === undefined) return '';
+            const raw = String(value).trim();
+            if (!raw) return '';
+            if (/^\d+$/.test(raw)) {
+                return this.getMonthName(raw) || raw;
+            }
+            return raw;
+        },
+        formatBirthDate(person) {
+            const day = person?.day ? String(person.day).trim() : '';
+            const month = this.normalizeMonthLabel(person?.month);
+            const year = person?.year ? String(person.year).trim() : '';
+            if (month && day && year) {
+                return `${month} ${day}, ${year}`;
+            }
+            const fallback = [month, day, year].filter(Boolean).join('/');
+            return fallback || '—';
+        },
         buildPersonFullName(person) {
             if (!person) return '';
             return [person.first_name, person.middle_name, person.last_name]
@@ -2183,6 +2210,16 @@ export default {
 .ux-summary-card {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.ux-person-strip {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.ux-viewing-label {
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
 }
 
 .ux-control-number {
