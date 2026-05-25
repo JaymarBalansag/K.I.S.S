@@ -718,6 +718,25 @@
         $parts = array_values(array_filter($parts, fn ($part) => trim($part) !== ''));
         return array_pad(array_slice($parts, 0, $count), $count, '');
         };
+        $splitPersonName = function ($value) {
+        $clean = trim((string) ($value ?? ''));
+        if ($clean === '') {
+        return ['', '', ''];
+        }
+        $parts = preg_split('/\s+/', preg_replace('/,/', ' ', $clean)) ?: [];
+        $parts = array_values(array_filter($parts, fn ($part) => trim($part) !== ''));
+        $count = count($parts);
+        if ($count === 1) {
+        return [$parts[0], '', ''];
+        }
+        if ($count === 2) {
+        return [$parts[0], '', $parts[1]];
+        }
+        $first = $parts[0];
+        $last = $parts[$count - 1];
+        $middle = trim(implode(' ', array_slice($parts, 1, -1)));
+        return [$first, $middle, $last];
+        };
         $splitComma = function ($value, $count = 3) {
         $clean = trim((string) ($value ?? ''));
         if ($clean === '') {
@@ -737,10 +756,10 @@
         [$bBirthMunicipality, $bBirthProvince, $bBirthCountry] = $splitComma($bride['birthplace'] ?? '', 3);
         [$gDissolveMunicipality, $gDissolveProvince, $gDissolveCountry] = $splitComma($groom['place_dissolved'] ?? '', 3);
         [$bDissolveMunicipality, $bDissolveProvince, $bDissolveCountry] = $splitComma($bride['place_dissolved'] ?? '', 3);
-        [$gFatherFirst, $gFatherMiddle, $gFatherLast] = $splitWords($groom['father_name'] ?? '', 3);
-        [$bFatherFirst, $bFatherMiddle, $bFatherLast] = $splitWords($bride['father_name'] ?? '', 3);
-        [$gMotherFirst, $gMotherMiddle, $gMotherLast] = $splitWords($groom['mother_name'] ?? '', 3);
-        [$bMotherFirst, $bMotherMiddle, $bMotherLast] = $splitWords($bride['mother_name'] ?? '', 3);
+        [$gFatherFirst, $gFatherMiddle, $gFatherLast] = $splitPersonName($groom['father_name'] ?? '');
+        [$bFatherFirst, $bFatherMiddle, $bFatherLast] = $splitPersonName($bride['father_name'] ?? '');
+        [$gMotherFirst, $gMotherMiddle, $gMotherLast] = $splitPersonName($groom['mother_name'] ?? '');
+        [$bMotherFirst, $bMotherMiddle, $bMotherLast] = $splitPersonName($bride['mother_name'] ?? '');
         $gDissolvedRaw = trim((string) ($groom['date_dissolved'] ?? ''));
         $bDissolvedRaw = trim((string) ($bride['date_dissolved'] ?? ''));
         $gDissolvedIsNA = strcasecmp(preg_replace('/\s+/', ' ', $gDissolvedRaw), 'NOT APPLICABLE') === 0;
