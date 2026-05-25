@@ -73,7 +73,7 @@
     <div class="footer-wrap">
       <div class="footer-box">
         <div class="footer">ATTY. MADILYN C. MADOLIN-MERANO</div>
-        <span class="registrar">Municipal Civila registrar</span>
+        <span class="registrar">Municipal Civil Registrar</span>
       </div>
     </div>
   </div>
