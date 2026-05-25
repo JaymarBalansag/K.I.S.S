@@ -592,7 +592,10 @@
                     </span>
                     <h4 class="fw-bold mb-0 text-white">Edit Application</h4>
                     <p class="text-info small mb-0 opacity-75 fw-bold mt-1">
-                        <i class="bi bi-pencil-square me-1"></i> {{ editForm.control_number || 'Application Record' }}
+                        <i class="bi bi-pencil-square me-1"></i>
+                        <span v-if="editForm.control_number">Control No: {{ editForm.control_number }}</span>
+                        <span v-else>Application Record</span>
+                        <span class="text-white-50 ms-2" v-if="editForm.id">(#{{ editForm.id }})</span>
                     </p>
                 </div>
                 <button class="btn-close btn-close-white opacity-50 hover-opacity-100" @click="closeEditModal"></button>
