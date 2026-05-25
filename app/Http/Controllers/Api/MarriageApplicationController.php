@@ -85,21 +85,17 @@ class MarriageApplicationController extends Controller
             if (empty($payload['govtIssuedIdNumber'])) {
                 $validationErrors["{$role}.govtIssuedIdNumber"] = ["{$label} Government ID number is required."];
             }
-            if (empty($payload['govtIssuedIdIssuedAt'])) {
-                $validationErrors["{$role}.govtIssuedIdIssuedAt"] = ["{$label} Government ID issued-at value is required."];
-            }
-            if (empty($payload['govtIssuedIdIssuedOn'])) {
-                $validationErrors["{$role}.govtIssuedIdIssuedOn"] = ["{$label} Government ID issued-on date is required."];
-                continue;
-            }
 
-            try {
-                $issuedOn = Carbon::createFromFormat('Y-m-d', (string) $payload['govtIssuedIdIssuedOn'])->startOfDay();
-                if ($issuedOn->lt($govtIssuedDateMin) || $issuedOn->gt($today)) {
-                    $validationErrors["{$role}.govtIssuedIdIssuedOn"] = ["{$label} Government ID issued-on date must be between 1950-01-01 and today."];
+            $issuedOnRaw = trim((string) ($payload['govtIssuedIdIssuedOn'] ?? ''));
+            if ($issuedOnRaw !== '') {
+                try {
+                    $issuedOn = Carbon::createFromFormat('Y-m-d', $issuedOnRaw)->startOfDay();
+                    if ($issuedOn->lt($govtIssuedDateMin) || $issuedOn->gt($today)) {
+                        $validationErrors["{$role}.govtIssuedIdIssuedOn"] = ["{$label} Government ID issued-on date must be between 1950-01-01 and today."];
+                    }
+                } catch (\Exception $e) {
+                    $validationErrors["{$role}.govtIssuedIdIssuedOn"] = ["{$label} Government ID issued-on date format is invalid."];
                 }
-            } catch (\Exception $e) {
-                $validationErrors["{$role}.govtIssuedIdIssuedOn"] = ["{$label} Government ID issued-on date format is invalid."];
             }
         }
 
@@ -236,16 +232,20 @@ class MarriageApplicationController extends Controller
                 ];
 
                 if ($hasGovernmentIdType) {
-                    $applicantInsert['government_id_type'] = $data['govtIssuedIdType'] ?? null;
+                    $value = trim((string) ($data['govtIssuedIdType'] ?? ''));
+                    $applicantInsert['government_id_type'] = $value !== '' ? $value : null;
                 }
                 if ($hasGovernmentIdNumber) {
-                    $applicantInsert['government_id_number'] = $data['govtIssuedIdNumber'] ?? null;
+                    $value = trim((string) ($data['govtIssuedIdNumber'] ?? ''));
+                    $applicantInsert['government_id_number'] = $value !== '' ? $value : null;
                 }
                 if ($hasGovernmentIdIssuedAt) {
-                    $applicantInsert['government_id_issued_at'] = $data['govtIssuedIdIssuedAt'] ?? null;
+                    $value = trim((string) ($data['govtIssuedIdIssuedAt'] ?? ''));
+                    $applicantInsert['government_id_issued_at'] = $value !== '' ? $value : null;
                 }
                 if ($hasGovernmentIdIssuedOn) {
-                    $applicantInsert['government_id_issued_on'] = $data['govtIssuedIdIssuedOn'] ?? null;
+                    $value = trim((string) ($data['govtIssuedIdIssuedOn'] ?? ''));
+                    $applicantInsert['government_id_issued_on'] = $value !== '' ? $value : null;
                 }
 
                 DB::table('applicants')->insert($applicantInsert);

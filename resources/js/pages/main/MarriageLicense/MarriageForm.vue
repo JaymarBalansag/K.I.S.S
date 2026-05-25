@@ -73,7 +73,7 @@
                                                             </p>
                                                         </div>
                                                         <span class="govt-id-progress-chip">
-                                                            {{ getGovtIdProgress('groom') }}/4 completed
+                                                            {{ getGovtIdProgress('groom') }}/2 completed
                                                         </span>
                                                     </div>
                                                     <div class="mb-2">
@@ -114,7 +114,7 @@
                                                         <div class="col-md-6">
                                                             <label
                                                                 class="form-label fw-bold small text-info text-uppercase">
-                                                                Issued At <span class="text-danger">*</span>
+                                                                Issued At <span class="text-white-50">(optional)</span>
                                                             </label>
                                                             <input class="form-control"
                                                                 v-model="form.groom.govtIssuedIdIssuedAt"
@@ -123,7 +123,7 @@
                                                         <div class="col-md-6">
                                                             <label
                                                                 class="form-label fw-bold small text-info text-uppercase">
-                                                                Issued On <span class="text-danger">*</span>
+                                                                Issued On <span class="text-white-50">(optional)</span>
                                                             </label>
                                                             <input type="date" class="form-control"
                                                                 :min="getGovtIdMinDateString()"
@@ -184,7 +184,7 @@
                                                             </p>
                                                         </div>
                                                         <span class="govt-id-progress-chip">
-                                                            {{ getGovtIdProgress('bride') }}/4 completed
+                                                            {{ getGovtIdProgress('bride') }}/2 completed
                                                         </span>
                                                     </div>
                                                     <div class="mb-2">
@@ -225,7 +225,7 @@
                                                         <div class="col-md-6">
                                                             <label
                                                                 class="form-label fw-bold small text-info text-uppercase">
-                                                                Issued At <span class="text-danger">*</span>
+                                                                Issued At <span class="text-white-50">(optional)</span>
                                                             </label>
                                                             <input class="form-control"
                                                                 v-model="form.bride.govtIssuedIdIssuedAt"
@@ -234,7 +234,7 @@
                                                         <div class="col-md-6">
                                                             <label
                                                                 class="form-label fw-bold small text-info text-uppercase">
-                                                                Issued On <span class="text-danger">*</span>
+                                                                Issued On <span class="text-white-50">(optional)</span>
                                                             </label>
                                                             <input type="date" class="form-control"
                                                                 :min="getGovtIdMinDateString()"
@@ -1706,9 +1706,7 @@ export default {
             const profile = this.form[person] || {};
             return !!(
                 this.getEffectiveGovtIssuedIdType(person) &&
-                profile.govtIssuedIdNumber &&
-                profile.govtIssuedIdIssuedAt &&
-                profile.govtIssuedIdIssuedOn
+                profile.govtIssuedIdNumber
             );
         },
         getGovtIdProgress(person) {
@@ -1716,8 +1714,6 @@ export default {
             const fields = [
                 this.getEffectiveGovtIssuedIdType(person),
                 profile.govtIssuedIdNumber,
-                profile.govtIssuedIdIssuedAt,
-                profile.govtIssuedIdIssuedOn
             ];
             return fields.filter(Boolean).length;
         },
@@ -1728,7 +1724,7 @@ export default {
             return '1950-01-01';
         },
         getGovtIdIssuedOnError(dateValue, personLabel) {
-            if (!dateValue) return `${personLabel} issued date is required.`;
+            if (!dateValue) return '';
 
             const minDate = this.getGovtIdMinDateString();
             const maxDate = this.getTodayDateString();
@@ -2245,28 +2241,32 @@ export default {
                     }
                     const missingGroomGovtIdDetails = !this.getEffectiveGovtIssuedIdType('groom')
                         || !this.form.groom.govtIssuedIdNumber
-                        || !this.form.groom.govtIssuedIdIssuedAt
-                        || !this.form.groom.govtIssuedIdIssuedOn;
+                        || false;
                     const missingBrideGovtIdDetails = !this.getEffectiveGovtIssuedIdType('bride')
                         || !this.form.bride.govtIssuedIdNumber
-                        || !this.form.bride.govtIssuedIdIssuedAt
-                        || !this.form.bride.govtIssuedIdIssuedOn;
+                        || false;
                     if (missingGroomGovtIdDetails || missingBrideGovtIdDetails) {
-                        this.message.push("Please complete Government Issued ID details (ID type, ID number, issued at, and issued on) for both Groom and Bride.");
+                        this.message.push("Please complete Government Issued ID details (ID type and ID number) for both Groom and Bride.");
                         this.scrollToError();
                         return;
                     }
-                    const groomIssuedOnError = this.getGovtIdIssuedOnError(this.form.groom.govtIssuedIdIssuedOn, 'Groom');
-                    if (groomIssuedOnError) {
-                        this.message.push(groomIssuedOnError);
-                        this.scrollToError();
-                        return;
+                    const groomIssuedOn = String(this.form.groom.govtIssuedIdIssuedOn || '').trim();
+                    if (groomIssuedOn) {
+                        const groomIssuedOnError = this.getGovtIdIssuedOnError(groomIssuedOn, 'Groom');
+                        if (groomIssuedOnError) {
+                            this.message.push(groomIssuedOnError);
+                            this.scrollToError();
+                            return;
+                        }
                     }
-                    const brideIssuedOnError = this.getGovtIdIssuedOnError(this.form.bride.govtIssuedIdIssuedOn, 'Bride');
-                    if (brideIssuedOnError) {
-                        this.message.push(brideIssuedOnError);
-                        this.scrollToError();
-                        return;
+                    const brideIssuedOn = String(this.form.bride.govtIssuedIdIssuedOn || '').trim();
+                    if (brideIssuedOn) {
+                        const brideIssuedOnError = this.getGovtIdIssuedOnError(brideIssuedOn, 'Bride');
+                        if (brideIssuedOnError) {
+                            this.message.push(brideIssuedOnError);
+                            this.scrollToError();
+                            return;
+                        }
                     }
 
                     if (this.type === "groom" || this.type === "both") {
@@ -2545,19 +2545,23 @@ export default {
                         } else {
                             const missingGroomGovtIdDetails = !this.getEffectiveGovtIssuedIdType('groom')
                                 || !this.form.groom.govtIssuedIdNumber
-                                || !this.form.groom.govtIssuedIdIssuedAt
-                                || !this.form.groom.govtIssuedIdIssuedOn;
+                                || false;
                             const missingBrideGovtIdDetails = !this.getEffectiveGovtIssuedIdType('bride')
                                 || !this.form.bride.govtIssuedIdNumber
-                                || !this.form.bride.govtIssuedIdIssuedAt
-                                || !this.form.bride.govtIssuedIdIssuedOn;
+                                || false;
                             if (missingGroomGovtIdDetails || missingBrideGovtIdDetails) {
-                                this.message.push("Please complete Government Issued ID details (ID type, ID number, issued at, and issued on) for both Groom and Bride.");
+                                this.message.push("Please complete Government Issued ID details (ID type and ID number) for both Groom and Bride.");
                             } else {
-                                const groomIssuedOnError = this.getGovtIdIssuedOnError(this.form.groom.govtIssuedIdIssuedOn, 'Groom');
-                                const brideIssuedOnError = this.getGovtIdIssuedOnError(this.form.bride.govtIssuedIdIssuedOn, 'Bride');
-                                if (groomIssuedOnError) this.message.push(groomIssuedOnError);
-                                if (brideIssuedOnError) this.message.push(brideIssuedOnError);
+                                const groomIssuedOn = String(this.form.groom.govtIssuedIdIssuedOn || '').trim();
+                                const brideIssuedOn = String(this.form.bride.govtIssuedIdIssuedOn || '').trim();
+                                if (groomIssuedOn) {
+                                    const groomIssuedOnError = this.getGovtIdIssuedOnError(groomIssuedOn, 'Groom');
+                                    if (groomIssuedOnError) this.message.push(groomIssuedOnError);
+                                }
+                                if (brideIssuedOn) {
+                                    const brideIssuedOnError = this.getGovtIdIssuedOnError(brideIssuedOn, 'Bride');
+                                    if (brideIssuedOnError) this.message.push(brideIssuedOnError);
+                                }
                             }
                         }
                         break;
