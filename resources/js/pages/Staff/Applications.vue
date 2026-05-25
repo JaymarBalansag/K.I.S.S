@@ -260,6 +260,51 @@
             </div>
 
             <div class="p-4 pt-2">
+                <div v-if="selectedApp" class="ux-summary-card rounded-4 p-3 p-md-4 mb-4">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                        <div>
+                            <div class="x-small text-white opacity-40 text-uppercase ls-1">Control Number</div>
+                            <div class="ux-control-number text-white fw-bold">{{ selectedApp.control_number || control_number }}</div>
+                            <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+                                <span class="badge" :class="getStatusClass(selectedApp.status)">{{ (selectedApp.status || '').toUpperCase() }}</span>
+                                <span v-if="selectedApp.phone_number" class="badge bg-white bg-opacity-10 text-white border border-white border-opacity-10">
+                                    <i class="bi bi-telephone me-1"></i>{{ selectedApp.phone_number }}
+                                </span>
+                                <span v-if="selectedApp.foreigner_type" class="badge bg-white bg-opacity-10 text-white border border-white border-opacity-10 text-capitalize">
+                                    <i class="bi bi-globe2 me-1"></i>{{ selectedApp.foreigner_type }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2 justify-content-start justify-content-md-end">
+                            <button class="btn btn-info text-dark fw-bold px-4 ux-action-btn" @click="openDocumentModal">
+                                <i class="bi bi-archive-fill me-2"></i>Documents
+                            </button>
+                            <div class="ux-person-toggle btn-group" role="group" aria-label="Select person to view">
+                                <button type="button"
+                                    class="btn ux-toggle-btn"
+                                    :class="viewActivePerson === 'groom' ? 'btn-info text-dark fw-bold' : 'btn-outline-light text-white'"
+                                    :disabled="!hasGroomApplicant"
+                                    @click="setViewActivePerson('groom')">
+                                    Groom
+                                </button>
+                                <button type="button"
+                                    class="btn ux-toggle-btn"
+                                    :class="viewActivePerson === 'bride' ? 'btn-info text-dark fw-bold' : 'btn-outline-light text-white'"
+                                    :disabled="!hasBrideApplicant"
+                                    @click="setViewActivePerson('bride')">
+                                    Bride
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="selectedApp.coupleNames" class="mt-3">
+                        <div class="x-small text-white opacity-40 text-uppercase ls-1">Applicants</div>
+                        <div class="text-white fw-semibold ux-applicant-names">{{ selectedApp.coupleNames }}</div>
+                    </div>
+                    <div class="x-small text-white opacity-50 mt-2">
+                        Tip: Use <span class="text-white fw-semibold">Documents</span> to review uploads, then edit only if corrections are needed.
+                    </div>
+                </div>
                 <div v-if="selectedApp" class="mb-4">
                     <div class="detail-card rounded-4 p-3 p-md-4">
                         <h6 class="x-small text-white opacity-30 text-uppercase fw-bold mb-3 ls-1">Audit</h6>
@@ -285,8 +330,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="row g-4" v-if="applicant">
-                    <div v-for="person in applicant" :key="person.id" class="col-md-6">
+                <div class="row g-4" v-if="applicant" ref="activeApplicantCard">
+                    <div v-for="person in (activeApplicant ? [activeApplicant] : [])" :key="person.id" class="col-12">
                         <div class="applicant-glass-card h-100 p-4 rounded-4"
                             :class="person.applicant_type === 'groom' ? 'groom-accent' : 'bride-accent'">
 
@@ -402,27 +447,24 @@
                         </div>
                     </div>
                 </div>
+                <div v-if="!activeApplicant" class="col-12">
+                    <div class="alert alert-info bg-info bg-opacity-10 border border-info border-opacity-25 text-white mb-0">
+                        No {{ viewActivePerson }} record found for this application.
+                    </div>
+                </div>
             </div>
 
             <div class="p-4 bg-black bg-opacity-20 d-flex justify-content-between align-items-center mt-auto">
                 <div>
-                    <p class="x-small text-secondary opacity-40 mb-0">Record Created: {{ applicant[0].created_at }}</p>
-                    <p class="x-small text-secondary opacity-40 mb-0">Data Submitted: {{ applicant[0].submitted_at }}
+                    <p class="x-small text-secondary opacity-50 mb-0">
+                        Record Created: {{ applicant?.[0]?.created_at ? formatDateTime(applicant[0].created_at) : '—' }}
+                    </p>
+                    <p class="x-small text-secondary opacity-50 mb-0">
+                        Data Submitted: {{ applicant?.[0]?.submitted_at ? formatDateTime(applicant[0].submitted_at) : '—' }}
                     </p>
                 </div>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-action-glass text-white px-4" @click="handleEditClick(selectedApp, 'groom')"
-                        :disabled="!selectedApp">
-                        <i class="bi bi-person me-1"></i> Edit Groom
-                    </button>
-                    <button class="btn btn-action-glass text-white px-4" @click="handleEditClick(selectedApp, 'bride')"
-                        :disabled="!selectedApp">
-                        <i class="bi bi-person-heart me-1"></i> Edit Bride
-                    </button>
-                    <button class="btn btn-action-glass text-white px-4" @click="openDocumentModal">
-                        <i class="bi bi-archive-fill me-1"></i> Check Documents
-                    </button>
-                    <button class="btn btn-action-glass text-secondary" @click="closeViewApplicants">Close</button>
+                    <button class="btn btn-action-glass text-secondary px-4 ux-action-btn" @click="closeViewApplicants">Close</button>
                 </div>
             </div>
         </div>
@@ -1112,6 +1154,7 @@ export default {
             showApplicantsModal: false,
             control_number: "",
             applicant: [],
+            viewActivePerson: 'groom',
             groomDocuments: [],
             brideDocuments: [],
             selectedApp: null,
@@ -1249,7 +1292,17 @@ export default {
             const fragment = params.toString();
             return fragment ? `${base}#${fragment}` : base;
         },
+        activeApplicant() {
+            return this.getApplicantByType(this.viewActivePerson);
+        },
+        hasGroomApplicant() {
+            return !!this.getApplicantByType('groom');
+        },
+        hasBrideApplicant() {
+            return !!this.getApplicantByType('bride');
+        },
     },
+
     methods: {
         setOpenDropdown(appId) {
             this.openDropdownAppId = appId ?? null;
@@ -1292,20 +1345,34 @@ export default {
             const response = await viewApplicants(app.id, app.control_number)
 
             // console.log(response.applicants[0])
-            this.applicant = response.data.applicants;
-            this.control_number = response.data.applicants[0].control_number;
+            const applicants = Array.isArray(response?.data?.applicants) ? response.data.applicants : [];
+            this.applicant = applicants;
+            this.control_number = applicants?.[0]?.control_number || app.control_number || '';
             this.groomDocuments = response.data.groomDocuments;
             this.brideDocuments = response.data.brideDocuments;
             this.selectedApp = app;
 
-            // console.log(response.data.applicants[0])
-
+            const hasGroom = applicants.some((p) => (p?.applicant_type || '').toLowerCase() === 'groom');
+            const hasBride = applicants.some((p) => (p?.applicant_type || '').toLowerCase() === 'bride');
+            this.viewActivePerson = hasGroom ? 'groom' : (hasBride ? 'bride' : 'groom');
 
             this.showApplicantsModal = true;
         },
         closeViewApplicants() {
             this.showApplicantsModal = false;
             this.selectedApp = null;
+            this.viewActivePerson = 'groom';
+        },
+        setViewActivePerson(person) {
+            const normalized = String(person || '').toLowerCase();
+            if (normalized !== 'groom' && normalized !== 'bride') return;
+            this.viewActivePerson = normalized;
+            this.$nextTick(() => {
+                const el = this.$refs.activeApplicantCard;
+                if (el && typeof el.scrollIntoView === 'function') {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
         },
 
         openDocumentModal() {
@@ -2111,6 +2178,31 @@ export default {
     align-items: center;
     justify-content: center;
     z-index: 2000;
+}
+
+.ux-summary-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.ux-control-number {
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    line-height: 1.1;
+}
+
+.ux-applicant-names {
+    font-size: 1.05rem;
+    line-height: 1.2;
+}
+
+.ux-action-btn {
+    min-height: 44px;
+}
+
+.ux-toggle-btn {
+    min-height: 44px;
+    min-width: 110px;
 }
 
 /* The Main Container */
