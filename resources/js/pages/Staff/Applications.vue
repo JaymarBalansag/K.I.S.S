@@ -1321,7 +1321,7 @@ export default {
         },
         canEditApplication(app) {
             const status = (app?.status || '').toLowerCase();
-            return status === 'pending' || status === 'under_review' || status === 'issued';
+            return status === 'pending' || status === 'under_review' || status === 'approved' || status === 'issued';
         },
         async handleEditClick(app, focusSection = null) {
             if (!app) return;
@@ -1329,7 +1329,7 @@ export default {
                 const status = (app?.status || '').toLowerCase();
                 await Swal.fire({
                     title: 'Editing Locked',
-                    text: `This application cannot be edited because its status is "${status}". Only pending/under_review/issued applications can be edited.`,
+                    text: `This application cannot be edited because its status is "${status}". Only pending/under_review/approved/issued applications can be edited.`,
                     icon: 'info',
                     background: '#0f172a',
                     color: '#fff',
