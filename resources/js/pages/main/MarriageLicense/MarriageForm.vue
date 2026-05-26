@@ -1447,14 +1447,6 @@ export default {
             // keep digits only
             let clean = String(val || '').replace(/\D/g, '');
 
-            // if user starts with 9, auto-prefix 0
-            if (clean.startsWith('9')) clean = '0' + clean;
-
-            // enforce start with 09
-            if (clean.length > 0 && !clean.startsWith('09')) {
-            clean = '09';
-            }
-
             // max 11 digits
             clean = clean.slice(0, 11);
 
@@ -3044,18 +3036,14 @@ export default {
                     if (!input) return;
                     input.addEventListener('input', () => {
                         let clean = String(input.value || '').replace(/\D/g, '');
-                        if (clean.startsWith('9')) clean = '0' + clean;
-                        if (clean.length > 0 && !clean.startsWith('09')) clean = '09';
                         input.value = clean.slice(0, 11);
                     });
                 },
                 preConfirm: (value) => {
                     let clean = String(value || '').replace(/\D/g, '');
-                    if (clean.startsWith('9')) clean = '0' + clean;
-                    if (clean.length > 0 && !clean.startsWith('09')) clean = '09';
                     clean = clean.slice(0, 11);
                     if (!/^09\d{9}$/.test(clean)) {
-                        Swal.showValidationMessage('Enter a valid number like 09XXXXXXXXX');
+                        Swal.showValidationMessage('Enter a valid number in the format 09XXXXXXXXX');
                         return false;
                     }
                     return clean;
