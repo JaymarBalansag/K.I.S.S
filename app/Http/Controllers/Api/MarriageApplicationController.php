@@ -1115,7 +1115,7 @@ class MarriageApplicationController extends Controller
             'id' => 'PHIL.ID: 5047-3248-5342-6083',
             'issued_on' => 'February 10, 2026',
             'issued_at' => 'Abuyog, Leyte',
-            'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
+            'civil_registrar' => 'Atty. Madilyn C. Madolin-Merano',
             'fullname_signature' => 'Russell Limos Taburada',
         ];
 
@@ -1153,7 +1153,7 @@ class MarriageApplicationController extends Controller
             'id' => 'PHIL.ID: 5047-3248-5342-6083',
             'issued_on' => 'February 10, 2026',
             'issued_at' => 'Abuyog, Leyte',
-            'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
+            'civil_registrar' => 'Atty. Madilyn C. Madolin-Merano',
             'fullname_signature' => 'Ruwilson Taburada Hipos',
         ];
 
@@ -1355,7 +1355,7 @@ class MarriageApplicationController extends Controller
                 data_get($groom, 'government_id_issued_at'),
                 data_get($groom, 'issued_at')
             ),
-            'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
+            'civil_registrar' => 'Atty. Madilyn C. Madolin-Merano',
         ];
 
         $brideData = [
@@ -1405,7 +1405,7 @@ class MarriageApplicationController extends Controller
                 data_get($bride, 'government_id_issued_at'),
                 data_get($bride, 'issued_at')
             ),
-            'civil_registrar' => 'Atty. Madilyn Madolin-Merano',
+            'civil_registrar' => 'Atty. Madilyn C. Madolin-Merano',
         ];
 
         return [
